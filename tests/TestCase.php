@@ -1,0 +1,345 @@
+<?php
+
+namespace rockunit;
+
+use rock\cache\CacheInterface;
+
+abstract class TestCase extends \PHPUnit_Framework_TestCase
+{
+    public static function flush(){}
+
+    public function setUp()
+    {
+        static::flush();
+    }
+
+    /** Get */
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testGet(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
+        $this->assertEquals(
+             $cache->get('key1'),
+             ['one', 'two'],
+             'should be get: ' . json_encode(['one', 'two'])
+        );
+        $this->assertEquals($cache->get('key2'), 'three', 'should be get: "three"');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testGetNotKey(CacheInterface $cache)
+    {
+        $this->assertFalse($cache->get('key3'), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testGetNull(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key5', null), 'should be get: true');
+        $this->assertNull($cache->get('key5'), 'should be get: null');
+    }
+
+
+    /** Set/Add */
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testSet(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key3'), 'should be get: true');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testSetFalse(CacheInterface $cache)
+    {
+        $this->assertFalse($cache->set(null), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testSetMulti(CacheInterface $cache)
+    {
+        $cache->setMulti(['foo' => 'text foo', 'bar' => 'text bar']);
+        $this->assertEquals($cache->getMulti(['foo', 'baz', 'bar']), ['foo' => 'text foo', 'baz' => false, 'bar' => 'text bar']);
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testAdd(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->add('key3'), 'should be get: true');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testAddFalse(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertFalse($cache->add('key1'), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testTtl(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key6', 'foo', 1), 'should be get: true');
+        sleep(2);
+        $this->assertFalse($cache->get('key6'), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testTouch(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->touch('key1', 1), 'should be get: true');
+        sleep(2);
+        $this->assertFalse($cache->get('key1'), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testTouchFalse(CacheInterface $cache)
+    {
+        $this->assertFalse($cache->touch('key6', 1), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testHasTrue(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
+        $this->assertTrue($cache->has('key2'), 'should be get: true');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testHasFalse(CacheInterface $cache)
+    {
+        $this->assertFalse($cache->has('key9'), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testHasByTouchFalse(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->touch('key1', 1), 'should be get: true');
+        sleep(2);
+        $this->assertFalse($cache->has('key1'), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testHasByRemoveFalse(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->remove('key1'), 'should be get: true');
+        $this->assertFalse($cache->has('key1'), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testIncrement(CacheInterface $cache)
+    {
+        $this->assertEquals($cache->increment('key7', 5), 5, 'should be get: 5');
+        $this->assertEquals($cache->get('key7'), 5, 'should be get: 5');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testTtlIncrement(CacheInterface $cache)
+    {
+        $this->assertEquals($cache->increment('key7', 5, 1), 5, 'should be get: 5');
+        sleep(2);
+        $this->assertFalse($cache->get('key7'), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testDecrementFalse(CacheInterface $cache)
+    {
+        $this->assertFalse($cache->decrement('key7', 5), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testDecrement(CacheInterface $cache)
+    {
+        $this->assertEquals($cache->increment('key7', 5), 5, 'should be get: 5');
+        $this->assertEquals($cache->decrement('key7', 2), 3, 'should be get: 3');
+        $this->assertEquals($cache->get('key7'), 3, 'should be get: 3');
+    }
+
+
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testRemove(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->remove('key1'), 'should be get: true');
+        $this->assertFalse($cache->get('key1'), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testRemoveFalse(CacheInterface $cache)
+    {
+        $this->assertFalse($cache->remove('key3'), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testRemoves(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
+        $cache->removeMulti(['key2']);
+        $this->assertTrue($cache->has('key1'), 'should be get: true');
+        $this->assertFalse($cache->get('key2'), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testGetTag(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
+        $expected = $cache->getTag('foo');
+        sort($expected);
+        $actual = [$cache->prepareKey('key1'), $cache->prepareKey('key2')];
+        sort($actual);
+        $this->assertEquals($expected, $actual, 'should be get: ' . json_encode($actual));
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testGetTags(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
+        $this->assertEquals(
+             array_keys($cache->getMultiTags(['bar', 'foo'])),
+             ['bar', 'foo'],
+             'should be get: ' . json_encode(['bar', 'foo'])
+        );
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testHasTag(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
+        $this->assertTrue($cache->hasTag('foo'), 'should be get: true');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testHasTagFalse(CacheInterface $cache)
+    {
+        $this->assertFalse($cache->hasTag('baz'), 'should be get: false');
+    }
+
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testRemoveTag(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
+        $this->assertTrue($cache->removeTag('bar'), 'should be get: true');
+        $this->assertFalse($cache->get('key1'), 'should be get: false');
+        $this->assertFalse($cache->getTag('bar'), 'should be get tag: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testRemoveTagFalse(CacheInterface $cache)
+    {
+        $this->assertFalse($cache->removeTag('baz'), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testRemoveMultiTags(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
+        $cache->removeMultiTags(['foo']);
+        $this->assertFalse($cache->get('key1'), 'should be get: false');
+        $this->assertFalse($cache->get('key2'), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testGetAllKeys(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
+        $expected = $cache->getAllKeys();
+        if ($expected !== false) {
+            $actual = [
+                $cache->prepareKey('key1'),
+                $cache->prepareKey('key2'),
+                CacheInterface::TAG_PREFIX . 'foo',
+                CacheInterface::TAG_PREFIX . 'bar'
+            ];
+            sort($expected);
+            sort($actual);
+            $this->assertEquals($expected, $actual, 'should be get: ' . json_encode($actual));
+        }
+    }
+
+    abstract public function init($serialize);
+
+    public function providerCache()
+    {
+        return array(
+            [$this->init(CacheInterface::SERIALIZE_PHP)],
+            [$this->init(CacheInterface::SERIALIZE_JSON)],
+        );
+    }
+
+    public static function tearDownAfterClass()
+    {
+        static::flush();
+    }
+} 

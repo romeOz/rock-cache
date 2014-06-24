@@ -1,0 +1,31 @@
+{
+    "name": "romeo7/rock-cache",
+    "description": "Key-value storage in memory. As a storage can be used: Local, APC, Redis, Memcache, Couchbase. All storage objects have one interface, so you can switch them without changing the working code.",
+    "keywords": ["caching", "race-condition", "dog-pile", "tagging-cache", "redis", "memcache", "memcached", "apc", "memory", "couchbase"],
+    "type": "library",
+    "license": "MIT",
+    "support": {
+        "email": "serggalka@gmail.com",
+        "issues": "https://github.com/romao7/rock-cache/issues",
+        "source": "https://github.com/romao7/rock-cache"
+    },
+    "authors": [
+        {
+            "name": "Ruslan",
+            "email": "serggalka@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "league/flysystem": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~3.7"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "rock\\cache\\": "src/"
+        }
+    }
+}

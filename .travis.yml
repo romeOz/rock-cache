@@ -1,0 +1,36 @@
+language: php
+
+php:
+  - 5.4
+  - 5.5
+  - 5.6
+  - hhvm
+  - hhvm-nightly
+
+# run build against PHP 5.6 and hhvm but allow them to fail
+# http://docs.travis-ci.com/user/build-configuration/#Rows-That-are-Allowed-To-Fail
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: 5.6
+    - php: hhvm
+    - php: hhvm-nightly
+
+services:
+  - redis-server
+  - memcached
+
+install:
+  - composer self-update && composer --version
+  - bash -c 'if [ "$TRAVIS_PHP_VERSION" == "hhvm" ] || [ "$TRAVIS_PHP_VERSION" == "hhvm-nightly" ]; then rm phpunit.xml.dist; fi;'
+  - bash -c 'if [ "$TRAVIS_PHP_VERSION" == "hhvm" ] || [ "$TRAVIS_PHP_VERSION" == "hhvm-nightly" ]; then mv phpunit.xml.hhvm phpunit.xml.dist; fi;'
+  - composer install --prefer-dist
+  - chmod -R +x tests/data/travis/
+  - bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ] && [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ]; then tests/data/travis/apc-setup.sh; fi;'
+  - tests/data/travis/memcache-setup.sh
+  - tests/data/travis/redis-setup.sh
+
+#before_script:
+
+script:
+  - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover

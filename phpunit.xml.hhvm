@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         syntaxCheck="false"
+         bootstrap="./tests/bootstrap.php"
+        >
+    <php>
+        <ini name="memory_limit" value="-1"/>
+        <ini name="display_errors" value="1"/>
+        <ini name="error_reporting" value="-1"/>
+    </php>
+
+    <testsuites>
+        <testsuite>
+            <directory>./tests/</directory>
+            <exclude>./tests/cache/APCTest.php</exclude>
+            <exclude>./tests/cache/MemcachedTest.php</exclude>
+            <exclude>./tests/cache/MemcacheTest.php</exclude>
+            <exclude>./tests/cache/RedisTest.php</exclude>
+            <exclude>./tests/cache/CouchbaseTest.php</exclude>
+            <exclude>./tests/cache/CouchbaseJsonTest.php</exclude>
+            <exclude>./tests/cache/versioning/MemcachedTest.php</exclude>
+            <exclude>./tests/cache/versioning/MemcacheTest.php</exclude>
+            <exclude>./tests/cache/versioning/RedisTest.php</exclude>
+            <exclude>./tests/cache/versioning/APCTest.php</exclude>
+            <exclude>./tests/cache/versioning/CouchbaseTest.php</exclude>
+            <exclude>./tests/cache/versioning/CouchbaseJsonTest.php</exclude>
+        </testsuite>
+    </testsuites>
+</phpunit>
