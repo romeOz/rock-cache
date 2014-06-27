@@ -76,6 +76,7 @@ $memcached->flush(); // Invalidate all items in the cache
 use League\Flysystem\Adapter\Local;
 use rock\cache\filemanager\FileManager;
 use rock\cache\CacheFile;
+use rock\cache\CacheInterface;
 
 $adapterConfig = [
     'adapter' => new Local(__DIR__.'/path/to/root'),
@@ -228,7 +229,6 @@ tag_2: 0.29252400 1403858537
 
 $cache->get('key_1');
 // result: false
-
 ```
 
 View storage:
