@@ -24,13 +24,11 @@
             <exclude>./tests/cache/MemcacheTest.php</exclude>
             <exclude>./tests/cache/RedisTest.php</exclude>
             <exclude>./tests/cache/CouchbaseTest.php</exclude>
-            <exclude>./tests/cache/CouchbaseJsonTest.php</exclude>
             <exclude>./tests/cache/versioning/MemcachedTest.php</exclude>
             <exclude>./tests/cache/versioning/MemcacheTest.php</exclude>
             <exclude>./tests/cache/versioning/RedisTest.php</exclude>
             <exclude>./tests/cache/versioning/APCTest.php</exclude>
             <exclude>./tests/cache/versioning/CouchbaseTest.php</exclude>
-            <exclude>./tests/cache/versioning/CouchbaseJsonTest.php</exclude>
         </testsuite>
     </testsuites>
 </phpunit>
