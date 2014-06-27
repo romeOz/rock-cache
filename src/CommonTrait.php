@@ -30,7 +30,7 @@ trait CommonTrait
      *
      * @var bool
      */
-    public $enabled = false;
+    public $enabled = true;
 
     /**
      * Enabled caching
