@@ -3,10 +3,10 @@ namespace rockunit\cache;
 
 use rock\cache\APC;
 use rock\cache\CacheInterface;
-use rockunit\TestCase;
 
-class APCTest extends TestCase
+class APCTest extends \PHPUnit_Framework_TestCase
 {
+    use  CommonTraitTest;
 
     public static function flush()
     {

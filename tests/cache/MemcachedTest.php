@@ -2,10 +2,11 @@
 namespace rockunit\cache;
 
 use rock\cache\Memcached;
-use rockunit\TestCase;
 
-class MemcachedTest extends TestCase
+class MemcachedTest extends \PHPUnit_Framework_TestCase
 {
+    use  CommonTraitTest;
+
     public static function flush()
     {
         (new Memcached(['enabled' => true]))->flush();

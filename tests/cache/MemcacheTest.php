@@ -4,10 +4,13 @@ namespace rockunit\cache;
 use rock\cache\CacheInterface;
 use rock\cache\Exception;
 use rock\cache\Memcache;
-use rockunit\TestCase;
 
-class MemcacheTest extends TestCase
+class MemcacheTest extends \PHPUnit_Framework_TestCase
 {
+    use  CommonTraitTest {
+        CommonTraitTest::testGetAllKeys as parentTestGetAllKeys;
+    }
+
     public static function flush()
     {
         (new Memcache(['enabled' => true]))->flush();
@@ -24,7 +27,7 @@ class MemcacheTest extends TestCase
      */
     public function testGetAllKeys(CacheInterface $cache)
     {
-        parent::testGetAllKeys($cache);
+        $this->parentTestGetAllKeys($cache);
     }
 }
  

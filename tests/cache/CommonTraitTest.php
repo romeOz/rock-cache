@@ -1,10 +1,11 @@
 <?php
 
-namespace rockunit;
+namespace rockunit\cache;
+
 
 use rock\cache\CacheInterface;
 
-abstract class TestCase extends \PHPUnit_Framework_TestCase
+trait CommonTraitTest
 {
     public static function flush(){}
 
@@ -23,9 +24,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
         $this->assertEquals(
-             $cache->get('key1'),
-             ['one', 'two'],
-             'should be get: ' . json_encode(['one', 'two'])
+            $cache->get('key1'),
+            ['one', 'two'],
+            'should be get: ' . json_encode(['one', 'two'])
         );
         $this->assertEquals($cache->get('key2'), 'three', 'should be get: "three"');
     }
@@ -250,9 +251,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
         $this->assertEquals(
-             array_keys($cache->getMultiTags(['bar', 'foo'])),
-             ['bar', 'foo'],
-             'should be get: ' . json_encode(['bar', 'foo'])
+            array_keys($cache->getMultiTags(['bar', 'foo'])),
+            ['bar', 'foo'],
+            'should be get: ' . json_encode(['bar', 'foo'])
         );
     }
 

@@ -3,10 +3,11 @@
 namespace rockunit\cache;
 
 use rock\cache\Redis;
-use rockunit\TestCase;
 
-class RedisTest extends TestCase
+class RedisTest extends \PHPUnit_Framework_TestCase
 {
+    use  CommonTraitTest;
+
     public static function flush()
     {
         (new Redis(['enabled' => true]))->flush();
@@ -14,8 +15,7 @@ class RedisTest extends TestCase
 
     public function init($serialize)
     {
-        $cache = new Redis(['enabled' => true, 'serializer' => $serialize]);
-        return $cache;
+        return new Redis(['enabled' => true, 'serializer' => $serialize]);
     }
 }
  

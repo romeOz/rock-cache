@@ -4,10 +4,12 @@ namespace rockunit\cache\versioning;
 
 use rock\cache\CacheInterface;
 use rock\cache\versioning\APC;
-use rockunit\TestCase;
+use rockunit\cache\CommonTraitTest;
 
-class APCTest extends TestCase
+class APCTest extends \PHPUnit_Framework_TestCase
 {
+    use  CommonTraitTest;
+
     public static function flush()
     {
         (new APC(['enabled' => true]))->flush();
@@ -15,8 +17,7 @@ class APCTest extends TestCase
 
     public function init($serialize)
     {
-        $cache = new APC(['enabled' => true, 'serializer' => $serialize]);
-        return $cache;
+        return new APC(['enabled' => true, 'serializer' => $serialize]);
     }
 
     /**

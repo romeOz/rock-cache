@@ -7,10 +7,11 @@ use League\Flysystem\Cache\Adapter;
 use rock\cache\CacheFile;
 use rock\cache\CacheInterface;
 use rock\cache\filemanager\FileManager;
-use rockunit\TestCase;
 
-class CacheFileTest extends TestCase
+class CacheFileTest extends \PHPUnit_Framework_TestCase
 {
+    use  CommonTraitTest;
+
     /** @var FileManager */
     protected static $fileManager;
 
@@ -58,13 +59,11 @@ class CacheFileTest extends TestCase
 
     public function init($serialize)
     {
-        $cache = new CacheFile([
-                                   'enabled' => true,
-                                   'adapter' => static::getFileManager(),
-                                   'serializer' => $serialize
-                               ]);
-
-        return $cache;
+        return new CacheFile([
+           'enabled' => true,
+           'adapter' => static::getFileManager(),
+           'serializer' => $serialize
+        ]);
     }
 
     /**

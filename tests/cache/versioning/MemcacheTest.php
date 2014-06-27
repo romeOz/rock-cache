@@ -2,11 +2,16 @@
 namespace rockunit\cache\versioning;
 
 use rock\cache\CacheInterface;
+use rock\cache\Exception;
 use rock\cache\versioning\Memcache;
-use rockunit\TestCase;
+use rockunit\cache\CommonTraitTest;
 
-class MemcacheTest extends TestCase
+class MemcacheTest extends \PHPUnit_Framework_TestCase
 {
+    use  CommonTraitTest {
+        CommonTraitTest::testGetAllKeys as parentTestGetAllKeys;
+    }
+
     public static function flush()
     {
         (new Memcache(['enabled' => true]))->flush();
@@ -14,8 +19,7 @@ class MemcacheTest extends TestCase
 
     public function init($serialize)
     {
-        $cache = new Memcache(['enabled' => true, 'serializer' => $serialize]);
-        return $cache;
+        return new Memcache(['enabled' => true, 'serializer' => $serialize]);
     }
 
     /**
@@ -70,7 +74,7 @@ class MemcacheTest extends TestCase
      */
     public function testGetAllKeys(CacheInterface $cache)
     {
-        parent::testGetAllKeys($cache);
+        $this->parentTestGetAllKeys($cache);
     }
 }
  

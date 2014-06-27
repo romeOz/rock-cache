@@ -4,10 +4,13 @@ namespace rockunit\cache;
 use rock\cache\CacheInterface;
 use rock\cache\Exception;
 use rock\cache\Couchbase;
-use rockunit\TestCase;
 
-class CouchbaseTest extends TestCase
+class CouchbaseTest extends \PHPUnit_Framework_TestCase
 {
+    use  CommonTraitTest {
+        CommonTraitTest::testGetAllKeys as parentTestGetAllKeys;
+    }
+
     public static function flush()
     {
         (new Couchbase(['enabled' => true]))->flush();
@@ -24,6 +27,6 @@ class CouchbaseTest extends TestCase
      */
     public function testGetAllKeys(CacheInterface $cache)
     {
-        parent::testGetAllKeys($cache);
+        $this->parentTestGetAllKeys($cache);
     }
 } 
