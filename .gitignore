@@ -1,0 +1,13 @@
+vendor
+composer.lock
+index.php
+*~
+
+# windows thumbnail cache
+Thumbs.db
+
+# vagrant
+.vagrant/*
+
+# PHPStorm
+.idea/*
