@@ -3,6 +3,8 @@ PHP library caching
 
 [![Build Status](https://travis-ci.org/romeo7/rock-cache.svg?branch=master)](https://travis-ci.org/romeo7/rock-cache)
 
+Rock cache on [Packagist](https://packagist.org/packages/romeo7/rock-cache)
+
 What storages can be used:
 
  * Local storage
@@ -26,7 +28,16 @@ Features
 Installation
 -------------------
 
-**TODO**
+Through Composer, obviously:
+
+```json
+{
+    "require": {
+        "romeo7/rock-cache": "dev-master"
+    }
+}
+
+```
 
 Quick Start
 -------------------
@@ -54,7 +65,6 @@ $memcached->get('key_1');
 // result: ['foo', 'bar'];
 
 $memcached->flush(); // Invalidate all items in the cache
-
 ```
 
 ###Local storage
@@ -81,7 +91,6 @@ $cacheFile->set('key_1', 'foo');
 
 $memcached->get('key_1');
 // result: foo;
-
 ```
 
 Requirements
@@ -121,7 +130,6 @@ Input data:
 
 $cache->set('key_1', 'text_1', 0, ['tag_1', 'tag_2']);
 $cache->set('key_2', 'text_2', 0, ['tag_1']);
-
 ```
 
 View storage:
@@ -132,7 +140,6 @@ key_2: text_2
 
 tag_1: [key_1, key_2]
 tag_2: [key_1]
-
 ```
 
 Removing tag:
@@ -140,7 +147,6 @@ Removing tag:
 ```php
 
 $cache->removeTag('tag_2');
-
 ```
 
 View storage:
@@ -149,7 +155,6 @@ View storage:
 key_2: text_2
 
 tag_1: [key_1, key_2]
-
 ```
 
 ###Approach versioning
@@ -164,7 +169,6 @@ Input data:
 
 $cache->set('key_1', 'text_1', 0, ['tag_1', 'tag_2']);
 $cache->set('key_2', 'text_2', 0, ['tag_1']);
-
 ```
 
 View storage:
@@ -188,7 +192,6 @@ key_2: [
 
 tag_1: 0.20782200 1403858079
 tag_2: 0.20782200 1403858079
-
 ```
 
 Removing tag:
@@ -196,7 +199,6 @@ Removing tag:
 ```php
 
 $cache->removeTag('tag_2');
-
 ```
 
 View storage:
@@ -218,7 +220,6 @@ key_2: [
 
 tag_1: 0.20782200 1403858079
 tag_2: 0.29252400 1403858537
-
 ```
 
 ```php
@@ -239,7 +240,6 @@ key_2: [
 ]
 
 tag_1: 0.20782200 1403858079
-
 ```
 
 License
