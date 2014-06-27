@@ -1,66 +1,75 @@
 <?php
-
 namespace rockunit\cache\versioning;
 
 use rock\cache\versioning\Couchbase;
-use rock\tests\cache\CouchbaseTrait;
-use rock\tests\CouchbaseTestCase;
+use rock\cache\Exception;
+use rock\cache\CacheInterface;
+use rockunit\TestCase;
 
-class CouchbaseTest extends CouchbaseTestCase
+class CouchbaseTest extends TestCase
 {
-    use CouchbaseTrait;
-
-    public function setUp()
+    public static function flush()
     {
-        $this->cache = new Couchbase(['enabled' => true, 'serializer' => Couchbase::SERIALIZE_PHP]);
-        $this->cache->flush();
-        $this->cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']);
-        $this->cache->set('key2', 'three', 0, ['foo']);
-        return $this;
+        (new Couchbase(['enabled' => true]))->flush();
     }
 
-
-    public function testHasFalseByTouch()
+    public function init($serialize)
     {
-        $this->assertTrue($this->cache->touch('key1', 1), 'should be get: true');
+        return new Couchbase(['enabled' => true, 'serializer' => $serialize]);
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testTtlDecrement(CacheInterface $cache)
+    {
+        $this->assertEquals($cache->increment('key7', 5), 5, 'should be get: 5');
+        $this->assertEquals($cache->decrement('key7', 2, 1), 3, 'should be get: 3');
         sleep(2);
-        $this->assertFalse($this->cache->has('key1'), 'should be get: false');
+        $this->assertFalse($cache->get('key7'), 'should be get: false');
     }
 
-    public function testHasFalseByRemove()
+    /**
+     * @dataProvider providerCache
+     */
+    public function testHasTtlDecrement(CacheInterface $cache)
     {
-        $this->assertTrue($this->cache->remove('key1'), 'should be get: true');
-        $this->assertFalse($this->cache->has('key1'), 'should be get: false');
-    }
-
-
-
-    public function testTtlDecrement()
-    {
-        $this->assertEquals($this->cache->increment('key7', 5), 5, 'should be get: 5');
-        $this->assertEquals($this->cache->decrement('key7', 2, 1), 3, 'should be get: 3');
+        $this->assertEquals($cache->increment('key7', 5), 5, 'should be get: 5');
+        $this->assertEquals($cache->decrement('key7', 2, 1), 3, 'should be get: 3');
         sleep(2);
-        $this->assertFalse($this->cache->get('key7'), 'should be get: false');
-    }
-    public function testHasTtlDecrement()
-    {
-        $this->assertEquals($this->cache->increment('key7', 5), 5, 'should be get: 5');
-        $this->assertEquals($this->cache->decrement('key7', 2, 1), 3, 'should be get: 3');
-        sleep(2);
-        $this->assertFalse($this->cache->has('key7'), 'should be get: false');
+        $this->assertFalse($cache->has('key7'), 'should be get: false');
     }
 
-
-    public function testGetTag()
+    /**
+     * @dataProvider providerCache
+     */
+    public function testGetTag(CacheInterface $cache)
     {
-        $this->assertInternalType('string', $this->cache->getTag('foo'), 'var should be type string');
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
+        $this->assertInternalType('string', $cache->getTag('foo'), 'var should be type string');
     }
 
-    public function testRemoveTag()
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testRemoveTag(CacheInterface $cache)
     {
-        $timestamp = $this->cache->getTag('bar');
-        $this->assertTrue($this->cache->removeTag('bar'), 'tag "bar" does not remove');
-        $this->assertFalse($this->cache->get('key1'), 'should be get: false');
-        $this->assertNotEquals($this->cache->getTag('bar'), $timestamp, 'timestamps does not equals');
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
+        $timestamp = $cache->getTag('bar');
+        $this->assertTrue($cache->removeTag('bar'), 'tag "bar" does not remove');
+        $this->assertFalse($cache->get('key1'), 'should be get: false');
+        $this->assertNotEquals($cache->getTag('bar'), $timestamp, 'timestamps does not equals');
+    }
+
+    /**
+     * @dataProvider providerCache
+     * @expectedException Exception
+     */
+    public function testGetAllKeys(CacheInterface $cache)
+    {
+        parent::testGetAllKeys($cache);
     }
 } 

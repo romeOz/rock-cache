@@ -2,25 +2,29 @@
 
 namespace rockunit\cache;
 
+use rock\cache\CacheInterface;
+use rock\cache\Exception;
 use rock\cache\Couchbase;
-use rockunit\CouchbaseTestCase;
+use rockunit\TestCase;
 
-class CouchbaseTest extends CouchbaseTestCase
+class CouchbaseTest extends TestCase
 {
-    use CouchbaseTrait;
-
-    public function setUp()
+    public static function flush()
     {
-        $this->cache = new Couchbase(
-            [
-                'enabled' => true,
-                'serializer' => Couchbase::SERIALIZE_PHP
-            ]
-        );
-        $this->cache->flush();
-        $this->cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']);
-        $this->cache->set('key2', 'three', 0, ['foo']);
+        (new Couchbase(['enabled' => true]))->flush();
+    }
 
-        return $this;
+    public function init($serialize)
+    {
+        return new Couchbase(['enabled' => true, 'serializer' => $serialize]);
+    }
+
+    /**
+     * @dataProvider providerCache
+     * @expectedException Exception
+     */
+    public function testGetAllKeys(CacheInterface $cache)
+    {
+        parent::testGetAllKeys($cache);
     }
 } 
