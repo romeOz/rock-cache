@@ -225,17 +225,18 @@ class Couchbase implements CacheInterface
         }
 
         foreach ($this->prepareTags($tags) as $tag) {
-            if ($value = static::$storage->get(self::TAG_PREFIX . $tag)) {
-                $value = $this->unserialize($value);
-                if (in_array($key, (array)$value, true)) {
+            if ($keys = static::$storage->get(self::TAG_PREFIX . $tag)) {
+                $keys = $this->unserialize($keys);
+                if (is_object($keys)) {
+                    $keys = (array)$keys;
+                }
+                if (in_array($key, $keys, true)) {
                     continue;
                 }
-                $value[] = $key;
-
-                $this->provideLock(self::TAG_PREFIX . $tag, $this->serialize($value), 0);
+                $keys[] = $key;
+                $this->provideLock(self::TAG_PREFIX . $tag, $this->serialize($keys), 0);
                 continue;
             }
-
             $this->provideLock(self::TAG_PREFIX . $tag, $this->serialize((array)$key), 0);
         }
     }
