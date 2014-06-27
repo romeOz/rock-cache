@@ -13,8 +13,7 @@ class MemcachedTest extends TestCase
 
     public function init($serialize)
     {
-        $cache = new Memcached(['enabled' => true, 'serializer' => $serialize]);
-        return $cache;
+        return new Memcached(['enabled' => true, 'serializer' => $serialize]);
     }
 }
  

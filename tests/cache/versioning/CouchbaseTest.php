@@ -50,7 +50,6 @@ class CouchbaseTest extends TestCase
         $this->assertInternalType('string', $cache->getTag('foo'), 'var should be type string');
     }
 
-
     /**
      * @dataProvider providerCache
      */

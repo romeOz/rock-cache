@@ -1,5 +1,4 @@
 <?php
-
 namespace rockunit\cache;
 
 use rock\cache\CacheInterface;

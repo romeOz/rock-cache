@@ -15,13 +15,10 @@ class MemcacheTest extends TestCase
 
     public function init($serialize)
     {
-        $cache = new Memcache(['enabled' => true, 'serializer' => $serialize]);
-        return $cache;
+        return new Memcache(['enabled' => true, 'serializer' => $serialize]);
     }
 
-
     /**
-     * @group ignore-cache
      * @dataProvider providerCache
      * @expectedException Exception
      */
