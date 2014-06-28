@@ -17,6 +17,5 @@
   template: "{{ item }} owner=vagrant mode=0644"
   with_items:
    - src=index.php dest=/var/www/index.php
-   - src=phpunit.xml.dist dest=/var/www/phpunit.xml.dist
   tags:
     - demo
