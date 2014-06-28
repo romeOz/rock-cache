@@ -1,0 +1,22 @@
+#- name: clone Rock cache  
+#  shell: composer create-project --prefer-dist --stability=dev romeo7/rock-cache /tmp/rock-cache/ creates=/tmp/rock-cache/
+#  tags:
+#    - demo
+
+#- name: move files
+#  shell: mv -f /tmp/rock-cache/.[!.]* /var/www/; rm -r /tmp/rock-cache
+#  tags:
+#    - demo
+
+- name: remove phpunit.xml.dist
+  shell: rm /var/www/phpunit.xml.dist
+  tags:
+    - demo
+
+- name: Create demo
+  template: "{{ item }} owner=vagrant mode=0644"
+  with_items:
+   - src=index.php dest=/var/www/index.php
+   - src=phpunit.xml.dist dest=/var/www/phpunit.xml.dist
+  tags:
+    - demo

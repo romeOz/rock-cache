@@ -1,0 +1,14 @@
+---
+- hosts: vagrant
+  sudo: true
+
+  roles:
+    - initial
+    - common
+    - nginx
+    - php
+    - composer
+    - redis
+    - memcached
+    - couchbase
+    - demo
