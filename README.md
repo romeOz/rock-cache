@@ -99,6 +99,19 @@ Demo & Tests
 
 Use a specially prepared environment (Vagrant + Ansible) with preinstalled and configured storages.
 
+###Out of the box:
+
+ * Ubuntu 12.04 32 bit
+ * Nginx 1.6
+ * PHP-FPM 5.5
+ * Composer
+ * Couhbase 2.2.0 ( + pecl couchbase-1.2.2)
+ * Redis 2.8 ( + php5-redis)
+ * Memcached 1.4.14 ( + php5_memcached, php5_memcache)
+ * Local IP loop on Host machine /etc/hosts and Virtual hosts in Nginx already set up!
+
+###Installation:
+
 1. [Install Composer](https://getcomposer.org/doc/00-intro.md#globally)
 2. ```composer create-project --prefer-dist --stability=dev romeo7/rock-cache```
 3. [Install Vagrant](https://www.vagrantup.com/downloads), and additional Vagrant plugins ```vagrant plugin install vagrant-hostsupdater vagrant-vbguest vagrant-cachier```
