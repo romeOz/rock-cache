@@ -175,7 +175,7 @@ trait CommonTraitTest
     public function testTtlIncrement(CacheInterface $cache)
     {
         $this->assertEquals($cache->increment('key7', 5, 1), 5, 'should be get: 5');
-        sleep(2);
+        sleep(3);
         $this->assertFalse($cache->get('key7'), 'should be get: false');
     }
 
