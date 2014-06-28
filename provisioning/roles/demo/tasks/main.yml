@@ -8,11 +8,6 @@
 #  tags:
 #    - demo
 
-- name: remove phpunit.xml.dist
-  shell: rm /var/www/phpunit.xml.dist
-  tags:
-    - demo
-
 - name: Create demo
   template: "{{ item }} owner=vagrant mode=0644"
   with_items:
