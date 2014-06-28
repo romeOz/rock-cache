@@ -1,3 +1,7 @@
+############
+## Project
+############
+
 vendor
 composer.lock
 ./index.php
@@ -14,8 +18,14 @@ Thumbs.db
 # Folder config file
 Desktop.ini
 
-# vagrant
+
+############
+## Vagrant
+############
 .vagrant/*
 
-# PHPStorm
+
+############
+## PHPStorm
+############
 .idea/*
