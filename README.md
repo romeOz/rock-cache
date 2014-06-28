@@ -5,7 +5,7 @@ PHP library caching
 [![Latest Stable Version](https://poser.pugx.org/romeo7/rock-cache/v/stable.svg)](https://packagist.org/packages/romeo7/rock-cache)
 [![License](https://poser.pugx.org/romeo7/rock-cache/license.svg)](https://packagist.org/packages/romeo7/rock-cache)
 
-Rock cache on [Packagist](https://packagist.org/packages/romeo7/rock-cache)
+[Rock cache on Packagist](https://packagist.org/packages/romeo7/rock-cache)
 
 What storages can be used:
 
@@ -52,7 +52,7 @@ use rock\cache\Memcached;
 use rock\cache\CacheInterface;
 
 $config = [
-    'hashKey' => CacheInterface::HASH_MD5 // Default: HASH_MD5
+    'hashKey' => CacheInterface::HASH_MD5, // Default: HASH_MD5
     'serializer' => CacheInterface::SERIALIZE_JSON // Default: SERIALIZE_PHP - php serializator
 ];
 $memcached = new Memcached($config);
@@ -63,8 +63,7 @@ $expire = 0; // If use expire "0", then time to live infinitely
 $memcached->set('key_1', $value, $expire, $tags);
 
 // automatic unserialization
-$memcached->get('key_1');
-// result: ['foo', 'bar'];
+$memcached->get('key_1'); // result: ['foo', 'bar'];
 
 $memcached->flush(); // Invalidate all items in the cache
 ```
@@ -85,15 +84,33 @@ $adapter = new FileManager($adapterConfig);
 
 $config = [
     'adapter' => $adapter,
-    'hashKey' => CacheInterface::HASH_MD5
+    'hashKey' => CacheInterface::HASH_MD5,
     'serializer' => CacheInterface::SERIALIZE_JSON
 ];
-$cacheFile = new CacheFile($config)
+$cacheFile = new CacheFile($config);
 
 $cacheFile->set('key_1', 'foo');
 
-$memcached->get('key_1');
-// result: foo;
+$memcached->get('key_1'); // result: foo;
+```
+
+Demo & Tests
+-------------------
+
+Use a specially prepared environment (Vagrant + Ansible) with preinstalled and configured storages.
+
+1. [Install Composer](https://getcomposer.org/doc/00-intro.md#globally)
+2. ```composer create-project --prefer-dist --stability=dev romeo7/rock-cache```
+3. [Install Vagrant](https://www.vagrantup.com/downloads)
+4. ```vagrant up```
+5. Open demo [http://rock.local/](http://rock.local/) or [http://192.168.33.33/](http://192.168.33.33/)
+
+Note: work/editing the project can be done via ssh:
+
+```bash
+
+vagrant ssh
+cd /var/www/
 ```
 
 Requirements
