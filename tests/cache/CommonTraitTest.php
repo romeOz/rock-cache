@@ -70,6 +70,10 @@ trait CommonTraitTest
         $cache->addPrefix('test');
         $this->assertTrue($cache->set('key5', ['foo']));
         $this->assertSame($cache->get('key5'), ['foo']);
+
+        $cache->hashKey = 0;
+        $this->assertTrue($cache->set('key6', ['foo']));
+        $this->assertSame($cache->get('key6'), ['foo']);
     }
 
     /**
@@ -126,6 +130,9 @@ trait CommonTraitTest
     {
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertFalse($cache->add('key1'), 'should be get: false');
+
+        $cache->disabled();
+        $this->assertFalse($cache->add('key1'));
     }
 
     /**
@@ -168,6 +175,8 @@ trait CommonTraitTest
         sleep(3);
         $this->assertFalse($cache->get('key1'));
         $this->assertFalse($cache->get('key2'));
+
+        $this->assertFalse($cache->touchMulti(['key1','key3'], 1));
     }
 
     /**
@@ -326,6 +335,34 @@ trait CommonTraitTest
             array_keys($cache->getMultiTags(['bar', 'foo'])),
             ['bar', 'foo'],
             'should be get: ' . json_encode(['bar', 'foo'])
+        );
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testGetHashMd5Tags(CacheInterface $cache)
+    {
+        $cache->hashTag = CacheInterface::HASH_MD5;
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
+        $this->assertEquals(
+            array_keys($cache->getMultiTags(['bar', 'foo'])),
+            ['bar', 'foo']
+        );
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testGetHashSHATags(CacheInterface $cache)
+    {
+        $cache->hashTag = CacheInterface::HASH_SHA;
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
+        $this->assertEquals(
+            array_keys($cache->getMultiTags(['bar', 'foo'])),
+            ['bar', 'foo']
         );
     }
 

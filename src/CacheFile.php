@@ -211,6 +211,7 @@ class CacheFile implements CacheInterface
      */
     public function getTag($tag)
     {
+        $tag = $this->prepareTag($tag);
         if (!$result = $this->getAdapter()->listContents("~/[^\/]*{$tag}[^\/]*/", true, FileManager::TYPE_FILE)) {
             return false;
         }
@@ -223,6 +224,7 @@ class CacheFile implements CacheInterface
      */
     public function hasTag($tag)
     {
+        $tag = $this->prepareTag($tag);
         return $this->getAdapter()->has("~/[^\/]*{$tag}[^\/]*$/", FileManager::TYPE_DIR);
     }
 
@@ -232,6 +234,7 @@ class CacheFile implements CacheInterface
     public function removeTag($tag)
     {
         $result = false;
+        $tag = $this->prepareTag($tag);
         foreach ($this->getAdapter()->listContents("~/[^\/]*{$tag}[^\/]*$/", false, FileManager::TYPE_DIR) as $value) {
             $result = $this->getAdapter()->deleteDir($value['path']);
         }

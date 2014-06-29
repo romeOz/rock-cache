@@ -121,7 +121,7 @@ class APC implements CacheInterface
      */
     public function getTag($tag)
     {
-        return $this->unserialize(apc_fetch(self::TAG_PREFIX . $tag));
+        return $this->unserialize(apc_fetch($this->prepareTag($tag)));
     }
 
     /**
@@ -129,7 +129,7 @@ class APC implements CacheInterface
      */
     public function hasTag($tag)
     {
-        return (bool)apc_exists(self::TAG_PREFIX . $tag);
+        return (bool)apc_exists($this->prepareTag($tag));
     }
 
     /**
@@ -137,11 +137,12 @@ class APC implements CacheInterface
      */
     public function removeTag($tag)
     {
-        if (!$value = apc_fetch(self::TAG_PREFIX . $tag)) {
+        $tag = $this->prepareTag($tag);
+        if (!$value = apc_fetch($tag)) {
             return false;
         }
         $value = $this->unserialize($value);
-        $value[] = self::TAG_PREFIX . $tag;
+        $value[] = $tag;
         foreach ($value as $key) {
             apc_delete($key);
         }
@@ -257,16 +258,16 @@ class APC implements CacheInterface
             return;
         }
         foreach ($this->prepareTags($tags) as $tag) {
-            if (($value = apc_fetch(self::TAG_PREFIX . $tag)) !== false) {
+            if (($value = apc_fetch($tag)) !== false) {
                 $value = $this->unserialize($value);
                 if (in_array($key, $value, true)) {
                     continue;
                 }
                 $value[] = $key;
-                $this->provideLock(self::TAG_PREFIX . $tag, $this->serialize($value), 0);
+                $this->provideLock($tag, $this->serialize($value), 0);
                 continue;
             }
-            $this->provideLock(self::TAG_PREFIX . $tag, $this->serialize((array)$key), 0);
+            $this->provideLock($tag, $this->serialize((array)$key), 0);
         }
     }
 }

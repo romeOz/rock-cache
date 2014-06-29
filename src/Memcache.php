@@ -29,11 +29,12 @@ class Memcache extends Memcached
      */
     public function removeTag($tag)
     {
-        if (($value = static::$storage->get(self::TAG_PREFIX . $tag)) === false) {
+        $tag = $this->prepareTag($tag);
+        if (($value = static::$storage->get($tag)) === false) {
             return false;
         }
         $value = $this->unserialize($value);
-        $value[] = self::TAG_PREFIX . $tag;
+        $value[] = $tag;
         foreach ($value as $key) {
             static::$storage->delete($key);
         }
@@ -118,17 +119,17 @@ class Memcache extends Memcached
         }
 
         foreach ($this->prepareTags($tags) as $tag) {
-            if (($value = static::$storage->get(self::TAG_PREFIX . $tag)) !== false) {
+            if (($value = static::$storage->get($tag)) !== false) {
                 $value = $this->unserialize($value);
                 if (in_array($key, $value, true)) {
                     continue;
                 }
                 $value[] = $key;
-                $this->provideLock(self::TAG_PREFIX . $tag, $this->serialize($value), 0);
+                $this->provideLock($tag, $this->serialize($value), 0);
                 continue;
             }
 
-            $this->provideLock(self::TAG_PREFIX . $tag, $this->serialize((array)$key), 0);
+            $this->provideLock($tag, $this->serialize((array)$key), 0);
         }
     }
 }

@@ -16,7 +16,7 @@ class APC extends \rock\cache\APC implements CacheInterface
      */
     public function getTag($tag)
     {
-        return apc_fetch(self::TAG_PREFIX . $tag);
+        return apc_fetch($this->prepareTag($tag));
     }
 
     /**
@@ -27,7 +27,7 @@ class APC extends \rock\cache\APC implements CacheInterface
         if (!$this->hasTag($tag)) {
             return false;
         }
-        return $this->provideLock(self::TAG_PREFIX . $tag, microtime(), 0);
+        return $this->provideLock($this->prepareTag($tag), microtime(), 0);
     }
 
     protected function validTimestamp($key, array $tagsByValue = null)
@@ -63,7 +63,6 @@ class APC extends \rock\cache\APC implements CacheInterface
 
         $timestamp = microtime();
         foreach ($this->prepareTags($tags) as $tag) {
-            $tag = self::TAG_PREFIX . $tag;
             if ($timestampTag = apc_fetch($tag)) {
                 $value['tags'][$tag] = $timestampTag;
                 continue;

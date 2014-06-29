@@ -17,7 +17,7 @@ class Memcache extends \rock\cache\Memcache implements CacheInterface
      */
     public function getTag($tag)
     {
-        return static::$storage->get(self::TAG_PREFIX . $tag);
+        return static::$storage->get($this->prepareTag($tag));
     }
 
     /**
@@ -25,7 +25,7 @@ class Memcache extends \rock\cache\Memcache implements CacheInterface
      */
     public function removeTag($tag)
     {
-        return static::$storage->replace(self::TAG_PREFIX . $tag, microtime(), MEMCACHE_COMPRESSED, 0);
+        return static::$storage->replace($this->prepareTag($tag), microtime(), MEMCACHE_COMPRESSED, 0);
     }
 
     protected function validTimestamp($key, array $tags = null)

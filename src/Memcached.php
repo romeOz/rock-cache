@@ -160,7 +160,7 @@ class Memcached implements CacheInterface
      */
     public function getTag($tag)
     {
-        return $this->unserialize(static::$storage->get(self::TAG_PREFIX . $tag));
+        return $this->unserialize(static::$storage->get($this->prepareTag($tag)));
     }
 
     /**
@@ -168,7 +168,7 @@ class Memcached implements CacheInterface
      */
     public function hasTag($tag)
     {
-        return (bool)static::$storage->get(self::TAG_PREFIX . $tag);
+        return (bool)static::$storage->get($this->prepareTag($tag));
     }
 
     /**
@@ -176,11 +176,12 @@ class Memcached implements CacheInterface
      */
     public function removeTag($tag)
     {
-        if (!$value = static::$storage->get(self::TAG_PREFIX . $tag)) {
+        $tag = $this->prepareTag($tag);
+        if (!$value = static::$storage->get($tag)) {
             return false;
         }
         $value = $this->unserialize($value);
-        $value[] = self::TAG_PREFIX . $tag;
+        $value[] = $tag;
         static::$storage->deleteMulti($value);
 
         return true;
@@ -232,16 +233,16 @@ class Memcached implements CacheInterface
         }
 
         foreach ($this->prepareTags($tags) as $tag) {
-            if (($keys = static::$storage->get(self::TAG_PREFIX . $tag)) !== false) {
+            if (($keys = static::$storage->get($tag)) !== false) {
                 $keys = $this->unserialize($keys);
                 if (in_array($key, $keys, true)) {
                     continue;
                 }
                 $keys[] = $key;
-                $this->provideLock(self::TAG_PREFIX . $tag, $this->serialize($keys), 0);
+                $this->provideLock($tag, $this->serialize($keys), 0);
                 continue;
             }
-            $this->provideLock(self::TAG_PREFIX . $tag, $this->serialize((array)$key), 0);
+            $this->provideLock($tag, $this->serialize((array)$key), 0);
         }
 
     }
@@ -250,7 +251,6 @@ class Memcached implements CacheInterface
     {
         return static::$storage->get(self::LOCK_PREFIX . $key);
     }
-
 
     /**
      * @param string $key

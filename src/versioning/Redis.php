@@ -17,7 +17,7 @@ class Redis extends \rock\cache\Redis implements CacheInterface
      */
     public function getTag($tag)
     {
-        return static::$storage->get(self::TAG_PREFIX . $tag);
+        return static::$storage->get($this->prepareTag($tag));
     }
 
     /**
@@ -29,7 +29,7 @@ class Redis extends \rock\cache\Redis implements CacheInterface
             return false;
         }
 
-        return $this->provideLock(self::TAG_PREFIX . $tag, microtime(), 0);
+        return $this->provideLock($this->prepareTag($tag), microtime(), 0);
     }
 
     protected function validTimestamp($key, array $tagsByValue = null)

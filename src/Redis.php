@@ -145,7 +145,7 @@ class Redis implements CacheInterface
      */
     public function getTag($tag)
     {
-        return static::$storage->sMembers(self::TAG_PREFIX . $tag) ? : false;
+        return static::$storage->sMembers($this->prepareTag($tag)) ? : false;
     }
 
     /**
@@ -153,7 +153,7 @@ class Redis implements CacheInterface
      */
     public function hasTag($tag)
     {
-        return static::$storage->exists(self::TAG_PREFIX . $tag);
+        return static::$storage->exists($this->prepareTag($tag));
     }
 
     /**
@@ -161,10 +161,11 @@ class Redis implements CacheInterface
      */
     public function removeTag($tag)
     {
-        if (!$value = static::$storage->sMembers(self::TAG_PREFIX . $tag)) {
+        $tag = $this->prepareTag($tag);
+        if (!$value = static::$storage->sMembers($tag)) {
             return false;
         }
-        $value[] = self::TAG_PREFIX . $tag;
+        $value[] = $tag;
         static::$storage->delete($value);
         return true;
     }
@@ -268,7 +269,7 @@ class Redis implements CacheInterface
         }
 
         foreach ($this->prepareTags($tags) as $tag) {
-            static::$storage->sAdd(self::TAG_PREFIX . $tag, $key);
+            static::$storage->sAdd($tag, $key);
         }
     }
 

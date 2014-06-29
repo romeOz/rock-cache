@@ -81,22 +81,32 @@ trait CommonTrait
     protected function prepareTags(array $tags = null)
     {
         if (empty($tags)) {
-            return null;
+            return $tags;
         }
         $tags = array_unique($tags);
         sort($tags);
 
-        if ($this->hashTag & self::HASH_MD5) {
-            return array_map(function($value){
-                    return md5($value);
-                }, $tags);
-        } elseif ($this->hashTag & self::HASH_SHA) {
-            return array_map(function($value){
-                    return sha1($value);
-                }, $tags);
+        return array_map(
+            function($value){
+                return $this->prepareTag($value);
+            },
+            $tags
+        );
+    }
+
+    protected function prepareTag($tag)
+    {
+        if (empty($tag)) {
+            return $tag;
         }
 
-        return $tags;
+        if ($this->hashTag & self::HASH_MD5) {
+            return self::TAG_PREFIX . md5($tag);
+        } elseif ($this->hashTag & self::HASH_SHA) {
+            return self::TAG_PREFIX . sha1($tag);
+        }
+
+        return self::TAG_PREFIX . $tag;
     }
 
     /**

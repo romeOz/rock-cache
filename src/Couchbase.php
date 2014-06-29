@@ -153,7 +153,7 @@ class Couchbase implements CacheInterface
      */
     public function hasTag($tag)
     {
-        $tag = self::TAG_PREFIX . $tag;
+        $tag = $this->prepareTag($tag);
         if (static::$storage->add($tag, true)) {
             static::$storage->delete($tag);
             return false;
@@ -166,11 +166,12 @@ class Couchbase implements CacheInterface
      */
     public function removeTag($tag)
     {
-        if (!$value = static::$storage->get(self::TAG_PREFIX . $tag)) {
+        $tag = $this->prepareTag($tag);
+        if (!$value = static::$storage->get($tag)) {
             return false;
         }
         $value = $this->unserialize($value);
-        $value[] = self::TAG_PREFIX . $tag;
+        $value[] = $tag;
         foreach ($value as $key) {
             if (!empty($key)) {
                 static::$storage->delete($key);
@@ -225,7 +226,7 @@ class Couchbase implements CacheInterface
         }
 
         foreach ($this->prepareTags($tags) as $tag) {
-            if ($keys = static::$storage->get(self::TAG_PREFIX . $tag)) {
+            if ($keys = static::$storage->get($tag)) {
                 $keys = $this->unserialize($keys);
                 if (is_object($keys)) {
                     $keys = (array)$keys;
@@ -234,10 +235,10 @@ class Couchbase implements CacheInterface
                     continue;
                 }
                 $keys[] = $key;
-                $this->provideLock(self::TAG_PREFIX . $tag, $this->serialize($keys), 0);
+                $this->provideLock($tag, $this->serialize($keys), 0);
                 continue;
             }
-            $this->provideLock(self::TAG_PREFIX . $tag, $this->serialize((array)$key), 0);
+            $this->provideLock($tag, $this->serialize((array)$key), 0);
         }
     }
 
