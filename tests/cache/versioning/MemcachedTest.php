@@ -23,6 +23,24 @@ class MemcachedTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider providerCache
      */
+    public function testGetStorage(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->getStorage() instanceof \Memcached);
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testGetAll(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key5', 'foo'), 'should be get: true');
+        $this->assertTrue($cache->set('key6', ['bar', 'baz']), 'should be get: true');
+        $this->assertFalse($cache->getAll());
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
     public function testTtlDecrement(CacheInterface $cache)
     {
         $this->assertEquals($cache->increment('key7', 5), 5, 'should be get: 5');

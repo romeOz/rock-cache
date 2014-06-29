@@ -14,6 +14,8 @@ trait CommonTraitTest
         static::flush();
     }
 
+
+
     /** Get */
 
     /**

@@ -3,6 +3,7 @@ namespace rockunit\cache;
 
 use rock\cache\APC;
 use rock\cache\CacheInterface;
+use rock\cache\Exception;
 
 class APCTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,6 +18,15 @@ class APCTest extends \PHPUnit_Framework_TestCase
     {
         $cache = new APC(['enabled' => true, 'serializer' => $serialize]);
         return $cache;
+    }
+
+    /**
+     * @dataProvider providerCache
+     * @expectedException Exception
+     */
+    public function testGetStorage(CacheInterface $cache)
+    {
+        $cache->getStorage();
     }
 
     /**

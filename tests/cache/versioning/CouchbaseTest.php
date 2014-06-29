@@ -25,6 +25,23 @@ class CouchbaseTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider providerCache
      */
+    public function testGetStorage(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->getStorage() instanceof \Couchbase);
+    }
+
+    /**
+     * @dataProvider providerCache
+     * @expectedException Exception
+     */
+    public function testGetAll(CacheInterface $cache)
+    {
+        $cache->getAll();
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
     public function testTtlDecrement(CacheInterface $cache)
     {
         $this->assertEquals($cache->increment('key7', 5), 5, 'should be get: 5');

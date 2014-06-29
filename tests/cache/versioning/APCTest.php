@@ -3,6 +3,7 @@ namespace rockunit\cache\versioning;
 
 
 use rock\cache\CacheInterface;
+use rock\cache\Exception;
 use rock\cache\versioning\APC;
 use rockunit\cache\CommonTraitTest;
 
@@ -18,6 +19,15 @@ class APCTest extends \PHPUnit_Framework_TestCase
     public function init($serialize)
     {
         return new APC(['enabled' => true, 'serializer' => $serialize]);
+    }
+
+    /**
+     * @dataProvider providerCache
+     * @expectedException Exception
+     */
+    public function testGetStorage(CacheInterface $cache)
+    {
+        $cache->getStorage();
     }
 
     /**

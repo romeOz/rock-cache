@@ -2,6 +2,7 @@
 namespace rockunit\cache\versioning;
 
 use rock\cache\CacheInterface;
+use rock\cache\Exception;
 use rock\cache\versioning\Redis;
 use rockunit\cache\CommonTraitTest;
 
@@ -17,6 +18,23 @@ class RedisTest extends \PHPUnit_Framework_TestCase
     public function init($serialize)
     {
         return new Redis(['enabled' => true, 'serializer' => $serialize]);
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testGetStorage(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->getStorage() instanceof \Redis);
+    }
+
+    /**
+     * @dataProvider providerCache
+     * @expectedException Exception
+     */
+    public function testGetAll(CacheInterface $cache)
+    {
+        $cache->getAll();
     }
 
     /**

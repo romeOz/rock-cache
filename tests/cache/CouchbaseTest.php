@@ -23,6 +23,23 @@ class CouchbaseTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     */
+    public function testGetStorage(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->getStorage() instanceof \Couchbase);
+    }
+
+    /**
+     * @dataProvider providerCache
+     * @expectedException Exception
+     */
+    public function testGetAll(CacheInterface $cache)
+    {
+        $cache->getAll();
+    }
+
+    /**
+     * @dataProvider providerCache
      * @expectedException Exception
      */
     public function testGetAllKeys(CacheInterface $cache)

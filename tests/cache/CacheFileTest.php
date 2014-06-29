@@ -6,6 +6,7 @@ use League\Flysystem\Adapter\Local;
 use League\Flysystem\Cache\Adapter;
 use rock\cache\CacheFile;
 use rock\cache\CacheInterface;
+use rock\cache\Exception;
 use rock\cache\filemanager\FileManager;
 
 class CacheFileTest extends \PHPUnit_Framework_TestCase
@@ -64,6 +65,26 @@ class CacheFileTest extends \PHPUnit_Framework_TestCase
            'adapter' => static::getFileManager(),
            'serializer' => $serialize
         ]);
+    }
+
+    /**
+     * @dataProvider providerCache
+     * @expectedException Exception
+     */
+    public function testGetStorage(CacheInterface $cache)
+    {
+        $cache->getStorage();
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testGetAll(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key5', 'foo'), 'should be get: true');
+        $this->assertTrue($cache->set('key6', ['bar', 'baz']), 'should be get: true');
+        $this->assertTrue(is_array($cache->getAll()));
+        $this->assertSame(count($cache->getAll()), 2);
     }
 
     /**
