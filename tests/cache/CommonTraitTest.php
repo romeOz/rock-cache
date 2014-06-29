@@ -48,6 +48,41 @@ trait CommonTraitTest
         $this->assertNull($cache->get('key5'), 'should be get: null');
     }
 
+    /**
+     * @dataProvider providerCache
+     */
+    public function testEnabled(CacheInterface $cache)
+    {
+        $cache->disabled();
+        $this->assertFalse($cache->set('key5'));
+        $this->assertFalse($cache->get('key5'));
+
+        $cache->enabled();
+        $this->assertTrue($cache->set('key5', ['foo']));
+        $this->assertSame($cache->get('key5'), ['foo']);
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testAddPrefix(CacheInterface $cache)
+    {
+        $cache->addPrefix('test');
+        $this->assertTrue($cache->set('key5', ['foo']));
+        $this->assertSame($cache->get('key5'), ['foo']);
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testKeySHA(CacheInterface $cache)
+    {
+        $cache->addPrefix('test');
+        $cache->hashKey = CacheInterface::HASH_SHA;
+        $this->assertTrue($cache->set('key5', ['foo']));
+        $this->assertSame($cache->get('key5'), ['foo']);
+    }
+
 
     /** Set/Add */
 
@@ -112,6 +147,40 @@ trait CommonTraitTest
         $this->assertTrue($cache->touch('key1', 1), 'should be get: true');
         sleep(2);
         $this->assertFalse($cache->get('key1'), 'should be get: false');
+
+        $this->assertTrue($cache->set('key3', ['one', 'two']));
+        $this->assertTrue($cache->set('key4', ['foo', 'bar']));
+        $this->assertTrue($cache->touch('key3', 1), 'should be get: true');
+        $this->assertTrue($cache->touch('key4', 6), 'should be get: true');
+        sleep(2);
+        $this->assertFalse($cache->get('key3'), 'should be get: false');
+        $this->assertSame($cache->get('key4'), ['foo', 'bar']);
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testTouchMultiFalse(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key1', ['one', 'two']));
+        $this->assertTrue($cache->set('key2', ['foo', 'bar']));
+        $this->assertTrue($cache->touchMulti(['key1','key2'], 1));
+        sleep(3);
+        $this->assertFalse($cache->get('key1'));
+        $this->assertFalse($cache->get('key2'));
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testTouchMultiTrue(CacheInterface $cache)
+    {
+        $this->assertTrue($cache->set('key1', ['one', 'two']));
+        $this->assertTrue($cache->set('key2', ['foo', 'bar']));
+        $this->assertTrue($cache->touchMulti(['key1','key2'], 3));
+        sleep(1);
+        $this->assertSame($cache->get('key1'), ['one', 'two']);
+        $this->assertSame($cache->get('key2'), ['foo', 'bar']);
     }
 
     /**
@@ -167,12 +236,15 @@ trait CommonTraitTest
     {
         $this->assertEquals($cache->increment('key7', 5), 5, 'should be get: 5');
         $this->assertEquals($cache->get('key7'), 5, 'should be get: 5');
+
+        $this->assertEquals($cache->increment('key7'), 6, 'should be get: 6');
+        $this->assertEquals($cache->get('key7'), 6, 'should be get: 6');
     }
 
     /**
      * @dataProvider providerCache
      */
-    public function testTtlIncrement(CacheInterface $cache)
+    public function testIncrementWithTtl(CacheInterface $cache)
     {
         $this->assertEquals($cache->increment('key7', 5, 1), 5, 'should be get: 5');
         sleep(3);

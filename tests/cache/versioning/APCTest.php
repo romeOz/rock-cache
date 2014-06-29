@@ -43,10 +43,27 @@ class APCTest extends \PHPUnit_Framework_TestCase
     {
 
     }
+
     /**
      * @dataProvider providerCache
      */
-    public function testTtlIncrement(CacheInterface $cache)
+    public function testTouchMultiTrue(CacheInterface $cache)
+    {
+
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testTouchMultiFalse(CacheInterface $cache)
+    {
+
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testIncrementWithTtl(CacheInterface $cache)
     {
 
     }
