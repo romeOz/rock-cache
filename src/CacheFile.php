@@ -132,8 +132,7 @@ class CacheFile implements CacheInterface
         if (($result = $this->provideGet($key, $file, $data)) === false) {
             return false;
         }
-
-        $data['expire'] = $expire;
+        $data['expire'] = $this->calculateExpire($expire);
 
         return $this->setContent($file['path'], $data);
     }
@@ -150,7 +149,7 @@ class CacheFile implements CacheInterface
 
         if ($this->provideGet($hash, $file, $data) !== false) {
             $data['value'] = (int)$data['value'] + $offset;
-            $data['expire'] = $this->prepareExpire($expire);
+            $data['expire'] = $this->calculateExpire($expire);
             if ($this->setContent($file['path'], $data) === false) {
                 return false;
             }
@@ -173,7 +172,7 @@ class CacheFile implements CacheInterface
         }
         $hash = $this->prepareKey($key);
         if ($this->provideGet($hash, $file, $data) !== false) {
-            $data['expire'] = $this->prepareExpire($expire);
+            $data['expire'] = $this->calculateExpire($expire);
             $data['value'] = (int)$data['value'] - $offset;
 
             if ($this->setContent($file['path'], $data) === false) {
@@ -349,11 +348,10 @@ class CacheFile implements CacheInterface
 
     protected function provideSet($value, $expire)
     {
-
         return $this->getAdapter()->put(
             $this->pathFileCache,
             $this->serialize([
-                                 'expire' => $this->prepareExpire($expire),
+                                 'expire' => $this->calculateExpire($expire),
                                  'value' => $value
                              ])
         );
@@ -374,7 +372,7 @@ class CacheFile implements CacheInterface
         if (($result = $this->getContent($metadata['path'])) === false) {
             return false;
         }
-        if ($this->validExpire(isset($result['expire'])? $result['expire'] : 0) === false) {
+        if ($this->validExpire(isset($result['expire']) ? $result['expire'] : 0) === false) {
             $this->getAdapter()->delete($metadata['path']);
 
             return false;
@@ -418,7 +416,7 @@ class CacheFile implements CacheInterface
      * @param int $expire
      * @return int
      */
-    protected function prepareExpire($expire)
+    protected function calculateExpire($expire)
     {
         if (!empty($expire)) {
             return time() + $expire;
