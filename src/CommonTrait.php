@@ -149,9 +149,14 @@ trait CommonTrait
      */
     public function touchMulti(array $keys, $expire = 0)
     {
+        $result = true;
         foreach ($keys as $key) {
-            $this->touch($key, $expire);
+            if (!$this->touch($key, $expire)) {
+                $result = false;
+            }
         }
+
+        return $result;
     }
 
     /**
