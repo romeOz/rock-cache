@@ -1,8 +1,9 @@
 PHP library caching
 =================
 
-[![Build Status](https://travis-ci.org/romeo7/rock-cache.svg?branch=master)](https://travis-ci.org/romeo7/rock-cache)
 [![Latest Stable Version](https://poser.pugx.org/romeo7/rock-cache/v/stable.svg)](https://packagist.org/packages/romeo7/rock-cache)
+[![Total Downloads](https://poser.pugx.org/romeo7/rock-cache/downloads.svg)](https://packagist.org/packages/romeo7/rock-cache)
+[![Build Status](https://travis-ci.org/romeo7/rock-cache.svg?branch=master)](https://travis-ci.org/romeo7/rock-cache)
 [![License](https://poser.pugx.org/romeo7/rock-cache/license.svg)](https://packagist.org/packages/romeo7/rock-cache)
 
 [Rock cache on Packagist](https://packagist.org/packages/romeo7/rock-cache)
