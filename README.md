@@ -35,7 +35,7 @@ Through Composer, obviously:
 ```json
 {
     "require": {
-        "romeo7/rock-cache": "dev-master"
+        "romeo7/rock-cache": "*"
     }
 }
 
