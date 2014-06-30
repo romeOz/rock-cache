@@ -39,6 +39,9 @@ class BaseJsonTest extends \PHPUnit_Framework_TestCase
         $json = '{"a":1,"b":2}';
         $this->assertSame(['a' => 1, 'b' => 2], Json::decode($json));
 
+        // null
+        $this->assertNull(Json::decode(null));
+
         // exception
         $json = '{"a":1,"b":2';
         $this->setExpectedException('rock\cache\Exception');
@@ -53,6 +56,8 @@ class BaseJsonTest extends \PHPUnit_Framework_TestCase
 
         $json = '{"a":1,"b":2';
         $this->assertFalse(Json::is($json));
+
+        $this->assertFalse(Json::is(null));
     }
 
 }
