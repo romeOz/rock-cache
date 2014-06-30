@@ -32,6 +32,7 @@ class CacheFile implements CacheInterface
     /** @var FileManager */
     public $adapter;
 
+
     /**
      * @return FileManager
      * @throws Exception

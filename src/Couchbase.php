@@ -24,7 +24,7 @@ class Couchbase implements CacheInterface
     /** @var  \Couchbase */
     protected static $storage;
 
-    public function __construct(array $config = [])
+    public function __construct($config = [])
     {
         $this->parentConstruct($config);
         static::$storage = new \Couchbase($this->host, $this->user, $this->password, $this->bucket);

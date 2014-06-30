@@ -30,6 +30,7 @@ class APC extends \rock\cache\APC implements CacheInterface
         return $this->provideLock($this->prepareTag($tag), microtime(), 0);
     }
 
+
     protected function validTimestamp($key, array $tagsByValue = null)
     {
         if (empty($tagsByValue)) {

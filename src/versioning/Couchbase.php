@@ -12,6 +12,7 @@ class Couchbase extends \rock\cache\Couchbase implements CacheInterface
     /** @var  \Couchbase */
     protected static $storage;
 
+
     /**
      * @inheritdoc
      */
@@ -27,6 +28,7 @@ class Couchbase extends \rock\cache\Couchbase implements CacheInterface
     {
         return is_string(static::$storage->replace($this->prepareTag($tag), microtime(), 0));
     }
+
 
     protected function validTimestamp($key, array $tagsByValue = null)
     {

@@ -69,8 +69,6 @@ class FileManager
         return $this->filesystem;
     }
 
-
-
     /**
      * Check whether a path exists
      *
@@ -117,8 +115,6 @@ class FileManager
         }
         return false;
     }
-
-
 
     /**
      * Read and delete a file.
@@ -334,7 +330,6 @@ class FileManager
         return false;
     }
 
-
     /**
      * Get a file's mimetype
      *
@@ -408,7 +403,6 @@ class FileManager
         }
         return false;
     }
-
 
     /**
      * Clear current dir
