@@ -5,7 +5,7 @@ namespace rockunit;
 
 use rock\cache\helpers\Json;
 
-class BaseJsonTest extends \PHPUnit_Framework_TestCase
+class JsonTest extends \PHPUnit_Framework_TestCase
 {
     public function testEncode()
     {

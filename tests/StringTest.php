@@ -5,7 +5,7 @@ namespace rockunit;
 
 use rock\cache\helpers\String;
 
-class BaseStringTest extends \PHPUnit_Framework_TestCase
+class StringTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider providerValue

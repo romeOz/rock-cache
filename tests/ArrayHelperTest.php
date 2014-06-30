@@ -5,9 +5,8 @@ namespace rockunit;
 
 use rock\cache\helpers\ArrayHelper;
 
-class BaseArrayHelperTest extends \PHPUnit_Framework_TestCase
+class ArrayHelperTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @dataProvider valueProvider
      *
