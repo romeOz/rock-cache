@@ -13,7 +13,7 @@ class SerializeTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(Serialize::serialize(['foo', 'bar']), serialize(['foo', 'bar']));
 
         // Json serialozer
-        $this->assertSame(Serialize::serialize(json_encode(['foo', 'bar']), Serialize::SERIALIZE_JSON), json_encode(['foo', 'bar']));
+        $this->assertSame(Serialize::serialize(['foo', 'bar'], Serialize::SERIALIZE_JSON), json_encode(['foo', 'bar']));
     }
 
     public function testIsTrue()
