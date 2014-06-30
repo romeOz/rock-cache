@@ -213,10 +213,24 @@ class FileManager
         return false;
     }
 
-
+    /**
+     * Rename file/dir by Mask
+     * @param       $path
+     * @param       $newpath
+     * @param array $dataReplace
+     *
+     * ```php
+     * renameByMask('test', 'test_{num}', ['num' => 2]);
+     * // result: test_2
+     * ```
+     * @return bool
+     */
     public function renameByMask($path, $newpath, array $dataReplace = [])
     {
-        if (!$metadata = $this->getFilesystem()->getWithMetadata($path, ['timestamp','mimetype'])) {
+        try {
+            $metadata = $this->getFilesystem()->getWithMetadata($path, ['timestamp','mimetype']);
+        } catch (\Exception $e) {
+            $this->errors[] = $e->getMessage();
             return false;
         }
 
@@ -274,7 +288,7 @@ class FileManager
      * getWithMetadata('~/file.tmp$/')
      * ~~~~~~~~~~~~~~~~~~~~~~~~~
      * @param   array   $metadata  metadata keys
-     * @return  array   metadata
+     * @return  array|boolean   metadata
      */
     public function getWithMetadata($path, array $metadata)
     {
@@ -359,7 +373,7 @@ class FileManager
         }
 
         try {
-            return $this->getFilesystem()->getMetadata($path);
+            return $this->getFilesystem()->getMimetype($path);
         } catch (\Exception $e) {
             $this->errors[] = $e->getMessage();
         }
