@@ -53,6 +53,7 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($fileManager->has('0'));
         $this->assertTrue($fileManager->delete('0'));
         $this->assertFalse($fileManager->has('0'));
+        $fileManager->deleteAll();
     }
 
     /**
@@ -63,6 +64,7 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($fileManager->write('foo.tmp', 'foo'));
         $this->assertFalse($fileManager->write('foo.tmp', 'foo'));
         $this->assertTrue($fileManager->delete('foo.tmp'));
+        $fileManager->deleteAll();
     }
 
     /**
@@ -93,6 +95,7 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($fileManager->put('foo.tmp', 'test'));
         $this->assertSame($fileManager->read('foo.tmp'), 'test');
         $this->assertTrue($fileManager->delete('foo.tmp'));
+        $fileManager->deleteAll();
     }
 
     /**
@@ -144,6 +147,7 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($fileManager->read('~/^foo/'), 'foo');
         $this->assertSame($fileManager->read('foo.tmp'), 'foo');
         $this->assertTrue($fileManager->delete('foo.tmp'));
+        $fileManager->deleteAll();
     }
 
     /**
@@ -162,6 +166,7 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
             )
         );
         $this->assertTrue($fileManager->delete('foo.tmp'));
+        $fileManager->deleteAll();
     }
 
     /**
@@ -179,6 +184,7 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
             )
         );
         $this->assertFalse($fileManager->delete('foo.tmp'));
+        $fileManager->deleteAll();
     }
 
     /**
@@ -197,6 +203,7 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
             )
         );
         $this->assertTrue($fileManager->delete('foo.tmp'));
+        $fileManager->deleteAll();
     }
 
     /**
