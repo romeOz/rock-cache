@@ -436,7 +436,7 @@ class FileManager
     public function deleteAll()
     {
         foreach ($this->getFilesystem()->listContents() as $value) {
-            if ($value['type'] === self::TYPE_DIR) {
+            if (!isset($value['type']) || $value['type'] === self::TYPE_DIR) {
                 $this->getFilesystem()->deleteDir($value['path']);
                 continue;
             }
