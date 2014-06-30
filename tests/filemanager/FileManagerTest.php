@@ -72,16 +72,10 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testWriteStream(FileManager $fileManager)
     {
-        $this->assertTrue($fileManager->write('foo.tmp', 'foo'));
-        $this->assertTrue($fileManager->writeStream('bar.tmp', $fileManager->readStream('foo.tmp')));
-        $this->assertTrue($fileManager->has('foo.tmp'));
-        $this->assertTrue($fileManager->has('bar.tmp'));
-        $this->assertTrue($fileManager->writeStream('0', $fileManager->readStream('foo.tmp')));
-        $this->assertTrue($fileManager->has('foo.tmp'));
-        $this->assertTrue($fileManager->has('0'));
-
-        // repeat write fail
-        $this->assertFalse($fileManager->writeStream('0', $fileManager->readStream('foo.tmp')));
+        $this->assertTrue($fileManager->write('test.tmp', 'foo'));
+        $this->assertTrue($fileManager->writeStream('baz.tmp', $fileManager->readStream('test.tmp')));
+        $this->assertTrue($fileManager->has('test.tmp'));
+        $this->assertTrue($fileManager->has('baz.tmp'));
         $fileManager->deleteAll();
     }
 
