@@ -158,16 +158,6 @@ class FileManager
         return false;
     }
 
-    public function writeStream($path, $resource, $config = null)
-    {
-        try {
-            return $this->getFilesystem()->writeStream($path, $resource, $config);
-        } catch (\Exception $e) {
-            $this->errors[] = $e->getMessage();
-        }
-        return false;
-    }
-
     /**
      * Update a file
      *
@@ -182,16 +172,6 @@ class FileManager
             return $this->getFilesystem()->update($path, $contents, $config);
         } catch (\Exception $e) {
             $this->errors[] = String::replace(Exception::FILE_EXISTS, ['path' => $path]);
-        }
-        return false;
-    }
-
-    public function updateStream($path, $resource, $config = null)
-    {
-        try {
-            return $this->getFilesystem()->updateStream($path, $resource, $config);
-        } catch (\Exception $e) {
-            $this->errors[] = $e->getMessage();
         }
         return false;
     }
