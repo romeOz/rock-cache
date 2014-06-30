@@ -100,6 +100,7 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testUpdateStream(FileManager $fileManager)
     {
+        $fileManager->deleteAll();
         $this->assertTrue($fileManager->write('foo.tmp', 'foo'));
         $this->assertTrue($fileManager->write('bar.tmp', ''));
         $this->assertTrue($fileManager->updateStream('bar.tmp', $fileManager->readStream('foo.tmp')));
@@ -117,6 +118,7 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testDeleteSuccess(FileManager $fileManager)
     {
+        $fileManager->deleteAll();
         $this->assertTrue($fileManager->write('foo.tmp', 'foo'));
         $this->assertTrue($fileManager->delete('~/^foo/'));
         $this->assertFalse($fileManager->delete('~/^foo/'));
