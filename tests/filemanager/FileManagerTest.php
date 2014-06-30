@@ -67,24 +67,24 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
         $fileManager->deleteAll();
     }
 
-    /**
-     * @dataProvider providerFileManager
-     */
-    public function testWriteStream(FileManager $fileManager)
-    {
-        $fileManager->deleteAll();
-        $this->assertTrue($fileManager->write('test.tmp', 'foo'));
-        $this->assertTrue($fileManager->writeStream('baz.tmp', $fileManager->readStream('test.tmp')));
-        $this->assertTrue($fileManager->has('test.tmp'));
-        $this->assertTrue($fileManager->has('baz.tmp'));
+//    /**
+//     * @dataProvider providerFileManager
+//     */
+//    public function testWriteStream(FileManager $fileManager)
+//    {
+//        $fileManager->deleteAll();
+//        $this->assertTrue($fileManager->write('test.tmp', 'foo'));
+//        $this->assertTrue($fileManager->writeStream('baz.tmp', $fileManager->readStream('test.tmp')));
+//        $this->assertTrue($fileManager->has('test.tmp'));
+//        $this->assertTrue($fileManager->has('baz.tmp'));
 //        $this->assertTrue($fileManager->writeStream('0', $fileManager->readStream('foo.tmp')));
 //        $this->assertTrue($fileManager->has('foo.tmp'));
 //        $this->assertTrue($fileManager->has('0'));
 //
 //        // repeat write fail
 //        $this->assertFalse($fileManager->writeStream('0', $fileManager->readStream('foo.tmp')));
-        $fileManager->deleteAll();
-    }
+//        $fileManager->deleteAll();
+//    }
 
     /**
      * @dataProvider providerFileManager
@@ -99,23 +99,23 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
         $fileManager->deleteAll();
     }
 
-    /**
-     * @dataProvider providerFileManager
-     */
-    public function testUpdateStream(FileManager $fileManager)
-    {
-        $fileManager->deleteAll();
-        $this->assertTrue($fileManager->write('foo.tmp', 'foo'));
-        $this->assertTrue($fileManager->write('bar.tmp', ''));
-        $this->assertTrue($fileManager->updateStream('bar.tmp', $fileManager->readStream('foo.tmp')));
-        $this->assertTrue($fileManager->has('foo.tmp'));
-        $this->assertTrue($fileManager->has('bar.tmp'));
-        $this->assertSame($fileManager->read('bar.tmp'), 'foo');
-        $this->assertTrue($fileManager->delete('bar.tmp'));
-        $this->assertTrue($fileManager->write('bar.tmp', '', FileManager::VISIBILITY_PRIVATE));
-        $this->assertFalse($fileManager->updateStream('baz.tmp', $fileManager->readStream('foo.tmp')));
-        $fileManager->deleteAll();
-    }
+//    /**
+//     * @dataProvider providerFileManager
+//     */
+//    public function testUpdateStream(FileManager $fileManager)
+//    {
+//        $fileManager->deleteAll();
+//        $this->assertTrue($fileManager->write('foo.tmp', 'foo'));
+//        $this->assertTrue($fileManager->write('bar.tmp', ''));
+//        $this->assertTrue($fileManager->updateStream('bar.tmp', $fileManager->readStream('foo.tmp')));
+//        $this->assertTrue($fileManager->has('foo.tmp'));
+//        $this->assertTrue($fileManager->has('bar.tmp'));
+//        $this->assertSame($fileManager->read('bar.tmp'), 'foo');
+//        $this->assertTrue($fileManager->delete('bar.tmp'));
+//        $this->assertTrue($fileManager->write('bar.tmp', '', FileManager::VISIBILITY_PRIVATE));
+//        $this->assertFalse($fileManager->updateStream('baz.tmp', $fileManager->readStream('foo.tmp')));
+//        $fileManager->deleteAll();
+//    }
 
     /**
      * @dataProvider providerFileManager
