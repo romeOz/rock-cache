@@ -14,8 +14,20 @@ trait CommonTraitTest
         static::flush();
     }
 
+    public static function tearDownAfterClass()
+    {
+        static::flush();
+    }
 
-    /** Get */
+    abstract public function init($serialize);
+
+    public function providerCache()
+    {
+        return array(
+            [$this->init(CacheInterface::SERIALIZE_PHP)],
+            [$this->init(CacheInterface::SERIALIZE_JSON)],
+        );
+    }
 
     /**
      * @dataProvider providerCache
@@ -87,6 +99,7 @@ trait CommonTraitTest
         $this->assertSame($cache->get('key6'), ['foo']);
     }
 
+
     /**
      * @dataProvider providerCache
      */
@@ -99,9 +112,6 @@ trait CommonTraitTest
         $this->assertTrue($cache->set('key5', ['foo']));
         $this->assertSame($cache->get('key5'), ['foo']);
     }
-
-
-    /** Set/Add */
 
     /**
      * @dataProvider providerCache
@@ -315,6 +325,7 @@ trait CommonTraitTest
         $this->assertFalse($cache->decrement('key7', 5), 'should be get: false');
     }
 
+
     /**
      * @dataProvider providerCache
      */
@@ -326,7 +337,6 @@ trait CommonTraitTest
         $this->assertEquals($cache->decrement('key7', 2), 3, 'should be get: 3');
         $this->assertEquals($cache->get('key7'), 3, 'should be get: 3');
     }
-
 
     /**
      * @dataProvider providerCache
@@ -440,6 +450,7 @@ trait CommonTraitTest
         $this->assertTrue($cache->hasTag('foo'), 'should be get: true');
     }
 
+
     /**
      * @dataProvider providerCache
      */
@@ -449,7 +460,6 @@ trait CommonTraitTest
 
         $this->assertFalse($cache->hasTag('baz'), 'should be get: false');
     }
-
 
     /**
      * @dataProvider providerCache
@@ -520,20 +530,5 @@ trait CommonTraitTest
         /** @var $this \PHPUnit_Framework_TestCase */
 
         $this->assertNotEmpty($cache->status());
-    }
-
-    abstract public function init($serialize);
-
-    public function providerCache()
-    {
-        return array(
-            [$this->init(CacheInterface::SERIALIZE_PHP)],
-            [$this->init(CacheInterface::SERIALIZE_JSON)],
-        );
-    }
-
-    public static function tearDownAfterClass()
-    {
-        static::flush();
     }
 }

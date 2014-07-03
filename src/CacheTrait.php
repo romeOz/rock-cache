@@ -13,6 +13,8 @@ trait CacheTrait
      */
     public function removeMulti(array $keys)
     {
+        /** @var $this CacheInterface */
+
         foreach ($keys as $key) {
             $this->remove($key);
         }
