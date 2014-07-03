@@ -528,7 +528,8 @@ trait CommonTraitTest
     public function testGetAll(CacheInterface $cache)
     {
         /** @var $this \PHPUnit_Framework_TestCase */
-
+        $this->assertTrue($cache->set('key5', 'foo'), 'should be get: true');
+        $this->assertTrue($cache->set('key6', ['bar', 'baz']), 'should be get: true');
         $this->assertNotEmpty($cache->getAll());
     }
 

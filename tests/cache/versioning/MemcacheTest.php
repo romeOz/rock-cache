@@ -91,6 +91,6 @@ class MemcacheTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAllKeys(CacheInterface $cache)
     {
-        $this->parentTestGetAllKeys($cache);
+        $cache->getAllKeys();
     }
 }

@@ -7,9 +7,7 @@ use rock\cache\Couchbase;
 
 class CouchbaseTest extends \PHPUnit_Framework_TestCase
 {
-    use  CommonTraitTest {
-        CommonTraitTest::testGetAllKeys as parentTestGetAllKeys;
-    }
+    use  CommonTraitTest;
 
     public static function flush()
     {
@@ -44,6 +42,6 @@ class CouchbaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAllKeys(CacheInterface $cache)
     {
-        $this->parentTestGetAllKeys($cache);
+        $cache->getAllKeys();
     }
 }

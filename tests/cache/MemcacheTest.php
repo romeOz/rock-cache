@@ -7,9 +7,7 @@ use rock\cache\Memcache;
 
 class MemcacheTest extends \PHPUnit_Framework_TestCase
 {
-    use  CommonTraitTest {
-        CommonTraitTest::testGetAllKeys as parentTestGetAllKeys;
-    }
+    use  CommonTraitTest;
 
     public static function flush()
     {
@@ -44,6 +42,6 @@ class MemcacheTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAllKeys(CacheInterface $cache)
     {
-        $this->parentTestGetAllKeys($cache);
+        $cache->getAllKeys();
     }
 }
