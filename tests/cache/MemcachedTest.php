@@ -36,4 +36,3 @@ class MemcachedTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($cache->getAll());
     }
 }
- 

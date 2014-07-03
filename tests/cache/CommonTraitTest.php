@@ -15,7 +15,6 @@ trait CommonTraitTest
     }
 
 
-
     /** Get */
 
     /**
@@ -23,6 +22,8 @@ trait CommonTraitTest
      */
     public function testGet(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
         $this->assertEquals(
@@ -38,6 +39,8 @@ trait CommonTraitTest
      */
     public function testGetNotKey(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertFalse($cache->get('key3'), 'should be get: false');
     }
 
@@ -46,6 +49,8 @@ trait CommonTraitTest
      */
     public function testGetNull(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key5', null), 'should be get: true');
         $this->assertNull($cache->get('key5'), 'should be get: null');
     }
@@ -55,6 +60,8 @@ trait CommonTraitTest
      */
     public function testEnabled(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $cache->disabled();
         $this->assertFalse($cache->set('key5'));
         $this->assertFalse($cache->get('key5'));
@@ -69,6 +76,8 @@ trait CommonTraitTest
      */
     public function testAddPrefix(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $cache->addPrefix('test');
         $this->assertTrue($cache->set('key5', ['foo']));
         $this->assertSame($cache->get('key5'), ['foo']);
@@ -83,6 +92,8 @@ trait CommonTraitTest
      */
     public function testKeySHA(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $cache->addPrefix('test');
         $cache->hashKey = CacheInterface::HASH_SHA;
         $this->assertTrue($cache->set('key5', ['foo']));
@@ -97,6 +108,8 @@ trait CommonTraitTest
      */
     public function testSet(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key3'), 'should be get: true');
     }
 
@@ -105,6 +118,8 @@ trait CommonTraitTest
      */
     public function testSetFalse(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertFalse($cache->set(null), 'should be get: false');
     }
 
@@ -113,6 +128,8 @@ trait CommonTraitTest
      */
     public function testSetMulti(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $cache->setMulti(['foo' => 'text foo', 'bar' => 'text bar']);
         $this->assertEquals($cache->getMulti(['foo', 'baz', 'bar']), ['foo' => 'text foo', 'baz' => false, 'bar' => 'text bar']);
     }
@@ -122,6 +139,8 @@ trait CommonTraitTest
      */
     public function testAdd(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->add('key3'), 'should be get: true');
     }
 
@@ -130,6 +149,8 @@ trait CommonTraitTest
      */
     public function testAddFalse(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertFalse($cache->add('key1'), 'should be get: false');
 
@@ -142,6 +163,8 @@ trait CommonTraitTest
      */
     public function testTtl(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key6', 'foo', 1), 'should be get: true');
         sleep(2);
         $this->assertFalse($cache->get('key6'), 'should be get: false');
@@ -152,6 +175,8 @@ trait CommonTraitTest
      */
     public function testTouch(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->touch('key1', 1), 'should be get: true');
         sleep(2);
@@ -171,6 +196,8 @@ trait CommonTraitTest
      */
     public function testTouchMultiFalse(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key1', ['one', 'two']));
         $this->assertTrue($cache->set('key2', ['foo', 'bar']));
         $this->assertTrue($cache->touchMulti(['key1','key2'], 1));
@@ -186,6 +213,8 @@ trait CommonTraitTest
      */
     public function testTouchMultiTrue(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key1', ['one', 'two']));
         $this->assertTrue($cache->set('key2', ['foo', 'bar']));
         $this->assertTrue($cache->touchMulti(['key1','key2'], 3));
@@ -199,6 +228,8 @@ trait CommonTraitTest
      */
     public function testTouchFalse(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertFalse($cache->touch('key6', 1), 'should be get: false');
     }
 
@@ -207,6 +238,8 @@ trait CommonTraitTest
      */
     public function testHasTrue(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
         $this->assertTrue($cache->has('key2'), 'should be get: true');
     }
@@ -216,6 +249,8 @@ trait CommonTraitTest
      */
     public function testHasFalse(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertFalse($cache->has('key9'), 'should be get: false');
     }
 
@@ -224,6 +259,8 @@ trait CommonTraitTest
      */
     public function testHasByTouchFalse(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->touch('key1', 1), 'should be get: true');
         sleep(2);
@@ -235,6 +272,8 @@ trait CommonTraitTest
      */
     public function testHasByRemoveFalse(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->remove('key1'), 'should be get: true');
         $this->assertFalse($cache->has('key1'), 'should be get: false');
@@ -245,6 +284,8 @@ trait CommonTraitTest
      */
     public function testIncrement(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertEquals($cache->increment('key7', 5), 5, 'should be get: 5');
         $this->assertEquals($cache->get('key7'), 5, 'should be get: 5');
 
@@ -257,6 +298,8 @@ trait CommonTraitTest
      */
     public function testIncrementWithTtl(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertEquals($cache->increment('key7', 5, 1), 5, 'should be get: 5');
         sleep(3);
         $this->assertFalse($cache->get('key7'), 'should be get: false');
@@ -267,6 +310,8 @@ trait CommonTraitTest
      */
     public function testDecrementFalse(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertFalse($cache->decrement('key7', 5), 'should be get: false');
     }
 
@@ -275,11 +320,12 @@ trait CommonTraitTest
      */
     public function testDecrement(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertEquals($cache->increment('key7', 5), 5, 'should be get: 5');
         $this->assertEquals($cache->decrement('key7', 2), 3, 'should be get: 3');
         $this->assertEquals($cache->get('key7'), 3, 'should be get: 3');
     }
-
 
 
     /**
@@ -287,6 +333,8 @@ trait CommonTraitTest
      */
     public function testRemove(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->remove('key1'), 'should be get: true');
         $this->assertFalse($cache->get('key1'), 'should be get: false');
@@ -297,6 +345,8 @@ trait CommonTraitTest
      */
     public function testRemoveFalse(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertFalse($cache->remove('key3'), 'should be get: false');
     }
 
@@ -305,6 +355,8 @@ trait CommonTraitTest
      */
     public function testRemoves(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
         $cache->removeMulti(['key2']);
@@ -317,6 +369,8 @@ trait CommonTraitTest
      */
     public function testGetTag(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
         $expected = $cache->getTag('foo');
@@ -331,6 +385,8 @@ trait CommonTraitTest
      */
     public function testGetTags(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
         $this->assertEquals(
@@ -345,6 +401,8 @@ trait CommonTraitTest
      */
     public function testGetHashMd5Tags(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $cache->hashTag = CacheInterface::HASH_MD5;
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
@@ -359,6 +417,8 @@ trait CommonTraitTest
      */
     public function testGetHashSHATags(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $cache->hashTag = CacheInterface::HASH_SHA;
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
@@ -373,6 +433,8 @@ trait CommonTraitTest
      */
     public function testHasTag(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
         $this->assertTrue($cache->hasTag('foo'), 'should be get: true');
@@ -383,6 +445,8 @@ trait CommonTraitTest
      */
     public function testHasTagFalse(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertFalse($cache->hasTag('baz'), 'should be get: false');
     }
 
@@ -392,6 +456,8 @@ trait CommonTraitTest
      */
     public function testRemoveTag(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
         $this->assertTrue($cache->removeTag('bar'), 'should be get: true');
@@ -404,6 +470,8 @@ trait CommonTraitTest
      */
     public function testRemoveTagFalse(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertFalse($cache->removeTag('baz'), 'should be get: false');
     }
 
@@ -412,6 +480,8 @@ trait CommonTraitTest
      */
     public function testRemoveMultiTags(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
         $cache->removeMultiTags(['foo']);
@@ -424,6 +494,8 @@ trait CommonTraitTest
      */
     public function testGetAllKeys(CacheInterface $cache)
     {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
         $expected = $cache->getAllKeys();
@@ -440,6 +512,16 @@ trait CommonTraitTest
         }
     }
 
+    /**
+     * @dataProvider providerCache
+     */
+    public function testStatus(CacheInterface $cache)
+    {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
+        $this->assertNotEmpty($cache->status());
+    }
+
     abstract public function init($serialize);
 
     public function providerCache()
@@ -454,4 +536,4 @@ trait CommonTraitTest
     {
         static::flush();
     }
-} 
+}

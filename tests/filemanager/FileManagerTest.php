@@ -493,4 +493,3 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
         @unlink("{$runtime}/filesystem.tmp");
     }
 }
- 

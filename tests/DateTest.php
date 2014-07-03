@@ -13,4 +13,3 @@ class DateTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('float', Date::microtime(microtime()));
     }
 }
- 
