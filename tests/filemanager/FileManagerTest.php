@@ -249,15 +249,21 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($fileManager->write('foo.tmp', 'foo'));
         $this->assertTrue($fileManager->write('test/bar.tmp', 'bar'));
 
-        $this->assertEquals($fileManager->listPaths(), ['foo.tmp','test']);
-        $this->assertEquals($fileManager->listPaths('', true), ['foo.tmp','test', 'test/bar.tmp']);
-        $this->assertEquals($fileManager->listPaths('', true, FileManager::TYPE_DIR), ['test']);
-        $this->assertEquals($fileManager->listPaths('', true, FileManager::TYPE_FILE), ['foo.tmp', 'test/bar.tmp']);
+        $this->assertSame($this->sort($fileManager->listPaths()), $this->sort(['foo.tmp','test']));
+        $this->assertSame($this->sort($fileManager->listPaths('', true)), $this->sort(['foo.tmp','test', 'test/bar.tmp']));
+        $this->assertSame($fileManager->listPaths('', true, FileManager::TYPE_DIR), ['test']);
+        $this->assertSame($this->sort($fileManager->listPaths('', true, FileManager::TYPE_FILE)), $this->sort(['foo.tmp', 'test/bar.tmp']));
         $this->assertSame(count($fileManager->listPaths('test')), 1);
         $this->assertSame(count($fileManager->listPaths('test/foo')), 0);
         $this->assertSame(count($fileManager->listPaths('~/bar\.tmp$/', true, FileManager::TYPE_FILE)), 1);
         $this->assertSame(count($fileManager->listPaths('~/bar\.tmp$/')), 0);
         $fileManager->deleteAll();
+    }
+
+    protected function sort($value)
+    {
+        sort($value);
+        return $value;
     }
 
     /**
