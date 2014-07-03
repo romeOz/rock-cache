@@ -32,7 +32,11 @@ Features
 Installation
 -------------------
 
-Through Composer, obviously:
+From the Command Line:
+
+```composer require romeo7/rock-cache:*```
+
+In your composer.json:
 
 ```json
 {
