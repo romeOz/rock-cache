@@ -35,8 +35,8 @@ trait CacheTrait
         }
 
         $key = $this->prepareKey($key);
-        if (($result = $this->getLock($key)) === false) {
-            if (($result = static::$storage->get($key)) === false) {
+        if (($result = static::$storage->get($key)) === false) {
+            if (($result = $this->getLock($key)) === false) {
                 return false;
             }
         }
