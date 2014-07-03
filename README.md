@@ -141,7 +141,7 @@ You can use each storage separately, requirements are individually for storages.
  * **For Redis:**
  [Redis](http://redis.io) server should be installed ```apt-get install redis-server```. Also, should be installed [PHP extension](http://pecl.php.net/package/redis) ```apt-get install php5-redis```
  * **For Memcached/Memcache:**
- [Memcache](http://pecl.php.net/package/memcache) ```apt-get install php5-memcache``` or [Memcached](http://pecl.php.net/package/memcached) ```apt-get install php5-memcached```.
+ Memcached demon should be installed ```apt-get install memcached```. Also, should be installed php extensions [Memcache](http://pecl.php.net/package/memcache) ```apt-get install php5-memcache``` or [Memcached](http://pecl.php.net/package/memcached) ```apt-get install php5-memcached```.
  * **For APCu:**
  [APCu](http://pecl.php.net/package/APCu) should be installed ```apt-get install php5-apcu```.
  * **For Couchbase:**
