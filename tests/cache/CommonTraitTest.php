@@ -525,6 +525,16 @@ trait CommonTraitTest
     /**
      * @dataProvider providerCache
      */
+    public function testGetAll(CacheInterface $cache)
+    {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
+        $this->assertNotEmpty($cache->getAll());
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
     public function testStatus(CacheInterface $cache)
     {
         /** @var $this \PHPUnit_Framework_TestCase */
