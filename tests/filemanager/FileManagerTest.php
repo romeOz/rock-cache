@@ -237,14 +237,13 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($fileManager->write('test/bar.tmp', 'bar'));
 
         $this->assertSame($fileManager->listPaths(), ['foo.tmp','test']);
-        $this->assertSame(count($fileManager->listContents()), 2);
-        $this->assertSame(count($fileManager->listContents('test')), 1);
-        $this->assertSame(count($fileManager->listContents('test/foo')), 0);
-
-        $this->assertSame(count($fileManager->listContents('', true)), 3);
-        $this->assertSame(count($fileManager->listContents('', true, FileManager::TYPE_DIR)), 1);
-        $this->assertSame(count($fileManager->listContents('~/bar\.tmp$/', true, FileManager::TYPE_FILE)), 1);
-        $this->assertSame(count($fileManager->listContents('~/bar\.tmp$/')), 0);
+        $this->assertSame($fileManager->listPaths('', true), ['foo.tmp','test', 'test/bar.tmp']);
+        $this->assertSame($fileManager->listPaths('', true, FileManager::TYPE_DIR), ['test']);
+        $this->assertSame($fileManager->listPaths('', true, FileManager::TYPE_FILE), ['foo.tmp', 'test/bar.tmp']);
+        $this->assertSame(count($fileManager->listPaths('test')), 1);
+        $this->assertSame(count($fileManager->listPaths('test/foo')), 0);
+        $this->assertSame(count($fileManager->listPaths('~/bar\.tmp$/', true, FileManager::TYPE_FILE)), 1);
+        $this->assertSame(count($fileManager->listPaths('~/bar\.tmp$/')), 0);
         $fileManager->deleteAll();
     }
 
@@ -340,9 +339,9 @@ class FileManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($fileManager->write('foo.tmp', 'foo'));
         $this->assertTrue($fileManager->write('test/bar.tmp', 'bar'));
         $this->assertSame($fileManager->getSize('foo.tmp'), 3);
-        $this->assertFalse($fileManager->getTimestamp('test/foo'));
+        $this->assertFalse($fileManager->getSize('test/foo'));
         $this->assertSame($fileManager->getSize('~/bar\.tmp$/'), 3);
-        $this->assertFalse($fileManager->getTimestamp('~/baz\.tmp$/'));
+        $this->assertFalse($fileManager->getSize('~/baz\.tmp$/'));
         $fileManager->deleteAll();
     }
 
