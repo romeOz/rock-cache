@@ -11,7 +11,19 @@ class Memcache extends Memcached
     {
         parent::__construct($config);
         static::$storage = new \Memcache();
-        static::$storage->connect($this->host, $this->port);
+        foreach ($this->servers as $server) {
+            if (!isset($server[1])) {
+                $server[1] = 11211;
+            }
+            if (!isset($server[2])) {
+                $server[2] = true;
+            }
+            if (!isset($server[3])) {
+                $server[3] = 1;
+            }
+            list($host, $port, $persistent, $weight) = $server;
+            static::$storage->addserver($host, $port, $persistent, $weight);
+        }
     }
 
     /**

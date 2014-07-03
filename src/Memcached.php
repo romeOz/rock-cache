@@ -25,14 +25,13 @@ class Memcached implements CacheInterface
 
     /** @var  \Memcached */
     protected static $storage;
-    public $host = 'localhost';
-    public $port = 11211;
+    public $servers = [['localhost', 11211]];
 
     public function __construct(array $config = [])
     {
         $this->parentConstruct($config);
         static::$storage = new \Memcached();
-        static::$storage->addServer($this->host, $this->port);
+        static::$storage->addServers($this->servers);
         static::$storage->setOption(\Memcached::OPT_COMPRESSION, true);
         if ($this->serializer !== self::SERIALIZE_JSON) {
             static::$storage->setOption(\Memcached::OPT_SERIALIZER, \Memcached::SERIALIZER_PHP);
