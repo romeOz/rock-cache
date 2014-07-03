@@ -65,6 +65,8 @@ trait CommonTrait
      */
     public function prepareKey($key)
     {
+        /** @var $this CacheTrait|CacheInterface */
+
         if ($this->hashKey & self::HASH_MD5) {
             return $this->prefix . md5($key);
         } elseif ($this->hashKey & self::HASH_SHA) {
@@ -136,6 +138,8 @@ trait CommonTrait
      */
     public function setMulti($values, $expire = 0, array $tags = null)
     {
+        /** @var $this CacheTrait|CacheInterface */
+
         foreach ($values as $key => $value) {
             $this->set($key, $value, $expire, $tags);
         }
@@ -146,6 +150,8 @@ trait CommonTrait
      */
     public function getMulti(array $keys)
     {
+        /** @var $this CacheTrait|CacheInterface */
+
         $result = [];
         foreach ($keys as $key) {
             $result[$key] = $this->get($key);
@@ -159,6 +165,8 @@ trait CommonTrait
      */
     public function touchMulti(array $keys, $expire = 0)
     {
+        /** @var $this CacheTrait|CacheInterface */
+
         $result = true;
         foreach ($keys as $key) {
             if (!$this->touch($key, $expire)) {
@@ -174,6 +182,8 @@ trait CommonTrait
      */
     public function getMultiTags(array $tags)
     {
+        /** @var $this CacheTrait|CacheInterface */
+
         $result = [];
         foreach ($tags as $tag) {
             if ($value = $this->getTag($tag)) {
@@ -189,8 +199,10 @@ trait CommonTrait
      */
     public function removeMultiTags(array $tags)
     {
+        /** @var $this CacheTrait|CacheInterface */
+
         foreach ($tags as $tag) {
             $this->removeTag($tag);
         }
     }
-} 
+}

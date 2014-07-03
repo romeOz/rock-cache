@@ -28,6 +28,12 @@ interface CacheInterface extends SerializeInterface
     public function prepareKey($key);
 
     /**
+     * Add prefix to key
+     * @param string $prefix
+     */
+    public function addPrefix($prefix);
+
+    /**
      * Get cache
      *
      * @param string $key - key of cache

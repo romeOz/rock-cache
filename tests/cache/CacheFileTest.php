@@ -22,15 +22,10 @@ class CacheFileTest extends \PHPUnit_Framework_TestCase
         static::clearRuntime();
     }
 
-    public static function flush()
+    public static function tearDownAfterClass()
     {
-        (new CacheFile(
-            [
-                'enabled' => true,
-                'adapter' => static::getFileManager(),
-            ]
-        ))->flush();
-        static::getFileManager()->flushCache();
+        parent::tearDownAfterClass();
+        static::clearRuntime();
     }
 
     /**
@@ -61,10 +56,30 @@ class CacheFileTest extends \PHPUnit_Framework_TestCase
     public function init($serialize)
     {
         return new CacheFile([
-           'enabled' => true,
-           'adapter' => static::getFileManager(),
-           'serializer' => $serialize
-        ]);
+                                 'enabled' => true,
+                                 'adapter' => static::getFileManager(),
+                                 'serializer' => $serialize
+                             ]);
+    }
+
+    protected static function clearRuntime()
+    {
+        $runtime = RUNTIME;
+        @rmdir("{$runtime}/cache");
+        @rmdir("{$runtime}/filesystem");
+        @unlink("{$runtime}/cache.tmp");
+        @unlink("{$runtime}/filesystem.tmp");
+    }
+
+    public static function flush()
+    {
+        (new CacheFile(
+            [
+                'enabled' => true,
+                'adapter' => static::getFileManager(),
+            ]
+        ))->flush();
+        static::getFileManager()->flushCache();
     }
 
     /**
@@ -98,6 +113,7 @@ class CacheFileTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($cache->get('key7'), 'should be get: false');
     }
 
+
     /**
      * @dataProvider providerCache
      */
@@ -108,7 +124,6 @@ class CacheFileTest extends \PHPUnit_Framework_TestCase
         sleep(2);
         $this->assertFalse($cache->has('key7'), 'should be get: false');
     }
-
 
     /**
      * @dataProvider providerCache
@@ -127,18 +142,12 @@ class CacheFileTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual, 'should be get: ' . json_encode($actual));
     }
 
-    public static function tearDownAfterClass()
+    /**
+     * @dataProvider providerCache
+     * @expectedException Exception
+     */
+    public function testStatus(CacheInterface $cache)
     {
-        parent::tearDownAfterClass();
-        static::clearRuntime();
-    }
-
-    protected static function clearRuntime()
-    {
-        $runtime = RUNTIME;
-        @rmdir("{$runtime}/cache");
-        @rmdir("{$runtime}/filesystem");
-        @unlink("{$runtime}/cache.tmp");
-        @unlink("{$runtime}/filesystem.tmp");
+        $cache->status();
     }
 }
