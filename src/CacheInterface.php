@@ -211,9 +211,4 @@ interface CacheInterface extends SerializeInterface
      * Enabled caching
      */
     public function enabled();
-
-    /**
-     * Disabled caching
-     */
-    public function disabled();
 }

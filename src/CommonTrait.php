@@ -35,17 +35,9 @@ trait CommonTrait
     /**
      * Enabled caching
      */
-    public function enabled()
+    public function enabled($enabled = true)
     {
-        $this->enabled = true;
-    }
-
-    /**
-     * Disabled caching
-     */
-    public function disabled()
-    {
-        $this->enabled = false;
+        $this->enabled = $enabled;
     }
 
     /**

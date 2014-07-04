@@ -74,7 +74,7 @@ trait CommonTraitTest
     {
         /** @var $this \PHPUnit_Framework_TestCase */
 
-        $cache->disabled();
+        $cache->enabled(false);
         $this->assertFalse($cache->set('key5'));
         $this->assertFalse($cache->get('key5'));
 
@@ -164,7 +164,7 @@ trait CommonTraitTest
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertFalse($cache->add('key1'), 'should be get: false');
 
-        $cache->disabled();
+        $cache->enabled(false);
         $this->assertFalse($cache->add('key1'));
     }
 
