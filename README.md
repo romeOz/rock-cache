@@ -136,7 +136,7 @@ Requirements
 You can use each storage separately, requirements are individually for storages.
 
  * **PHP 5.4+**
- * **For Local sorage:**
+ * **For Local storage:**
  Used library [flysystem](https://github.com/thephpleague/flysystem) which is an filesystem abstraction which allows you to easily swap out a local filesystem for a remote one. Note: contains composser.
  * **For Redis:**
  [Redis](http://redis.io) server should be installed ```apt-get install redis-server```. Also, should be installed [PHP extension](http://pecl.php.net/package/redis) ```apt-get install php5-redis```
