@@ -10,13 +10,13 @@ php_post_max_size: 25M
 
 #mysql_root_user: root
 #mysql_root_pass: root
-#mysql_user: yii
-#mysql_pass: yii
+#mysql_user: rock
+#mysql_pass: rock
 #mysql_db: sakila
 #mysql_bind_address: 0.0.0.0  # Allows all connections, for Production it should be 127.0.0.1
 #mysql_key_buffer: 64M
 
 vhosts:
   [
-    { name: 'rock.local', rootFolder: '/var/www'}
+    { name: 'rock.cache', rootFolder: '/var/www'}
   ]

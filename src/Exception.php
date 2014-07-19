@@ -23,6 +23,4 @@ class Exception extends \Exception
         $msg = String::replace($msg, $dataReplace);
         return parent::__construct($msg, $code, $handler);
     }
-
-
 }

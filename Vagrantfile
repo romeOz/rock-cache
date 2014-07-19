@@ -72,9 +72,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # https://github.com/cogitatio/vagrant-hostsupdater
     if Vagrant.has_plugin?("vagrant-hostsupdater")
         config.hostsupdater.remove_on_suspend = true
-        config.vm.hostname = "rock.local"
-        config.hostsupdater.aliases = ["www.rock.local"]
-    #    config.hostsupdater.aliases = ["admin.yii2.local","phpmyadmin.yii2.local","adminer.yii2.local"]
+        config.vm.hostname = "rock.cache"
+        config.hostsupdater.aliases = ["www.rock.cache"]
+    #    config.hostsupdater.aliases = ["admin.rock.cache","phpmyadmin.rock.cache","adminer.rock.cache"]
     end
 
     if Vagrant.has_plugin?("vagrant-cachier")

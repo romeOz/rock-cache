@@ -122,7 +122,7 @@ Use a specially prepared environment (Vagrant + Ansible) with preinstalled and c
 2. ```composer create-project --prefer-dist --stability=dev romeo7/rock-cache```
 3. [Install Vagrant](https://www.vagrantup.com/downloads), and additional Vagrant plugins ```vagrant plugin install vagrant-hostsupdater vagrant-vbguest vagrant-cachier```
 4. ```vagrant up```
-5. Open demo [http://rock.local/](http://rock.local/) or [http://192.168.33.33/](http://192.168.33.33/)
+5. Open demo [http://rock.cache/](http://rock.cache/) or [http://192.168.33.33/](http://192.168.33.33/)
 
 > Work/editing the project can be done via ssh:
 ```bash
