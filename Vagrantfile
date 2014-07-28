@@ -86,7 +86,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # Install Ansible on the VM to run main provisioning from the VM itself
     #
     $script = <<SCRIPT
-        sudo apt-add-repository ppa:rquillo/ansible -y
+        sudo apt-add-repository ppa:ansible/ansible -y
         sudo apt-get update -y
         sudo apt-get install ansible -y
 SCRIPT

@@ -8,9 +8,7 @@
 #  tags:
 #    - demo
 
-- name: Create demo
-  template: "{{ item }} owner=vagrant mode=0644"
-  with_items:
-   - src=index.php dest=/var/www/index.php
+- name: Create index.php
+  copy: src=index.php dest=/var/www/ owner=vagrant mode=0644
   tags:
     - demo
