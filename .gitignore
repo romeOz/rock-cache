@@ -3,6 +3,7 @@
 ############
 
 vendor
+assets
 composer.lock
 ./index.php
 *~
