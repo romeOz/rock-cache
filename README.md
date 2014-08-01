@@ -84,7 +84,7 @@ use rock\cache\CacheFile;
 use rock\cache\CacheInterface;
 
 $adapterConfig = [
-    'adapter' => new Local(__DIR__.'/path/to/root'),
+    'adapter' => new Local(__DIR__.'/path/to/cache'),
 ];
 $adapter = new FileManager($adapterConfig);
 
@@ -107,7 +107,7 @@ Use a specially prepared environment (Vagrant + Ansible) with preinstalled and c
 
 ###Out of the box:
 
- * Ubuntu 12.04 32 bit
+ * Ubuntu 14.04 32 bit
  * Nginx 1.6
  * PHP-FPM 5.5
  * Composer
@@ -146,6 +146,8 @@ You can use each storage separately, requirements are individually for storages.
  [APCu](http://pecl.php.net/package/APCu) should be installed ```apt-get install php5-apcu```.
  * **For Couchbase:**
  [Step-by-step installation](http://www.couchbase.com/communities/php/getting-started).
+
+>If you have difficulty in setting up, then see [playbooks](https://github.com/romeo7/rock-cache/tree/master/provisioning/roles).
 
 Storages comparison
 -------------------

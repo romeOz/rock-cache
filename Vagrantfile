@@ -10,7 +10,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # please see the online documentation at vagrantup.com.
 
     # Every Vagrant virtual environment requires a box to build off of.
-    config.vm.box = "Ubuntu12.04"
+    config.vm.box = "Ubuntu14.04"
 
     # The url from where the 'config.vm.box' box will be fetched if it
     # doesn't already exist on the user's system.
@@ -18,7 +18,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     # Uncomment this line and remove config.vm.box_url above
     # if you need to use 32 bit of Ubuntu
-    config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-i386-vagrant-disk1.box"
+    config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-i386-vagrant-disk1.box"
 
     # Disable automatic box update checking. If you disable this, then
     # boxes will only be checked for updates when the user runs
