@@ -13,14 +13,14 @@ interface CacheInterface extends SerializeInterface
     const TAG_PREFIX   = 'tag_';
 
     /**
-     * Get current storage
+     * Gets current cache-storage
      * @throws Exception
      * @return \Memcached|\Memcache|\Redis|\Couchbase
      */
     public function getStorage();
 
     /**
-     * Get prepare key of cache
+     * Gets prepare key of cache
      *
      * @param string $key - key of cache
      * @return bool|string
@@ -34,7 +34,7 @@ interface CacheInterface extends SerializeInterface
     public function addPrefix($prefix);
 
     /**
-     * Get cache
+     * Gets cache by key
      *
      * @param string $key - key of cache
      * @return mixed|bool
@@ -42,7 +42,7 @@ interface CacheInterface extends SerializeInterface
     public function get($key);
 
     /**
-     * Get multiple cache
+     * Gets multiple cache by keys
      *
      * @param array $keys - keys of cache
      * @return array
@@ -87,14 +87,14 @@ interface CacheInterface extends SerializeInterface
     public function add($key, $value = null, $expire = 0, array $tags = null);
 
     /**
-     * Has cache
+     * Checks existence cache by key
      *
      * @param string $key - key of cache
      * @return bool
      */
     public function has($key);
     /**
-     * Change ttl
+     * Changes expire for cache (TTL)
      *
      * @param string    $key - key of cache
      * @param int       $expire - time to live (sec)
@@ -103,7 +103,7 @@ interface CacheInterface extends SerializeInterface
     public function touch($key, $expire = 0);
 
     /**
-     * Change multiple ttl
+     * Changes expire for multiple cache
      *
      * @param array    $keys - keys of cache
      * @param int       $expire - time to live (sec)
@@ -131,7 +131,7 @@ interface CacheInterface extends SerializeInterface
     public function decrement($key, $offset = 1, $expire = 0);
 
     /**
-     * Delete cache
+     * Removes cache
      *
      * @param string $key - key - key of cache
      * @return bool
@@ -139,14 +139,14 @@ interface CacheInterface extends SerializeInterface
     public function remove($key);
 
     /**
-     * Delete multiple keys
+     * Removes multiple keys
      *
      * @param array $keys - keys of cache
      */
     public function removeMulti(array $keys);
 
     /**
-     * Get tag
+     * Gets tag
      *
      * @param string $tag - name of tag
      * @return mixed
@@ -154,7 +154,7 @@ interface CacheInterface extends SerializeInterface
     public function getTag($tag);
 
     /**
-     * Get tags
+     * Gets tags
      *
      * @param array $tags - names of tags
      * @return mixed
@@ -162,46 +162,46 @@ interface CacheInterface extends SerializeInterface
     public function getMultiTags(array $tags);
 
     /**
-     * Has tag
+     * Checks existence tag
      * @param string $tag - name of tag
      * @return bool
      */
     public function hasTag($tag);
 
     /**
-     * Remove tag
+     * Removes tag
      * @param $tag - name of tag
      * @return bool
      */
     public function removeTag($tag);
 
     /**
-     * Remove multiple tags
+     * Removes multiple tags
      *
      * @param array $tags - names of tags
      */
     public function removeMultiTags(array $tags);
 
     /**
-     * Get all keys cache
+     * Gets all keys of cache
      * @return mixed
      */
     public function getAllKeys();
 
     /**
-     * Get all cache
+     * Gets all cache
      * @return mixed
      */
     public function getAll();
 
     /**
-     * Remove all cache
+     * Removes all cache
      * @return bool
      */
     public function flush();
 
     /**
-     * Get status cache server
+     * Get status server of cache
      * @throws Exception
      * @return mixed
      */

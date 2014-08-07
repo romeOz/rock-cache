@@ -53,15 +53,13 @@ Quick Start
 ###Memcached
 
 ```php
-
-use rock\cache\Memcached;
 use rock\cache\CacheInterface;
 
 $config = [
     'hashKey' => CacheInterface::HASH_MD5, // Default: HASH_MD5
     'serializer' => CacheInterface::SERIALIZE_JSON // Default: SERIALIZE_PHP - php serializator
 ];
-$memcached = new Memcached($config);
+$memcached = new \rock\cache\Memcached($config); // or \rock\cache\versioning\Memcached for approach versioning
 
 $tags = ['tag_1', 'tag_2'];
 $value = ['foo', 'bar'];
@@ -77,7 +75,6 @@ $memcached->flush(); // Invalidate all items in the cache
 ###Local storage
 
 ```php
-
 use League\Flysystem\Adapter\Local;
 use rock\cache\filemanager\FileManager;
 use rock\cache\CacheFile;
@@ -99,6 +96,84 @@ $cacheFile->set('key_1', 'foo');
 
 $memcached->get('key_1'); // result: foo;
 ```
+
+Documentation
+-------------------
+
+###get($key)
+Gets cache by key.
+
+###getMulti(array $keys)
+Gets multiple cache by keys.
+
+###set($key, mixed $value, $expire = 0, array $tags = null)
+Set cache.
+
+###setMulti($key, mixed $value, $expire = 0, array $tags = null)
+Set multiple cache.
+
+###add($key, mixed $value, $expire = 0, array $tags = null)
+Add cache.
+>Return false, if already exists on the server.
+
+###has($key)
+Checks existence cache by key.
+
+###touch($key, $expire = 0)
+Changes expire for cache (TTL).
+
+###touchMulti(array $keys, $expire = 0)
+Changes expire for multiple cache.
+
+###increment($key, $offset = 1, $expire = 0)
+Increment of cache.
+
+###decrement($key, $offset = 1, $expire = 0)
+Decrement of cache.
+
+###remove($key)
+Removes cache.
+
+###removeMulti(array $keys)
+Removes multiple keys.
+
+###getTag($tag)
+Gets the keys of cache in accordance with the tag.
+
+###getMultiTags(array $tags)
+Gets the keys of cache in accordance with the multiple tags.
+
+###hasTag($tag)
+Checks existence tag.
+
+###removeTag($tag)
+Removes tag.
+
+###removeMultiTag(array $tags)
+Removes multiple tags.
+
+###getAllKeys()
+Gets all keys of cache.
+
+>Supported: `Memcached`, `Redis`, `APC`.
+
+###getAll()
+Gets all cache.
+
+>Supported: `Memcached`, `APC`.
+
+###flush()
+Removes all cache.
+
+###status()
+Get status server of cache.
+
+>Supported: `Memcached`, `Memcache`, `Redis`, `APC`, `Couchbase`.
+
+###getStorage()
+Gets current cache-storage.
+
+
 
 Demo & Tests
 -------------------
