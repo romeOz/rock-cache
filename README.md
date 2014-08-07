@@ -100,79 +100,78 @@ $memcached->get('key_1'); // result: foo;
 Documentation
 -------------------
 
-###get($key)
+####get($key)
 Gets cache by key.
 
-###getMulti(array $keys)
+####getMulti(array $keys)
 Gets multiple cache by keys.
 
-###set($key, mixed $value, $expire = 0, array $tags = null)
+####set($key, mixed $value, $expire = 0, array $tags = null)
 Set cache.
 
-###setMulti($key, mixed $value, $expire = 0, array $tags = null)
+####setMulti($key, mixed $value, $expire = 0, array $tags = null)
 Set multiple cache.
 
-###add($key, mixed $value, $expire = 0, array $tags = null)
+####add($key, mixed $value, $expire = 0, array $tags = null)
 Add cache.
 >Return false, if already exists on the server.
 
-###has($key)
+####has($key)
 Checks existence cache by key.
 
-###touch($key, $expire = 0)
+####touch($key, $expire = 0)
 Changes expire for cache (TTL).
 
-###touchMulti(array $keys, $expire = 0)
+####touchMulti(array $keys, $expire = 0)
 Changes expire for multiple cache.
 
-###increment($key, $offset = 1, $expire = 0)
+####increment($key, $offset = 1, $expire = 0)
 Increment of cache.
 
-###decrement($key, $offset = 1, $expire = 0)
+####decrement($key, $offset = 1, $expire = 0)
 Decrement of cache.
 
-###remove($key)
+####remove($key)
 Removes cache.
 
-###removeMulti(array $keys)
+####removeMulti(array $keys)
 Removes multiple keys.
 
-###getTag($tag)
+####getTag($tag)
 Gets the keys of cache in accordance with the tag.
 
-###getMultiTags(array $tags)
+####getMultiTags(array $tags)
 Gets the keys of cache in accordance with the multiple tags.
 
-###hasTag($tag)
+####hasTag($tag)
 Checks existence tag.
 
-###removeTag($tag)
+####removeTag($tag)
 Removes tag.
 
-###removeMultiTag(array $tags)
+####removeMultiTag(array $tags)
 Removes multiple tags.
 
-###getAllKeys()
+####getAllKeys()
 Gets all keys of cache.
 
 >Supported: `Memcached`, `Redis`, `APC`.
 
-###getAll()
+####getAll()
 Gets all cache.
 
 >Supported: `Memcached`, `APC`.
 
-###flush()
+####flush()
 Removes all cache.
 
-###status()
+####status()
 Get status server of cache.
 
 >Supported: `Memcached`, `Memcache`, `Redis`, `APC`, `Couchbase`.
 
-###getStorage()
+####getStorage()
 Gets current cache-storage.
-
 
 
 Demo & Tests
