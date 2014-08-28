@@ -7,12 +7,9 @@ php:
   - hhvm
   - hhvm-nightly
 
-# run build against PHP 5.6 and hhvm but allow them to fail
-# http://docs.travis-ci.com/user/build-configuration/#Rows-That-are-Allowed-To-Fail
 matrix:
   fast_finish: true
   allow_failures:
-    - php: 5.6
     - php: hhvm
     - php: hhvm-nightly
 
@@ -22,12 +19,10 @@ services:
 
 install:
   - composer self-update && composer --version
-  - bash -c 'if [ "$TRAVIS_PHP_VERSION" == "hhvm" ] || [ "$TRAVIS_PHP_VERSION" == "hhvm-nightly" ]; then rm phpunit.xml.dist; fi;'
-  - bash -c 'if [ "$TRAVIS_PHP_VERSION" == "hhvm" ] || [ "$TRAVIS_PHP_VERSION" == "hhvm-nightly" ]; then mv phpunit.xml.hhvm phpunit.xml.dist; fi;'
   - composer install --prefer-dist
   - composer require satooshi/php-coveralls:*@dev
   - chmod -R +x tests/data/travis/
-  - bash -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ] && [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ]; then tests/data/travis/apc-setup.sh; fi;'
+  - tests/data/travis/apc-setup.sh
   - tests/data/travis/memcache-setup.sh
   - tests/data/travis/redis-setup.sh
 
@@ -35,7 +30,12 @@ install:
 
 script:
   - mkdir -p build/logs
-  - vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml
+  - |
+    if (php --version | grep -i HipHop > /dev/null); then
+      vendor/bin/phpunit --verbose --exclude-group php,couchbase,memcache,memcached,redis,apc
+    else
+      vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml --exclude-group hhvm,couchbase
+    fi
 
 after_script:
   - vendor/bin/coveralls -v

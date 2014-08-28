@@ -36,7 +36,7 @@ From the Command Line:
 
 ```composer require romeo7/rock-cache:*```
 
-In your composer.json:
+or in your composer.json:
 
 ```json
 {

@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if (php --version | grep -i HipHop > /dev/null); then
+    echo "Skipping APC on HHVM"
+    exit 0
+fi
+
 # this is helpful to compile extension
 sudo apt-get install autoconf
 
