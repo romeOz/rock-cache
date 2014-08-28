@@ -9,6 +9,10 @@ use rock\cache\CacheInterface;
 use rock\cache\Exception;
 use rock\cache\filemanager\FileManager;
 
+/**
+ * @group cache
+ * @group local
+ */
 class CacheFileTest extends \PHPUnit_Framework_TestCase
 {
     use  CommonTraitTest;

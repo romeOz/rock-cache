@@ -8,6 +8,9 @@ use League\Flysystem\Cache\Adapter;
 use League\Flysystem\Cache\Memcached;
 use rock\cache\filemanager\FileManager;
 
+/**
+ * @group base
+ */
 class FileManagerTest extends \PHPUnit_Framework_TestCase
 {
     public static function setUpBeforeClass()

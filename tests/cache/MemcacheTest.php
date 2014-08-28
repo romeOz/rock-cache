@@ -5,6 +5,10 @@ use rock\cache\CacheInterface;
 use rock\cache\Exception;
 use rock\cache\Memcache;
 
+/**
+ * @group cache
+ * @group memcache
+ */
 class MemcacheTest extends \PHPUnit_Framework_TestCase
 {
     use  CommonTraitTest;
@@ -16,6 +20,11 @@ class MemcacheTest extends \PHPUnit_Framework_TestCase
 
     public function init($serialize)
     {
+        if (!class_exists('\Memcache')) {
+            $this->markTestSkipped(
+                'The Memcache is not available.'
+            );
+        }
         return new Memcache(['enabled' => true, 'serializer' => $serialize]);
     }
 

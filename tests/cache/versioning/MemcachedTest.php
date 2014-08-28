@@ -6,6 +6,10 @@ use rock\cache\CacheInterface;
 use rock\cache\versioning\Memcached;
 use rockunit\cache\CommonTraitTest;
 
+/**
+ * @group cache
+ * @group memcached
+ */
 class MemcachedTest extends \PHPUnit_Framework_TestCase
 {
     use  CommonTraitTest;
@@ -17,6 +21,11 @@ class MemcachedTest extends \PHPUnit_Framework_TestCase
 
     public function init($serialize)
     {
+        if (!class_exists('\Memcached')) {
+            $this->markTestSkipped(
+                'The \Memcached is not available.'
+            );
+        }
         return new Memcached(['enabled' => true, 'serializer' => $serialize]);
     }
 

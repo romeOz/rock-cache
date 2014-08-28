@@ -6,6 +6,10 @@ use rock\cache\CacheInterface;
 use rock\cache\Exception;
 use rock\cache\Redis;
 
+/**
+ * @group cache
+ * @group redis
+ */
 class RedisTest extends \PHPUnit_Framework_TestCase
 {
     use  CommonTraitTest;
@@ -17,6 +21,11 @@ class RedisTest extends \PHPUnit_Framework_TestCase
 
     public function init($serialize)
     {
+        if (!class_exists('\Redis')) {
+            $this->markTestSkipped(
+                'The Redis is not available.'
+            );
+        }
         return new Redis(['enabled' => true, 'serializer' => $serialize]);
     }
 

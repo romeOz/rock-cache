@@ -5,6 +5,10 @@ namespace rockunit;
 
 use rock\cache\helpers\ArrayHelper;
 
+/**
+ * @group base
+ * @group helpers
+ */
 class ArrayHelperTest extends \PHPUnit_Framework_TestCase
 {
     /**

@@ -7,6 +7,10 @@ use rock\cache\Exception;
 use rock\cache\versioning\APC;
 use rockunit\cache\CommonTraitTest;
 
+/**
+ * @group cache
+ * @group apc
+ */
 class APCTest extends \PHPUnit_Framework_TestCase
 {
     use  CommonTraitTest;
@@ -18,6 +22,11 @@ class APCTest extends \PHPUnit_Framework_TestCase
 
     public function init($serialize)
     {
+        if (!extension_loaded('apc')) {
+            $this->markTestSkipped(
+                'The APC is not available.'
+            );
+        }
         return new APC(['enabled' => true, 'serializer' => $serialize]);
     }
 
@@ -35,7 +44,7 @@ class APCTest extends \PHPUnit_Framework_TestCase
      */
     public function testTtl(CacheInterface $cache)
     {
-
+        $this->markTestSkipped('Skipping: ' . __CLASS__);
     }
 
     /**
@@ -43,7 +52,7 @@ class APCTest extends \PHPUnit_Framework_TestCase
      */
     public function testHasByTouchFalse(CacheInterface $cache)
     {
-
+        $this->markTestSkipped('Skipping: ' . __CLASS__);
     }
 
     /**
@@ -51,7 +60,7 @@ class APCTest extends \PHPUnit_Framework_TestCase
      */
     public function testTouch(CacheInterface $cache)
     {
-
+        $this->markTestSkipped('Skipping: ' . __CLASS__);
     }
 
     /**
@@ -59,7 +68,7 @@ class APCTest extends \PHPUnit_Framework_TestCase
      */
     public function testTouchMultiTrue(CacheInterface $cache)
     {
-
+        $this->markTestSkipped('Skipping: ' . __CLASS__);
     }
 
     /**
@@ -67,7 +76,7 @@ class APCTest extends \PHPUnit_Framework_TestCase
      */
     public function testTouchMultiFalse(CacheInterface $cache)
     {
-
+        $this->markTestSkipped('Skipping: ' . __CLASS__);
     }
 
     /**
@@ -75,7 +84,7 @@ class APCTest extends \PHPUnit_Framework_TestCase
      */
     public function testIncrementWithTtl(CacheInterface $cache)
     {
-
+        $this->markTestSkipped('Skipping: ' . __CLASS__);
     }
 
     /**

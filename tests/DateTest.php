@@ -5,6 +5,9 @@ namespace rockunit;
 
 use rock\cache\helpers\Date;
 
+/**
+ * @group base
+ */
 class DateTest extends \PHPUnit_Framework_TestCase
 {
     public function testMicrotime()

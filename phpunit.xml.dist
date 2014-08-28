@@ -19,8 +19,6 @@
     <testsuites>
         <testsuite>
             <directory>./tests/</directory>
-            <exclude>./tests/cache/CouchbaseTest.php</exclude>
-            <exclude>./tests/cache/versioning/CouchbaseTest.php</exclude>
         </testsuite>
     </testsuites>
     <logging>

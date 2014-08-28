@@ -5,6 +5,10 @@ namespace rockunit;
 
 use rock\cache\helpers\String;
 
+/**
+ * @group base
+ * @group helpers
+ */
 class StringTest extends \PHPUnit_Framework_TestCase
 {
     /**

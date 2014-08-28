@@ -5,6 +5,10 @@ use rock\cache\CacheInterface;
 use rock\cache\Exception;
 use rock\cache\Couchbase;
 
+/**
+ * @group cache
+ * @group couchbase
+ */
 class CouchbaseTest extends \PHPUnit_Framework_TestCase
 {
     use  CommonTraitTest;
@@ -16,6 +20,11 @@ class CouchbaseTest extends \PHPUnit_Framework_TestCase
 
     public function init($serialize)
     {
+        if (!class_exists('\Couchbase')) {
+            $this->markTestSkipped(
+                'The Couchbase is not available.'
+            );
+        }
         return new Couchbase(['enabled' => true, 'serializer' => $serialize]);
     }
 

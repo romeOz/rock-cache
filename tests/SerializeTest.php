@@ -5,6 +5,10 @@ namespace rockunit;
 
 use rock\cache\helpers\Serialize;
 
+/**
+ * @group base
+ * @group helpers
+ */
 class SerializeTest extends \PHPUnit_Framework_TestCase
 {
     public function testSerialize()
