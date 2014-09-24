@@ -174,8 +174,14 @@ Get status server of cache.
 Gets current cache-storage.
 
 
-Demo & Tests
+[Demo](http://demo.cache.framerock.net/) & Tests
 -------------------
+
+Destination:
+
+[**DEMO**](http://demo.cache.framerock.net/)
+
+or local:
 
 Use a specially prepared environment (Vagrant + Ansible) with preinstalled and configured storages.
 
