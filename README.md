@@ -249,6 +249,7 @@ Fastest method, but there is a possibility of overflow cache.
 Input data:
 
 ```php
+$cache = new \rock\cache\Memcached;
 
 $cache->set('key_1', 'text_1', 0, ['tag_1', 'tag_2']);
 $cache->set('key_2', 'text_2', 0, ['tag_1']);
@@ -288,6 +289,7 @@ Is the best practice, but slower than the approach with the grouping tags, becau
 Input data:
 
 ```php
+$cache = new \rock\cache\versioning\Memcached;
 
 $cache->set('key_1', 'text_1', 0, ['tag_1', 'tag_2']);
 $cache->set('key_2', 'text_2', 0, ['tag_1']);
