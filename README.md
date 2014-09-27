@@ -34,14 +34,14 @@ Installation
 
 From the Command Line:
 
-```composer require romeOz/rock-cache:*```
+```composer require romeoz/rock-cache:*```
 
 or in your composer.json:
 
 ```json
 {
     "require": {
-        "romeOz/rock-cache": "*"
+        "romeoz/rock-cache": "*"
     }
 }
 
@@ -202,7 +202,7 @@ Use a specially prepared environment (Vagrant + Ansible) with preinstalled and c
 ###Installation:
 
 1. [Install Composer](https://getcomposer.org/doc/00-intro.md#globally)
-2. ```composer create-project --prefer-dist --stability=dev romeOz/rock-cache```
+2. ```composer create-project --prefer-dist --stability=dev romeoz/rock-cache```
 3. [Install Vagrant](https://www.vagrantup.com/downloads), and additional Vagrant plugins ```vagrant plugin install vagrant-hostsupdater vagrant-vbguest vagrant-cachier```
 4. ```vagrant up```
 5. Open demo [http://rock.cache/](http://rock.cache/) or [http://192.168.33.33/](http://192.168.33.33/)
