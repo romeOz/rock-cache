@@ -1,5 +1,5 @@
 #- name: clone Rock cache  
-#  shell: composer create-project --prefer-dist --stability=dev romeo7/rock-cache /tmp/rock-cache/ creates=/tmp/rock-cache/
+#  shell: composer create-project --prefer-dist --stability=dev romeOz/rock-cache /tmp/rock-cache/ creates=/tmp/rock-cache/
 #  tags:
 #    - demo
 

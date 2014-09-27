@@ -1,13 +1,13 @@
 PHP library caching
 =================
 
-[![Latest Stable Version](https://poser.pugx.org/romeo7/rock-cache/v/stable.svg)](https://packagist.org/packages/romeo7/rock-cache)
-[![Total Downloads](https://poser.pugx.org/romeo7/rock-cache/downloads.svg)](https://packagist.org/packages/romeo7/rock-cache)
-[![Build Status](https://travis-ci.org/romeo7/rock-cache.svg?branch=master)](https://travis-ci.org/romeo7/rock-cache)
-[![Coverage Status](https://coveralls.io/repos/romeo7/rock-cache/badge.png)](https://coveralls.io/r/romeo7/rock-cache)
-[![License](https://poser.pugx.org/romeo7/rock-cache/license.svg)](https://packagist.org/packages/romeo7/rock-cache)
+[![Latest Stable Version](https://poser.pugx.org/romeOz/rock-cache/v/stable.svg)](https://packagist.org/packages/romeOz/rock-cache)
+[![Total Downloads](https://poser.pugx.org/romeOz/rock-cache/downloads.svg)](https://packagist.org/packages/romeOz/rock-cache)
+[![Build Status](https://travis-ci.org/romeOz/rock-cache.svg?branch=master)](https://travis-ci.org/romeOz/rock-cache)
+[![Coverage Status](https://coveralls.io/repos/romeOz/rock-cache/badge.png)](https://coveralls.io/r/romeOz/rock-cache)
+[![License](https://poser.pugx.org/romeOz/rock-cache/license.svg)](https://packagist.org/packages/romeOz/rock-cache)
 
-[Rock cache on Packagist](https://packagist.org/packages/romeo7/rock-cache)
+[Rock cache on Packagist](https://packagist.org/packages/romeOz/rock-cache)
 
 What storages can be used:
 
@@ -34,14 +34,14 @@ Installation
 
 From the Command Line:
 
-```composer require romeo7/rock-cache:*```
+```composer require romeOz/rock-cache:*```
 
 or in your composer.json:
 
 ```json
 {
     "require": {
-        "romeo7/rock-cache": "*"
+        "romeOz/rock-cache": "*"
     }
 }
 
@@ -202,7 +202,7 @@ Use a specially prepared environment (Vagrant + Ansible) with preinstalled and c
 ###Installation:
 
 1. [Install Composer](https://getcomposer.org/doc/00-intro.md#globally)
-2. ```composer create-project --prefer-dist --stability=dev romeo7/rock-cache```
+2. ```composer create-project --prefer-dist --stability=dev romeOz/rock-cache```
 3. [Install Vagrant](https://www.vagrantup.com/downloads), and additional Vagrant plugins ```vagrant plugin install vagrant-hostsupdater vagrant-vbguest vagrant-cachier```
 4. ```vagrant up```
 5. Open demo [http://rock.cache/](http://rock.cache/) or [http://192.168.33.33/](http://192.168.33.33/)
@@ -230,7 +230,7 @@ You can use each storage separately, requirements are individually for storages.
  * **For Couchbase:**
  [Step-by-step installation](http://www.couchbase.com/communities/php/getting-started).
 
->If you have difficulty in setting up, then see [playbooks](https://github.com/romeo7/rock-cache/tree/master/provisioning/roles).
+>If you have difficulty in setting up, then see [playbooks](https://github.com/romeOz/rock-cache/tree/master/provisioning/roles).
 
 Storages comparison
 -------------------
