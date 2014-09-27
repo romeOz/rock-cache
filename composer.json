@@ -1,5 +1,5 @@
 {
-    "name": "romeOz/rock-cache",
+    "name": "romeoz/rock-cache",
     "replace": {
         "romeo7/rock-cache":"*"
     },
