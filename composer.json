@@ -1,8 +1,5 @@
 {
     "name": "romeoz/rock-cache",
-    "replace": {
-        "romeo7/rock-cache":"self.version"
-    },
     "description": "Key-value storage in memory. As a storage can be used: Local, APC, Redis, Memcache, Couchbase. All storage objects have one interface, so you can switch them without changing the working code.",
     "keywords": ["caching", "race-condition", "dog-pile", "tagging-cache", "redis", "memcache", "memcached", "apc", "memory", "couchbase"],
     "type": "library",
