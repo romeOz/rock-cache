@@ -194,7 +194,7 @@ Use a specially prepared environment (Vagrant + Ansible) with preinstalled and c
  * Nginx 1.6
  * PHP-FPM 5.5
  * Composer
- * Couhbase 2.2.0 + pecl couchbase-1.2.2
+ * Couhbase 3.0.0 + pecl couchbase-1.2.2
  * Redis 2.8 + php5-redis
  * Memcached 1.4.14 + php5_memcached + php5_memcache
  * Local IP loop on Host machine /etc/hosts and Virtual hosts in Nginx already set up!
