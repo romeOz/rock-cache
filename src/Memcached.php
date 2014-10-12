@@ -218,7 +218,6 @@ class Memcached implements CacheInterface
         return static::$storage->getStats();
     }
 
-
     /**
      * Set tags
      *
@@ -273,7 +272,7 @@ class Memcached implements CacheInterface
      * Set lock
      * Note: Dog-pile" ("cache miss storm") and "race condition" effects
      *
-     * @param string $key - key of cache
+     * @param string $key key of cache
      * @param mixed  $value
      * @param int    $max
      * @return bool

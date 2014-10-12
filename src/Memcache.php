@@ -74,10 +74,10 @@ class Memcache extends Memcached
      * Set lock of cache
      * "Dog-pile" ("cache miss storm") and "race condition" effects
      *
-     * @param string $key - key of cache
-     * @param mixed $value - content of cache
-     * @param int   $expire - expire of cache
-     * @param int   $count - iteration
+     * @param string $key key of cache
+     * @param mixed $value content of cache
+     * @param int   $expire expire of cache
+     * @param int   $count iteration
      * @return bool
      */
     protected function provideLock($key, $value, $expire, &$count = 0)
@@ -97,9 +97,9 @@ class Memcache extends Memcached
      * Set lock
      * Note: Dog-pile" ("cache miss storm") and "race condition" effects
      *
-     * @param string $key - key of cache
-     * @param mixed $value - content of cache
-     * @param int    $max - max iteration
+     * @param string $key key of cache
+     * @param mixed $value content of cache
+     * @param int    $max max iteration
      * @return bool
      */
     protected function lock($key, $value, $max = 15)
@@ -121,8 +121,8 @@ class Memcache extends Memcached
     /**
      * Set dependency
      *
-     * @param string $key - key of cache
-     * @param array  $tags - list of tags
+     * @param string $key key of cache
+     * @param array  $tags list of tags
      */
     protected function setTags($key, array $tags = null)
     {

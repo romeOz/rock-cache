@@ -109,8 +109,8 @@ class BaseArrayHelper
     }
 
     /**
-     * @param array $keys  - keys
-     * @param array $array - current array
+     * @param array $keys  keys
+     * @param array $array current array
      * @param mixed $default
      * @return mixed
      */

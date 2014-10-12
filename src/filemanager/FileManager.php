@@ -38,11 +38,9 @@ class FileManager
     public $adapter;
     /** @var  \Closure|CacheInterface|null */
     public $cache;
-
     public $config;
     /** @var  Filesystem */
     protected $filesystem;
-
     protected $errors = [];
 
 
@@ -70,13 +68,14 @@ class FileManager
     }
 
     /**
-     * Check whether a path exists
+     * Check whether a path exists.
      *
      * @param  string $path path to check or regexp pattern
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
-     * has('cache/file.tmp')
-     * has('~/file.tmp$/')
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
+     *
+     * ```php
+     * $fileManager->has('cache/file.tmp')
+     * $fileManager->has('~/file.tmp$/')
+     * ```
      * @param null    $is
      * @return boolean whether the path exists
      */
@@ -92,13 +91,14 @@ class FileManager
     }
 
     /**
-     * Read a file
+     * Read a file.
      *
      * @param  string $path path to file or regexp pattern
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
-     * read('cache/file.tmp')
-     * read('~/file.tmp$/')
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
+     *
+     * ```php
+     * $fileManager->read('cache/file.tmp')
+     * $fileManager->read('~/file.tmp$/')
+     * ```
      * @return string|false          file contents or FALSE when fails
      *                               to read existing file
      */
@@ -190,7 +190,7 @@ class FileManager
     }
 
     /**
-     * Rename file/dir by Mask
+     * Rename file/dir by Mask.
      * @param       $path
      * @param       $newpath
      * @param array $dataReplace
@@ -234,10 +234,11 @@ class FileManager
      * Get a file's metadata
      *
      * @param  string $path path to file or regexp pattern
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
-     * getMetadata('cache/file.tmp')
-     * getMetadata('~/file.tmp$/')
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
+     *
+     * ```php
+     * $fileManager->getMetadata('cache/file.tmp')
+     * $fileManager->getMetadata('~/file.tmp$/')
+     * ```
      * @return array|false           file metadata or FALSE when fails
      *                               to fetch it from existing file
      */
@@ -256,13 +257,14 @@ class FileManager
     }
 
     /**
-     * Get metadata for an object with required metadata
+     * Get metadata for an object with required metadata.
      *
-     * @param  string $path path to file or regexp pattern
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
-     * getWithMetadata('cache/file.tmp')
-     * getWithMetadata('~/file.tmp$/')
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
+     * @param  string $path path to file or regexp pattern.
+     *
+     * ```php
+     * $fileManager->getWithMetadata('cache/file.tmp')
+     * $fileManager->getWithMetadata('~/file.tmp$/')
+     * ```
      * @param   array   $metadata  metadata keys
      * @return  array|boolean   metadata
      */
@@ -281,13 +283,14 @@ class FileManager
     }
 
     /**
-     * Get a file's visibility
+     * Get a file's visibility.
      *
-     * @param  string $path path to file or regexp pattern
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
-     * getVisibility('cache/file.tmp')
-     * getVisibility('~/file.tmp$/')
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
+     * @param  string $path path to file or regexp pattern.
+     *
+     * ```php
+     * $fileManager->getVisibility('cache/file.tmp')
+     * $fileManager->getVisibility('~/file.tmp$/')
+     * ```
      * @return  string|false  visibility (public|private) or FALSE
      *                        when fails to check it in existing file
      */
@@ -306,13 +309,14 @@ class FileManager
     }
 
     /**
-     * Get a file's timestamp
+     * Get a file's timestamp.
      *
-     * @param  string $path path to file or regexp pattern
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
-     * getTimestamp('cache/file.tmp')
-     * getTimestamp('~/file.tmp$/')
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
+     * @param  string $path path to file or regexp pattern.
+     *
+     * ```php
+     * $fileManager->getTimestamp('cache/file.tmp')
+     * $fileManager->getTimestamp('~/file.tmp$/')
+     * ```
      * @return string|false timestamp or FALSE when fails
      *                      to fetch timestamp from existing file
      */
@@ -331,13 +335,15 @@ class FileManager
     }
 
     /**
-     * Get a file's mimetype
+     * Get a file's mimetype.
      *
-     * @param  string $path path to file or regexp pattern
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
-     * getMimetype('cache/file.tmp')
+     * @param  string $path path to file or regexp pattern.
+     *
+     * ```php
+     * $fileManager->getMimetype('cache/file.tmp')
      * getMimetype('~/file.tmp$/')
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
+     * ```
+     *
      * @return string|false file mimetype or FALSE when fails
      *                      to fetch mimetype from existing file
      */
@@ -356,13 +362,15 @@ class FileManager
     }
 
     /**
-     * Get a file's size
+     * Get a file's size.
      *
-     * @param  string $path path to file or regexp pattern
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
-     * getSize('cache/file.tmp')
-     * getSize('~/file.tmp$/')
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
+     * @param  string $path path to file or regexp pattern.
+     *
+     * ```php
+     * $fileManager->getSize('cache/file.tmp')
+     * $fileManager->getSize('~/file.tmp$/')
+     * ```
+     *
      * @return  int|false     file size or FALSE when fails
      *                        to check size of existing file
      */
@@ -381,13 +389,14 @@ class FileManager
     }
 
     /**
-     * Delete a file
+     * Delete a file.
      *
-     * @param  string $path path to file or regexp pattern
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
-     * delete('cache/file.tmp')
-     * delete('~/file.tmp$/')
-     * ~~~~~~~~~~~~~~~~~~~~~~~~~
+     * @param  string $path path to file or regexp pattern.
+     *
+     * ```php
+     * $fileManager->delete('cache/file.tmp')
+     * $fileManager->delete('~/file.tmp$/')
+     * ```
      * @return boolean               success boolean
      */
     public function delete($path)
@@ -405,7 +414,7 @@ class FileManager
     }
 
     /**
-     * Clear current dir
+     * Clear current dir.
      */
     public function deleteAll()
     {
@@ -420,15 +429,14 @@ class FileManager
     }
 
     /**
-     * List the filesystem contents
+     * List the filesystem contents.
      *
      * @param  string  $directory
      *
      * ```php
-     * listContents('folder/foo')
-     * listContents('~/foo$/')
+     * $fileManager->listContents('folder/foo')
+     * $fileManager->listContents('~/foo$/')
      * ```
-     *
      * @param boolean $recursive
      * @param null     $is
      * @return array    contents
@@ -454,7 +462,7 @@ class FileManager
     }
 
     /**
-     * List all paths
+     * List all paths.
      *
      * @param string $directory
      * @param bool   $recursive
@@ -484,9 +492,9 @@ class FileManager
     }
 
     /**
-     * List contents with metadata
+     * List contents with metadata.
      *
-     * @param array  $keys - metadata keys
+     * @param array  $keys metadata keys
      * @param string $directory
      * @param bool   $recursive
      * @param null   $is
@@ -520,7 +528,8 @@ class FileManager
     }
 
     /**
-     * @param $name - name
+     * Provider.
+     * @param string $name name
      * @param $params
      * @return mixed
      */
@@ -528,7 +537,6 @@ class FileManager
     {
         return call_user_func_array([$this->getFilesystem(), $name], $params);
     }
-
 
     protected function searchByPattern($pattern, $error = true, $is = self::TYPE_FILE)
     {
@@ -579,9 +587,9 @@ class FileManager
     }
 
     /**
-     * Validate value is regexp pattern
+     * Validate value is regexp pattern.
      *
-     * @param string $subject - string
+     * @param string $subject string
      * @return bool
      */
     protected function isRegexp(&$subject)
@@ -595,5 +603,4 @@ class FileManager
         return false;
     }
 }
-
 

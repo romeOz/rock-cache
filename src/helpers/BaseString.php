@@ -8,8 +8,8 @@ class BaseString
     /**
      * Replace
      *
-     * @param string $string       - string
-     * @param array  $dataReplace - array replace
+     * @param string $string      string
+     * @param array  $dataReplace array replace
      * @return string
      */
     public static function replace($string, array $dataReplace = [])

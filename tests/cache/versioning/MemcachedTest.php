@@ -109,7 +109,6 @@ class MemcachedTest extends \PHPUnit_Framework_TestCase
     {
         /** @var $this \PHPUnit_Framework_TestCase */
 
-        //$this->assertNotEmpty($cache->status());
-        var_dump($cache->status());
+        $this->assertFalse($cache->status());
     }
 }

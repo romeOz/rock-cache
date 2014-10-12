@@ -12,7 +12,7 @@ class BaseSerialize implements SerializeInterface
      *
      * @param array $value
      * @param int   $serializer
-     * @param int   $options - constants by JSON
+     * @param int   $options constants by JSON
      * @return array|string
      */
     public static function serialize(array $value, $serializer = self::SERIALIZE_PHP, $options = 0)

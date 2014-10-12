@@ -9,31 +9,30 @@ trait CommonTrait
     use ObjectTrait;
 
     /**
-     * Prefix of key
+     * Prefix of key.
      * @var string
      */
     public $prefix;
-
     /**
      * @var int
      */
     public $hashKey = self::HASH_MD5;
     public $hashTag = 0;
     /**
-     * Serializer
+     * Serializer.
      * @var int
      */
     public $serializer = self::SERIALIZE_PHP;
-
     /**
-     * Enabled cache
+     * Enabled cache.
      *
      * @var bool
      */
     public $enabled = true;
 
     /**
-     * Enabled caching
+     * Enabled caching.
+     * @param bool $enabled
      */
     public function enabled($enabled = true)
     {
@@ -41,7 +40,7 @@ trait CommonTrait
     }
 
     /**
-     * Add prefix to key
+     * Add prefix to key.
      * @param string $prefix
      */
     public function addPrefix($prefix)
@@ -50,7 +49,7 @@ trait CommonTrait
     }
 
     /**
-     * Get prepare key of cache
+     * Get prepare key of cache.
      *
      * @param string $key
      * @return string
@@ -67,9 +66,8 @@ trait CommonTrait
         return $this->prefix . $key;
     }
 
-
     /**
-     * @param array $tags - tags
+     * @param array $tags tags
      * @return string|null
      */
     protected function prepareTags(array $tags = null)

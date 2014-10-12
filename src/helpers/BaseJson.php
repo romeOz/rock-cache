@@ -10,7 +10,7 @@ class BaseJson
     /**
      * Validation value is json
      *
-     * @param mixed $value - value
+     * @param mixed $value value
      * @return bool
      */
     public static function is($value)
@@ -21,7 +21,6 @@ class BaseJson
         json_decode($value);
         return json_last_error() === JSON_ERROR_NONE;
     }
-
 
     /**
      * Encodes the given value into a JSON string.
@@ -76,7 +75,6 @@ class BaseJson
             }
         }
 
-
         return $decode;
     }
-} 
+}

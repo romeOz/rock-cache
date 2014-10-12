@@ -11,24 +11,21 @@ class CacheFile implements CacheInterface
     }
 
     /**
-     * Max files in folder
+     * Max files in folder.
      * @var int
      */
     public $maxFiles = 100;
-
     /**
-     * Extension of cache file
+     * Extension of cache file.
      * @var string
      */
     public $extensionFileCache = 'tmp';
-
     /**
-     * Path to file of cache
+     * Path to file of cache.
      *
      * @var string
      */
     protected $pathFileCache;
-
     /** @var FileManager */
     public $adapter;
 
@@ -286,7 +283,7 @@ class CacheFile implements CacheInterface
 
     /**
      * @param string $key
-     * @param string $tags - name of tag
+     * @param string $tags name of tag
      * @return void
      */
     protected function preparePaths($key, $tags = null)
@@ -322,7 +319,7 @@ class CacheFile implements CacheInterface
     }
 
     /**
-     * @param array $tags - tags
+     * @param array $tags tags
      * @return string|null
      */
     protected function prepareTags(array $tags = null)
@@ -337,7 +334,7 @@ class CacheFile implements CacheInterface
     /**
      * Get data file cache
      *
-     * @param string|int $key - key
+     * @param string|int $key key
      * @throws Exception
      * @return bool|mixed
      */
@@ -362,8 +359,8 @@ class CacheFile implements CacheInterface
     }
 
     /**
-     * @param string $key  - hash-key
-     * @param array  $metadata - array data of file
+     * @param string $key  hash-key
+     * @param array  $metadata array data of file
      * @param null   $result
      * @return mixed
      */
@@ -406,7 +403,7 @@ class CacheFile implements CacheInterface
     /**
      * Validity expire
      *
-     * @param int $expire - expire
+     * @param int $expire expire
      * @return bool
      */
     protected function validExpire($expire)

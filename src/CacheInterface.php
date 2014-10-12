@@ -36,7 +36,7 @@ interface CacheInterface extends SerializeInterface
     /**
      * Gets cache by key
      *
-     * @param string $key - key of cache
+     * @param string $key key of cache
      * @return mixed|bool
      */
     public function get($key);
@@ -44,7 +44,7 @@ interface CacheInterface extends SerializeInterface
     /**
      * Gets multiple cache by keys
      *
-     * @param array $keys - keys of cache
+     * @param array $keys keys of cache
      * @return array
      */
     public function getMulti(array $keys);
@@ -52,10 +52,10 @@ interface CacheInterface extends SerializeInterface
     /**
      * Set cache
      *
-     * @param string $key    - key - key of cache
-     * @param mixed  $value  - content of cache
-     * @param int    $expire - time to live (sec)
-     * @param array  $tags   - tags
+     * @param string $key    key - key of cache
+     * @param mixed  $value  content of cache
+     * @param int    $expire time to live (sec)
+     * @param array  $tags   tags
      * @return bool
      */
     public function set($key, $value = null, $expire = 0, array $tags = null);
@@ -69,8 +69,8 @@ interface CacheInterface extends SerializeInterface
      * ```
      *
      * @param array  $values
-     * @param int    $expire - time to live (sec)
-     * @param array  $tags   - names tags
+     * @param int    $expire time to live (sec)
+     * @param array  $tags   names tags
      * @return bool
      */
     public function setMulti($values, $expire = 0, array $tags = null);
@@ -78,10 +78,10 @@ interface CacheInterface extends SerializeInterface
     /**
      * Add cache (return false, if already exists on the server)
      *
-     * @param string $key    - key of cache
-     * @param mixed  $value  - content of cache
-     * @param int    $expire - time to live (sec)
-     * @param array  $tags   - tags
+     * @param string $key    key of cache
+     * @param mixed  $value  content of cache
+     * @param int    $expire time to live (sec)
+     * @param array  $tags   tags
      * @return bool
      */
     public function add($key, $value = null, $expire = 0, array $tags = null);
@@ -89,15 +89,15 @@ interface CacheInterface extends SerializeInterface
     /**
      * Checks existence cache by key
      *
-     * @param string $key - key of cache
+     * @param string $key key of cache
      * @return bool
      */
     public function has($key);
     /**
      * Changes expire for cache (TTL)
      *
-     * @param string    $key - key of cache
-     * @param int       $expire - time to live (sec)
+     * @param string    $key key of cache
+     * @param int       $expire time to live (sec)
      * @return bool
      */
     public function touch($key, $expire = 0);
@@ -105,17 +105,17 @@ interface CacheInterface extends SerializeInterface
     /**
      * Changes expire for multiple cache
      *
-     * @param array    $keys - keys of cache
-     * @param int       $expire - time to live (sec)
+     * @param array    $keys keys of cache
+     * @param int       $expire time to live (sec)
      */
     public function touchMulti(array $keys, $expire = 0);
 
     /**
      * Increment
      *
-     * @param string    $key - key of cache
+     * @param string    $key key of cache
      * @param int $offset
-     * @param int $expire - time to live (sec)
+     * @param int $expire time to live (sec)
      * @return mixed
      */
     public function increment($key, $offset = 1, $expire = 0);
@@ -123,9 +123,9 @@ interface CacheInterface extends SerializeInterface
     /**
      * Decrement
      *
-     * @param string    $key - key of cache
+     * @param string    $key key of cache
      * @param int $offset
-     * @param int $expire - time to live (sec)
+     * @param int $expire time to live (sec)
      * @return mixed
      */
     public function decrement($key, $offset = 1, $expire = 0);
@@ -133,7 +133,7 @@ interface CacheInterface extends SerializeInterface
     /**
      * Removes cache
      *
-     * @param string $key - key - key of cache
+     * @param string $key key of cache
      * @return bool
      */
     public function remove($key);
@@ -141,14 +141,14 @@ interface CacheInterface extends SerializeInterface
     /**
      * Removes multiple keys
      *
-     * @param array $keys - keys of cache
+     * @param array $keys keys of cache
      */
     public function removeMulti(array $keys);
 
     /**
      * Gets tag
      *
-     * @param string $tag - name of tag
+     * @param string $tag name of tag
      * @return mixed
      */
     public function getTag($tag);
@@ -156,21 +156,21 @@ interface CacheInterface extends SerializeInterface
     /**
      * Gets tags
      *
-     * @param array $tags - names of tags
+     * @param array $tags names of tags
      * @return mixed
      */
     public function getMultiTags(array $tags);
 
     /**
      * Checks existence tag
-     * @param string $tag - name of tag
+     * @param string $tag name of tag
      * @return bool
      */
     public function hasTag($tag);
 
     /**
      * Removes tag
-     * @param $tag - name of tag
+     * @param string $tag name of tag
      * @return bool
      */
     public function removeTag($tag);
@@ -178,7 +178,7 @@ interface CacheInterface extends SerializeInterface
     /**
      * Removes multiple tags
      *
-     * @param array $tags - names of tags
+     * @param array $tags names of tags
      */
     public function removeMultiTags(array $tags);
 

@@ -20,7 +20,6 @@ class Couchbase implements CacheInterface
     public $password = '';
     /** @var string  */
     public $bucket = 'default';
-
     /** @var  \Couchbase */
     protected static $storage;
 
