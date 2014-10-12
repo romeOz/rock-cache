@@ -101,4 +101,15 @@ class MemcachedTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($expected, $actual, 'should be get: ' . json_encode($actual));
         }
     }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testStatus(CacheInterface $cache)
+    {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
+        //$this->assertNotEmpty($cache->status());
+        var_dump($cache->status());
+    }
 }

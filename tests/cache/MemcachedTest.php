@@ -44,4 +44,15 @@ class MemcachedTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($cache->set('key6', ['bar', 'baz']), 'should be get: true');
         $this->assertFalse($cache->getAll());
     }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testStatus(CacheInterface $cache)
+    {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
+        //$this->assertNotEmpty($cache->status());
+        var_dump($cache->status());
+    }
 }
