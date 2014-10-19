@@ -2,7 +2,6 @@
 namespace rock\cache;
 
 use rock\cache\filemanager\FileManager;
-use rock\cache\helpers\ArrayHelper;
 
 class CacheFile implements CacheInterface
 {

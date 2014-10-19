@@ -1,7 +1,7 @@
 <?php
 namespace rock\cache;
 
-use rock\cache\helpers\String;
+use rock\helpers\String;
 
 class Exception extends \Exception
 {

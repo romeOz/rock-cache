@@ -2,7 +2,7 @@
 
 namespace rock\cache;
 
-use rock\cache\helpers\Json;
+use rock\helpers\Json;
 
 class Couchbase implements CacheInterface
 {
@@ -213,7 +213,7 @@ class Couchbase implements CacheInterface
     }
 
     /**
-     * Set tags
+     * Adding tags.
      *
      * @param string $key
      * @param array  $tags
@@ -260,8 +260,9 @@ class Couchbase implements CacheInterface
     }
 
     /**
-     * Set lock
-     * Note: Dog-pile" ("cache miss storm") and "race condition" effects
+     * Locking write.
+     *
+     * > Note: Dog-pile" ("cache miss storm") and "race condition" effects
      *
      * @param string $key
      * @param mixed  $value
@@ -284,9 +285,8 @@ class Couchbase implements CacheInterface
         return true;
     }
 
-
     /**
-     * Delete lock
+     * Unlocking write.
      *
      * @param string $key
      * @return bool|\string[]
@@ -301,17 +301,14 @@ class Couchbase implements CacheInterface
         return static::$storage->get(self::LOCK_PREFIX . $key);
     }
 
-
     protected function serialize($value)
     {
         if (!is_array($value)) {
             return $value;
         }
-
         if ($this->serializer & self::SERIALIZE_JSON) {
             return Json::encode($value);
         }
-
         return $value;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace rock\cache;
 
-use rock\cache\helpers\Serialize;
+use rock\helpers\Serialize;
 
 trait CommonTrait
 {
@@ -30,8 +30,10 @@ trait CommonTrait
      */
     public $enabled = true;
 
+
     /**
      * Enabled caching.
+     *
      * @param bool $enabled
      */
     public function enabled($enabled = true)
@@ -41,6 +43,7 @@ trait CommonTrait
 
     /**
      * Add prefix to key.
+     *
      * @param string $prefix
      */
     public function addPrefix($prefix)

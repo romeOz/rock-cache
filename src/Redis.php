@@ -23,7 +23,7 @@ class Redis implements CacheInterface
     }
 
     /**
-     * Get current storage
+     * Get current storage.
      *
      * @return \Redis
      */
@@ -221,8 +221,9 @@ class Redis implements CacheInterface
     }
 
     /**
-     * Set lock
-     * Note: Dog-pile" ("cache miss storm") and "race condition" effects
+     * Locking write.
+     *
+     * > Note: Dog-pile" ("cache miss storm") and "race condition" effects
      *
      * @param string $key
      * @param mixed  $value
@@ -245,9 +246,8 @@ class Redis implements CacheInterface
         return true;
     }
 
-
     /**
-     * Delete lock
+     * Unlocking write.
      *
      * @param string $key
      */
@@ -257,7 +257,7 @@ class Redis implements CacheInterface
     }
 
     /**
-     * Set tags
+     * Adding tags.
      *
      * @param string $key
      * @param array  $tags

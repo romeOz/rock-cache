@@ -2,39 +2,41 @@
 namespace rock\cache;
 
 
-use rock\cache\helpers\SerializeInterface;
+use rock\helpers\SerializeInterface;
 
 interface CacheInterface extends SerializeInterface
 {
     const HASH_MD5 = 1;
     const HASH_SHA = 2;
 
-    const LOCK_PREFIX  = 'lock_';
-    const TAG_PREFIX   = 'tag_';
+    const LOCK_PREFIX = 'lock_';
+    const TAG_PREFIX = 'tag_';
 
     /**
-     * Gets current cache-storage
+     * Gets current cache-storage.
+     *
      * @throws Exception
      * @return \Memcached|\Memcache|\Redis|\Couchbase
      */
     public function getStorage();
 
     /**
-     * Gets prepare key of cache
+     * Gets prepare key of cache.
      *
-     * @param string $key - key of cache
+     * @param string $key key of cache
      * @return bool|string
      */
     public function prepareKey($key);
 
     /**
-     * Add prefix to key
+     * Add prefix to key.
+     *
      * @param string $prefix
      */
     public function addPrefix($prefix);
 
     /**
-     * Gets cache by key
+     * Gets cache by key.
      *
      * @param string $key key of cache
      * @return mixed|bool
@@ -42,7 +44,7 @@ interface CacheInterface extends SerializeInterface
     public function get($key);
 
     /**
-     * Gets multiple cache by keys
+     * Gets multiple cache by keys.
      *
      * @param array $keys keys of cache
      * @return array
@@ -50,70 +52,71 @@ interface CacheInterface extends SerializeInterface
     public function getMulti(array $keys);
 
     /**
-     * Set cache
+     * Set cache.
      *
-     * @param string $key    key - key of cache
-     * @param mixed  $value  content of cache
-     * @param int    $expire time to live (sec)
-     * @param array  $tags   tags
+     * @param string $key key of cache
+     * @param mixed $value content of cache
+     * @param int $expire time to live (sec)
+     * @param array $tags tags
      * @return bool
      */
     public function set($key, $value = null, $expire = 0, array $tags = null);
 
     /**
-     * Set multiple cache
+     * Set multiple cache.
      *
      * ```php
      * $cache = new Memcached;
      * $cache->setMulti(['key_1' => 'text_1', 'key_2' => 'text_2'], 0, ['tag_1', 'tag_2'])
      * ```
      *
-     * @param array  $values
-     * @param int    $expire time to live (sec)
-     * @param array  $tags   names tags
+     * @param array $values
+     * @param int $expire time to live (sec)
+     * @param array $tags names tags
      * @return bool
      */
     public function setMulti($values, $expire = 0, array $tags = null);
 
     /**
-     * Add cache (return false, if already exists on the server)
+     * Adding cache (return false, if already exists on the server).
      *
-     * @param string $key    key of cache
-     * @param mixed  $value  content of cache
-     * @param int    $expire time to live (sec)
-     * @param array  $tags   tags
+     * @param string $key key of cache
+     * @param mixed $value content of cache
+     * @param int $expire time to live (sec)
+     * @param array $tags tags
      * @return bool
      */
     public function add($key, $value = null, $expire = 0, array $tags = null);
 
     /**
-     * Checks existence cache by key
+     * Checks existence cache by key.
      *
      * @param string $key key of cache
      * @return bool
      */
     public function has($key);
+
     /**
-     * Changes expire for cache (TTL)
+     * Changes expire for cache (TTL).
      *
-     * @param string    $key key of cache
-     * @param int       $expire time to live (sec)
+     * @param string $key key of cache
+     * @param int $expire time to live (sec)
      * @return bool
      */
     public function touch($key, $expire = 0);
 
     /**
-     * Changes expire for multiple cache
+     * Changes expire for multiple cache.
      *
-     * @param array    $keys keys of cache
-     * @param int       $expire time to live (sec)
+     * @param array $keys keys of cache
+     * @param int $expire time to live (sec)
      */
     public function touchMulti(array $keys, $expire = 0);
 
     /**
-     * Increment
+     * Increment.
      *
-     * @param string    $key key of cache
+     * @param string $key key of cache
      * @param int $offset
      * @param int $expire time to live (sec)
      * @return mixed
@@ -121,9 +124,9 @@ interface CacheInterface extends SerializeInterface
     public function increment($key, $offset = 1, $expire = 0);
 
     /**
-     * Decrement
+     * Decrement.
      *
-     * @param string    $key key of cache
+     * @param string $key key of cache.
      * @param int $offset
      * @param int $expire time to live (sec)
      * @return mixed
@@ -131,7 +134,7 @@ interface CacheInterface extends SerializeInterface
     public function decrement($key, $offset = 1, $expire = 0);
 
     /**
-     * Removes cache
+     * Removes cache.
      *
      * @param string $key key of cache
      * @return bool
@@ -139,14 +142,14 @@ interface CacheInterface extends SerializeInterface
     public function remove($key);
 
     /**
-     * Removes multiple keys
+     * Removes multiple keys.
      *
      * @param array $keys keys of cache
      */
     public function removeMulti(array $keys);
 
     /**
-     * Gets tag
+     * Gets tag.
      *
      * @param string $tag name of tag
      * @return mixed
@@ -154,7 +157,7 @@ interface CacheInterface extends SerializeInterface
     public function getTag($tag);
 
     /**
-     * Gets tags
+     * Gets tags.
      *
      * @param array $tags names of tags
      * @return mixed
@@ -162,53 +165,55 @@ interface CacheInterface extends SerializeInterface
     public function getMultiTags(array $tags);
 
     /**
-     * Checks existence tag
+     * Checks existence tag.
+     *
      * @param string $tag name of tag
      * @return bool
      */
     public function hasTag($tag);
 
     /**
-     * Removes tag
+     * Removes tag.
+     *
      * @param string $tag name of tag
      * @return bool
      */
     public function removeTag($tag);
 
     /**
-     * Removes multiple tags
+     * Removes multiple tags.
      *
      * @param array $tags names of tags
      */
     public function removeMultiTags(array $tags);
 
     /**
-     * Gets all keys of cache
+     * Gets all keys of cache.
      * @return mixed
      */
     public function getAllKeys();
 
     /**
-     * Gets all cache
+     * Gets all cache.
      * @return mixed
      */
     public function getAll();
 
     /**
-     * Removes all cache
+     * Removes all cache.
      * @return bool
      */
     public function flush();
 
     /**
-     * Get status server of cache
+     * Get status server of cache.
      * @throws Exception
      * @return mixed
      */
     public function status();
 
     /**
-     * Enabled caching
+     * Enabled caching.
      */
     public function enabled();
 }

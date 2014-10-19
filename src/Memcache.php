@@ -71,7 +71,7 @@ class Memcache extends Memcached
     }
 
     /**
-     * Set lock of cache
+     * Locking write.
      * "Dog-pile" ("cache miss storm") and "race condition" effects
      *
      * @param string $key key of cache
@@ -94,8 +94,9 @@ class Memcache extends Memcached
 
 
     /**
-     * Set lock
-     * Note: Dog-pile" ("cache miss storm") and "race condition" effects
+     * Unlocking write.
+     *
+     * > Note: Dog-pile" ("cache miss storm") and "race condition" effects
      *
      * @param string $key key of cache
      * @param mixed $value content of cache
@@ -119,7 +120,7 @@ class Memcache extends Memcached
     }
 
     /**
-     * Set dependency
+     * Adding tags.
      *
      * @param string $key key of cache
      * @param array  $tags list of tags

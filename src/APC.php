@@ -210,8 +210,9 @@ class APC implements CacheInterface
     }
 
     /**
-     * Set lock
-     * Note: Dog-pile" ("cache miss storm") and "race condition" effects
+     * Locking write.
+     *
+     * > Note: Dog-pile" ("cache miss storm") and "race condition" effects
      *
      * @param string $key
      * @param mixed  $value
@@ -235,7 +236,7 @@ class APC implements CacheInterface
     }
 
     /**
-     * Delete lock
+     * Unlocking write.
      *
      * @param string $key
      * @return bool|\string[]
@@ -247,9 +248,9 @@ class APC implements CacheInterface
 
 
     /**
-     * Set tags
+     * Adding tags.
      *
-     * @param string $key
+     * @param string $key key of cache
      * @param array  $tags
      */
     protected function setTags($key, array $tags = null)

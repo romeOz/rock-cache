@@ -7,9 +7,9 @@ use League\Flysystem\Config;
 use League\Flysystem\Filesystem;
 use League\Flysystem\PluginInterface;
 use rock\cache\Exception;
-use rock\cache\helpers\ArrayHelper;
-use rock\cache\helpers\String;
 use rock\cache\ObjectTrait;
+use rock\helpers\ArrayHelper;
+use rock\helpers\String;
 
 /**
  * @method bool deleteDir(string $dirname)
@@ -76,7 +76,7 @@ class FileManager
      * $fileManager->has('cache/file.tmp')
      * $fileManager->has('~/file.tmp$/')
      * ```
-     * @param null    $is
+     * @param null $is
      * @return boolean whether the path exists
      */
     public function has($path, $is = null)
@@ -119,7 +119,7 @@ class FileManager
     /**
      * Read and delete a file.
      *
-     * @param   string  $path
+     * @param   string $path
      * @return  string|false  file contents
      */
     public function readAndDelete($path)
@@ -139,9 +139,9 @@ class FileManager
     /**
      * Write a file
      *
-     * @param  string              $path     path to file
-     * @param  string              $contents file contents
-     * @param  mixed               $config
+     * @param  string $path path to file
+     * @param  string $contents file contents
+     * @param  mixed $config
      * @return boolean             success boolean
      */
     public function write($path, $contents, $config = null)
@@ -157,9 +157,9 @@ class FileManager
     /**
      * Update a file
      *
-     * @param  string                $path     path to file
-     * @param  string                $contents file contents
-     * @param   mixed                $config   Config object or visibility setting
+     * @param  string $path path to file
+     * @param  string $contents file contents
+     * @param   mixed $config Config object or visibility setting
      * @return boolean               success boolean
      */
     public function update($path, $contents, $config = null)
@@ -173,10 +173,10 @@ class FileManager
     }
 
     /**
-     * Rename a file
+     * Rename a file.
      *
-     * @param  string                $path    path to file
-     * @param  string                $newpath new path
+     * @param  string $path path to file
+     * @param  string $newpath new path
      * @return boolean               success boolean
      */
     public function rename($path, $newpath)
@@ -191,6 +191,7 @@ class FileManager
 
     /**
      * Rename file/dir by Mask.
+     *
      * @param       $path
      * @param       $newpath
      * @param array $dataReplace
@@ -204,7 +205,7 @@ class FileManager
     public function renameByMask($path, $newpath, array $dataReplace = [])
     {
         try {
-            $metadata = $this->getFilesystem()->getWithMetadata($path, ['timestamp','mimetype']);
+            $metadata = $this->getFilesystem()->getWithMetadata($path, ['timestamp', 'mimetype']);
         } catch (\Exception $e) {
             $this->errors[] = $e->getMessage();
             return false;
@@ -214,10 +215,10 @@ class FileManager
     }
 
     /**
-     * Copy a file
+     * Copy a file.
      *
-     * @param   string  $path
-     * @param   string  $newpath
+     * @param   string $path
+     * @param   string $newpath
      * @return  boolean
      */
     public function copy($path, $newpath)
@@ -231,7 +232,7 @@ class FileManager
     }
 
     /**
-     * Get a file's metadata
+     * Get a file's metadata.
      *
      * @param  string $path path to file or regexp pattern
      *
@@ -265,7 +266,7 @@ class FileManager
      * $fileManager->getWithMetadata('cache/file.tmp')
      * $fileManager->getWithMetadata('~/file.tmp$/')
      * ```
-     * @param   array   $metadata  metadata keys
+     * @param   array $metadata metadata keys
      * @return  array|boolean   metadata
      */
     public function getWithMetadata($path, array $metadata)
@@ -431,14 +432,14 @@ class FileManager
     /**
      * List the filesystem contents.
      *
-     * @param  string  $directory
+     * @param  string $directory
      *
      * ```php
      * $fileManager->listContents('folder/foo')
      * $fileManager->listContents('~/foo$/')
      * ```
      * @param boolean $recursive
-     * @param null     $is
+     * @param null $is
      * @return array    contents
      */
     public function listContents($directory = '', $recursive = false, $is = null)
@@ -454,7 +455,7 @@ class FileManager
         return isset($is)
             ? array_filter(
                 $result,
-                function($value) use ($is){
+                function ($value) use ($is) {
                     return $value['type'] === $is;
                 }
             )
@@ -465,8 +466,8 @@ class FileManager
      * List all paths.
      *
      * @param string $directory
-     * @param bool   $recursive
-     * @param null   $is
+     * @param bool $recursive
+     * @param null $is
      * @return  array  paths
      */
     public function listPaths($directory = '', $recursive = false, $is = null)
@@ -494,10 +495,10 @@ class FileManager
     /**
      * List contents with metadata.
      *
-     * @param array  $keys metadata keys
+     * @param array $keys metadata keys
      * @param string $directory
-     * @param bool   $recursive
-     * @param null   $is
+     * @param bool $recursive
+     * @param null $is
      * @return  array            listing with metadata
      */
     public function listWith(array $keys = [], $directory = '', $recursive = false, $is = null)
@@ -512,7 +513,7 @@ class FileManager
         return isset($is)
             ? array_filter(
                 $result,
-                function($value) use ($is){
+                function ($value) use ($is) {
                     return $value['type'] === $is;
                 }
             )
@@ -557,7 +558,7 @@ class FileManager
 
     protected function searchDirByPattern($pattern, $recursive = false, $is = null)
     {
-        $result =[];
+        $result = [];
         foreach ($this->getFilesystem()->listContents('', $recursive) as $data) {
             if (isset($is) && $data['type'] !== $is) {
                 continue;
@@ -573,7 +574,7 @@ class FileManager
 
     protected function searchFilesWithByPattern(array $keys = [], $pattern, $recursive = false, $is = null)
     {
-        $result =[];
+        $result = [];
         foreach ($this->getFilesystem()->listWith($keys, '', $recursive) as $data) {
             if (isset($is) && $data['type'] !== $is) {
                 continue;

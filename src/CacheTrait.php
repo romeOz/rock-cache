@@ -2,7 +2,7 @@
 
 namespace rock\cache;
 
-use rock\cache\helpers\Serialize;
+use rock\helpers\Serialize;
 
 trait CacheTrait
 {

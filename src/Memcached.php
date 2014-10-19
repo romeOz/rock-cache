@@ -1,7 +1,6 @@
 <?php
 namespace rock\cache;
-
-use rock\cache\helpers\Json;
+use rock\helpers\Json;
 
 /**
  * Memcached storage
@@ -269,8 +268,9 @@ class Memcached implements CacheInterface
     }
 
     /**
-     * Set lock
-     * Note: Dog-pile" ("cache miss storm") and "race condition" effects
+     * Locking write.
+     *
+     * > Note: Dog-pile" ("cache miss storm") and "race condition" effects
      *
      * @param string $key key of cache
      * @param mixed  $value
@@ -294,7 +294,7 @@ class Memcached implements CacheInterface
     }
 
     /**
-     * Delete lock
+     * Unlocking write.
      *
      * @param string $key
      * @return bool|string[]

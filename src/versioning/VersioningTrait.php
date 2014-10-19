@@ -94,9 +94,9 @@ trait VersioningTrait
     }
 
     /**
-     * Set tags
+     * Adding tags.
      *
-     * @param string $key
+     * @param string $key key of cache
      * @param array  $tags
      * @param        $value
      */
@@ -116,4 +116,4 @@ trait VersioningTrait
             $value['tags'][$tag] = $timestamp;
         }
     }
-} 
+}

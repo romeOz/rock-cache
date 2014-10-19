@@ -21,7 +21,6 @@ trait ObjectTrait
     {
         foreach ($properties as $name => $value) {
             $this->$name = $value;
-
         }
     }
 } 
