@@ -50,7 +50,7 @@ class APCTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider providerCache
      */
-    public function testHasByTouchFalse(CacheInterface $cache)
+    public function testExistsByTouchFalse(CacheInterface $cache)
     {
         $this->markTestSkipped('Skipping: ' . __METHOD__);
     }

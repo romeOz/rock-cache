@@ -44,7 +44,7 @@ trait VersioningTrait
     /**
      * @inheritdoc
      */
-    public function has($key)
+    public function exists($key)
     {
         return (bool)$this->get($key);
     }

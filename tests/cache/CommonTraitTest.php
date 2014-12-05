@@ -246,47 +246,47 @@ trait CommonTraitTest
     /**
      * @dataProvider providerCache
      */
-    public function testHasTrue(CacheInterface $cache)
+    public function testExistsTrue(CacheInterface $cache)
     {
         /** @var $this \PHPUnit_Framework_TestCase */
 
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
-        $this->assertTrue($cache->has('key2'), 'should be get: true');
+        $this->assertTrue($cache->exists('key2'), 'should be get: true');
     }
 
     /**
      * @dataProvider providerCache
      */
-    public function testHasFalse(CacheInterface $cache)
+    public function testExistsFalse(CacheInterface $cache)
     {
         /** @var $this \PHPUnit_Framework_TestCase */
 
-        $this->assertFalse($cache->has('key9'), 'should be get: false');
+        $this->assertFalse($cache->exists('key9'), 'should be get: false');
     }
 
     /**
      * @dataProvider providerCache
      */
-    public function testHasByTouchFalse(CacheInterface $cache)
+    public function testExistsByTouchFalse(CacheInterface $cache)
     {
         /** @var $this \PHPUnit_Framework_TestCase */
 
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->touch('key1', 1), 'should be get: true');
         sleep(2);
-        $this->assertFalse($cache->has('key1'), 'should be get: false');
+        $this->assertFalse($cache->exists('key1'), 'should be get: false');
     }
 
     /**
      * @dataProvider providerCache
      */
-    public function testHasByRemoveFalse(CacheInterface $cache)
+    public function testExistsByRemoveFalse(CacheInterface $cache)
     {
         /** @var $this \PHPUnit_Framework_TestCase */
 
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->remove('key1'), 'should be get: true');
-        $this->assertFalse($cache->has('key1'), 'should be get: false');
+        $this->assertFalse($cache->exists('key1'), 'should be get: false');
     }
 
     /**
@@ -370,7 +370,7 @@ trait CommonTraitTest
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
         $cache->removeMulti(['key2']);
-        $this->assertTrue($cache->has('key1'), 'should be get: true');
+        $this->assertTrue($cache->exists('key1'), 'should be get: true');
         $this->assertFalse($cache->get('key2'), 'should be get: false');
     }
 
@@ -441,7 +441,7 @@ trait CommonTraitTest
     /**
      * @dataProvider providerCache
      */
-    public function testHasTag(CacheInterface $cache)
+    public function testExistsTag(CacheInterface $cache)
     {
         /** @var $this \PHPUnit_Framework_TestCase */
 
@@ -454,7 +454,7 @@ trait CommonTraitTest
     /**
      * @dataProvider providerCache
      */
-    public function testHasTagFalse(CacheInterface $cache)
+    public function testExistsTagFalse(CacheInterface $cache)
     {
         /** @var $this \PHPUnit_Framework_TestCase */
 

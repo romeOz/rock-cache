@@ -116,7 +116,7 @@ Set multiple cache.
 Add cache.
 >Return false, if already exists on the server.
 
-####has($key)
+####exists($key)
 Checks existence cache by key.
 
 ####touch($key, $expire = 0)

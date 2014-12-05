@@ -78,7 +78,7 @@ class Memcached implements CacheInterface
             return false;
         }
 
-        if ($this->has($key)) {
+        if ($this->exists($key)) {
             return false;
         }
 
@@ -88,7 +88,7 @@ class Memcached implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function has($key)
+    public function exists($key)
     {
         return (bool)static::$storage->get($this->prepareKey($key));
     }
@@ -124,7 +124,7 @@ class Memcached implements CacheInterface
     public function decrement($key, $offset = 1, $expire = 0)
     {
         $hash = $this->prepareKey($key);
-        if ($this->has($key) === false) {
+        if ($this->exists($key) === false) {
             return false;
         }
 

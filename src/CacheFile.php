@@ -93,7 +93,7 @@ class CacheFile implements CacheInterface
         }
 
         $this->preparePaths($this->prepareKey($key), $this->prepareTags($tags));
-        if ($this->has($key)) {
+        if ($this->exists($key)) {
             return false;
         }
 
@@ -103,7 +103,7 @@ class CacheFile implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function has($key)
+    public function exists($key)
     {
         if ($this->enabled === false) {
             return false;

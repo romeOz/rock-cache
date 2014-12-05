@@ -73,7 +73,7 @@ class Couchbase implements CacheInterface
             return false;
         }
 
-        if ($this->has($key)) {
+        if ($this->exists($key)) {
             return false;
         }
 
@@ -95,7 +95,7 @@ class Couchbase implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function has($key)
+    public function exists($key)
     {
         $key = $this->prepareKey($key);
         if (static::$storage->add($key, true)) {
@@ -124,7 +124,7 @@ class Couchbase implements CacheInterface
     public function decrement($key, $offset = 1, $expire = 0)
     {
         $hash = $this->prepareKey($key);
-        if ($this->has($key) === false) {
+        if ($this->exists($key) === false) {
             return false;
         }
 
