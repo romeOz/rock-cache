@@ -98,8 +98,8 @@ class Redis implements CacheInterface
     public function increment($key, $offset = 1, $expire = 0)
     {
         $hash = $this->prepareKey($key);
-        if ($this->has($key) === false) {
-            static::$storage->setex($hash, $expire, $offset);
+        if ($this->has($key)) {
+            $expire > 0 ? static::$storage->setex($key, $expire, $offset) : static::$storage->set($key, $offset);
             return $offset;
         }
 
