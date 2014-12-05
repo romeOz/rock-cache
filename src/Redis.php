@@ -99,7 +99,7 @@ class Redis implements CacheInterface
     {
         $hash = $this->prepareKey($key);
         if ($this->exists($key) === false) {
-            $expire > 0 ? static::$storage->setex($key, $expire, 0) : static::$storage->set($key, 0);
+            $this->provideLock($hash, 0, $expire);
         }
 
         return static::$storage->incrBy($hash, $offset);
