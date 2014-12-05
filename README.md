@@ -173,44 +173,28 @@ Get status server of cache.
 ####getStorage()
 Gets current cache-storage.
 
-
-[Demo](http://demo.cache.framerock.net/) & Tests
+Demo & Tests (one of three ways)
 -------------------
 
-Destination:
+####1. [Destination](http://demo.cache.framerock.net/)
 
-[**DEMO**](http://demo.cache.framerock.net/)
+####2. Docker + Ansible (see [out of the box](https://github.com/romeOz/vagrant-rock-cache#out-of-the-box))
 
-or local:
+ * `docker run -d -p 8080:80 romeoz/vagrant-rock-cache`
+ * Open demo [http://localhost:8080/](http://localhost:8080/)
+ 
+####3. Vagrant + Ansible (see [out of the box](https://github.com/romeOz/vagrant-rock-cache#out-of-the-box))
 
-Use a specially prepared environment (Vagrant + Ansible) with preinstalled and configured storages.
-
-###Out of the box:
-
- * Ubuntu 14.04 64 bit
-
-> If you need to use 32 bit of Ubuntu, then uncomment `config.vm.box_url` the appropriate version in the file `/path/to/Vagrantfile`.
-
- * Nginx 1.6
- * PHP-FPM 5.5
- * Composer
- * Couhbase 3.0.0 + pecl couchbase-1.2.2
- * Redis 2.8 + php5-redis
- * Memcached 1.4.14 + php5_memcached + php5_memcache
- * Local IP loop on Host machine /etc/hosts and Virtual hosts in Nginx already set up!
-
-###Installation:
-
-1. [Install Composer](https://getcomposer.org/doc/00-intro.md#globally)
-2. ```composer create-project --prefer-dist --stability=dev romeoz/rock-cache```
-3. [Install Vagrant](https://www.vagrantup.com/downloads), and additional Vagrant plugins ```vagrant plugin install vagrant-hostsupdater vagrant-vbguest vagrant-cachier```
-4. ```vagrant up```
-5. Open demo [http://rock.cache/](http://rock.cache/) or [http://192.168.33.33/](http://192.168.33.33/)
+ * `git clone https://github.com/romeOz/vagrant-rock-cache.git`
+ * [Install Vagrant](https://www.vagrantup.com/downloads), and additional Vagrant plugins `vagrant plugin install vagrant-hostsupdater vagrant-vbguest vagrant-cachier`
+ * `vagrant up`
+ 5. Open demo [http://rock.cache/](http://rock.cache/) or [http://192.168.33.33/](http://192.168.33.33/)
 
 > Work/editing the project can be done via ssh:
+
 ```bash
 vagrant ssh
-cd /var/www/
+cd /var/www/rock-cache
 ```
 
 Requirements
