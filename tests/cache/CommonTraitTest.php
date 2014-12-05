@@ -447,7 +447,7 @@ trait CommonTraitTest
 
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
-        $this->assertTrue($cache->hasTag('foo'), 'should be get: true');
+        $this->assertTrue($cache->existsTag('foo'), 'should be get: true');
     }
 
 
@@ -458,7 +458,7 @@ trait CommonTraitTest
     {
         /** @var $this \PHPUnit_Framework_TestCase */
 
-        $this->assertFalse($cache->hasTag('baz'), 'should be get: false');
+        $this->assertFalse($cache->existsTag('baz'), 'should be get: false');
     }
 
     /**

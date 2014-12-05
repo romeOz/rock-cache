@@ -24,7 +24,7 @@ class APC extends \rock\cache\APC implements CacheInterface
      */
     public function removeTag($tag)
     {
-        if (!$this->hasTag($tag)) {
+        if (!$this->existsTag($tag)) {
             return false;
         }
         return $this->provideLock($this->prepareTag($tag), microtime(), 0);

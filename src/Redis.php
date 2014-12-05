@@ -151,7 +151,7 @@ class Redis implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function hasTag($tag)
+    public function existsTag($tag)
     {
         return static::$storage->exists($this->prepareTag($tag));
     }

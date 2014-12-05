@@ -143,7 +143,7 @@ Gets the keys of cache in accordance with the tag.
 ####getMultiTags(array $tags)
 Gets the keys of cache in accordance with the multiple tags.
 
-####hasTag($tag)
+####existsTag($tag)
 Checks existence tag.
 
 ####removeTag($tag)

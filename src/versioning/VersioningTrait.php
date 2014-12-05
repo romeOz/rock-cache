@@ -5,6 +5,7 @@ namespace rock\cache\versioning;
 
 trait VersioningTrait
 {
+
     /**
      * @inheritdoc
      */

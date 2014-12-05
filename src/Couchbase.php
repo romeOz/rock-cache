@@ -150,7 +150,7 @@ class Couchbase implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function hasTag($tag)
+    public function existsTag($tag)
     {
         $tag = $this->prepareTag($tag);
         if (static::$storage->add($tag, true)) {

@@ -170,7 +170,7 @@ interface CacheInterface extends SerializeInterface
      * @param string $tag name of tag
      * @return bool
      */
-    public function hasTag($tag);
+    public function existsTag($tag);
 
     /**
      * Removes tag.
