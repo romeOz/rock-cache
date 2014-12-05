@@ -23,23 +23,7 @@ trait CommonTrait
      * @var int
      */
     public $serializer = self::SERIALIZE_PHP;
-    /**
-     * Enabled cache.
-     *
-     * @var bool
-     */
-    public $enabled = true;
 
-
-    /**
-     * Enabled caching.
-     *
-     * @param bool $enabled
-     */
-    public function enabled($enabled = true)
-    {
-        $this->enabled = $enabled;
-    }
 
     /**
      * Add prefix to key.

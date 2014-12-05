@@ -17,7 +17,7 @@ class APCTest extends \PHPUnit_Framework_TestCase
 
     public static function flush()
     {
-        (new APC(['enabled' => true]))->flush();
+        (new APC())->flush();
     }
 
     public function init($serialize)
@@ -27,7 +27,7 @@ class APCTest extends \PHPUnit_Framework_TestCase
                 'The APC is not available.'
             );
         }
-        return new APC(['enabled' => true, 'serializer' => $serialize]);
+        return new APC(['serializer' => $serialize]);
     }
 
     /**

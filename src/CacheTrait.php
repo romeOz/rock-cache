@@ -30,7 +30,7 @@ trait CacheTrait
 
     protected function provideGet($key)
     {
-        if ($this->enabled === false || empty($key)) {
+        if (empty($key)) {
             return false;
         }
 

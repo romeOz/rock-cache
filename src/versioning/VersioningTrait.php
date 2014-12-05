@@ -11,7 +11,7 @@ trait VersioningTrait
      */
     public function set($key, $value = null, $expire = 0, array $tags = null)
     {
-        if (empty($key) || $this->enabled === false) {
+        if (empty($key)) {
             return false;
         }
         $key = $this->prepareKey($key);

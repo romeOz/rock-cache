@@ -60,7 +60,6 @@ class CacheFileTest extends \PHPUnit_Framework_TestCase
     public function init($serialize)
     {
         return new CacheFile([
-                                 'enabled' => true,
                                  'adapter' => static::getFileManager(),
                                  'serializer' => $serialize
                              ]);
@@ -79,7 +78,6 @@ class CacheFileTest extends \PHPUnit_Framework_TestCase
     {
         (new CacheFile(
             [
-                'enabled' => true,
                 'adapter' => static::getFileManager(),
             ]
         ))->flush();

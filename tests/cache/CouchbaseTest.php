@@ -15,7 +15,7 @@ class CouchbaseTest extends \PHPUnit_Framework_TestCase
 
     public static function flush()
     {
-        (new Couchbase(['enabled' => true]))->flush();
+        (new Couchbase())->flush();
     }
 
     public function init($serialize)
@@ -25,7 +25,7 @@ class CouchbaseTest extends \PHPUnit_Framework_TestCase
                 'The Couchbase is not available.'
             );
         }
-        return new Couchbase(['enabled' => true, 'serializer' => $serialize]);
+        return new Couchbase(['serializer' => $serialize]);
     }
 
     /**

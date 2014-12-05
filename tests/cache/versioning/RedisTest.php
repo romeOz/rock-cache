@@ -16,7 +16,7 @@ class RedisTest extends \PHPUnit_Framework_TestCase
 
     public static function flush()
     {
-        (new Redis(['enabled' => true]))->flush();
+        (new Redis())->flush();
     }
 
     public function init($serialize)
@@ -26,7 +26,7 @@ class RedisTest extends \PHPUnit_Framework_TestCase
                 'The \Redis is not available.'
             );
         }
-        return new Redis(['enabled' => true, 'serializer' => $serialize]);
+        return new Redis(['serializer' => $serialize]);
     }
 
     /**

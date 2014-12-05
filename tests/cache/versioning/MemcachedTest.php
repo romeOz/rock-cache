@@ -16,7 +16,7 @@ class MemcachedTest extends \PHPUnit_Framework_TestCase
 
     public static function flush()
     {
-        (new Memcached(['enabled' => true]))->flush();
+        (new Memcached())->flush();
     }
 
     public function init($serialize)
@@ -26,7 +26,7 @@ class MemcachedTest extends \PHPUnit_Framework_TestCase
                 'The \Memcached is not available.'
             );
         }
-        return new Memcached(['enabled' => true, 'serializer' => $serialize]);
+        return new Memcached(['serializer' => $serialize]);
     }
 
     /**

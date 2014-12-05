@@ -10,6 +10,7 @@ class CacheStubTest extends \PHPUnit_Framework_TestCase
 {
     /** @var  CacheStub */
     protected $storage;
+
     protected function setUp()
     {
         $this->storage = new CacheStub();
@@ -22,7 +23,6 @@ class CacheStubTest extends \PHPUnit_Framework_TestCase
     {
         $this->storage->getStorage();
     }
-
 
     public function testGet()
     {
@@ -109,4 +109,3 @@ class CacheStubTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->storage->status());
     }
 }
- 
