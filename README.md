@@ -17,6 +17,7 @@ What storages can be used:
  * [APCu](http://pecl.php.net/package/APCu)
  * [Redis](http://redis.io)
  * [Couchbase](http://www.couchbase.com)
+ * CacheStub (stub for caching) 
 
 All storage objects have one interface, so you can switch them without changing the working code.
 
@@ -28,6 +29,7 @@ Features
  * Autolocker - "dog-pile"/"cache miss storm"/"race condition" effects are excluded
  * Serializer for value (json or PHP serializer)
  * Automatic unserialization
+ * Stub for caching
 
 Installation
 -------------------
