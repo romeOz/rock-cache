@@ -119,7 +119,7 @@ interface CacheInterface extends SerializeInterface
      * @param string $key key of cache
      * @param int $offset
      * @param int $expire time to live (sec)
-     * @return mixed
+     * @return int
      */
     public function increment($key, $offset = 1, $expire = 0);
 
@@ -129,7 +129,7 @@ interface CacheInterface extends SerializeInterface
      * @param string $key key of cache.
      * @param int $offset
      * @param int $expire time to live (sec)
-     * @return mixed
+     * @return int|bool
      */
     public function decrement($key, $offset = 1, $expire = 0);
 

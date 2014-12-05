@@ -111,8 +111,8 @@ class Couchbase implements CacheInterface
     public function increment($key, $offset = 1, $expire = 0)
     {
         $hash = $this->prepareKey($key);
-        if ($this->has($key) === false) {
-            $this->provideLock($hash, 0, $expire);
+        if (static::$storage->add($hash, $offset, $expire)) {
+            return $offset;
         }
 
         return static::$storage->increment($hash, $offset, false, $expire);
@@ -128,7 +128,7 @@ class Couchbase implements CacheInterface
             return false;
         }
 
-        return static::$storage->decrement($hash, $offset, $expire);
+        return static::$storage->decrement($hash, $offset, false, $expire);
     }
 
     /**
