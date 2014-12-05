@@ -73,7 +73,6 @@ interface CacheInterface extends SerializeInterface
      * @param array $values
      * @param int $expire time to live (sec)
      * @param array $tags names tags
-     * @return bool
      */
     public function setMulti($values, $expire = 0, array $tags = null);
 
@@ -119,7 +118,7 @@ interface CacheInterface extends SerializeInterface
      * @param string $key key of cache
      * @param int $offset
      * @param int $expire time to live (sec)
-     * @return int
+     * @return int|bool
      */
     public function increment($key, $offset = 1, $expire = 0);
 
@@ -160,7 +159,7 @@ interface CacheInterface extends SerializeInterface
      * Gets tags.
      *
      * @param array $tags names of tags
-     * @return mixed
+     * @return array
      */
     public function getMultiTags(array $tags);
 
@@ -189,13 +188,14 @@ interface CacheInterface extends SerializeInterface
 
     /**
      * Gets all keys of cache.
-     * @return mixed
+     * @return array
      */
     public function getAllKeys();
 
     /**
      * Gets all cache.
-     * @return mixed
+     * @return array
+     * @throws Exception
      */
     public function getAll();
 
