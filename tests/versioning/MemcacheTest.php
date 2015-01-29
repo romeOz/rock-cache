@@ -11,9 +11,15 @@ use rockunit\CommonCache;
  */
 class MemcacheTest extends CommonCache
 {
-
-    public static function flush()
+    public function setUp()
     {
+        if (!class_exists('\Memcache')) {
+            $this->markTestSkipped(
+                'The Memcache is not available.'
+            );
+
+        }
+
         (new Memcache())->flush();
     }
 

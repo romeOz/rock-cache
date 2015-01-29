@@ -12,9 +12,14 @@ use rockunit\CommonCache;
  */
 class RedisTest extends CommonCache
 {
-
-    public static function flush()
+    public function setUp()
     {
+        if (!class_exists('\Redis')) {
+            $this->markTestSkipped(
+                'The \Redis is not available.'
+            );
+        }
+
         (new Redis())->flush();
     }
 

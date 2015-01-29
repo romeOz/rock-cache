@@ -11,8 +11,14 @@ use rock\cache\CacheInterface;
  */
 class APCTest extends CommonCache
 {
-    public static function flush()
+    public function setUp()
     {
+        if (!extension_loaded('apc')) {
+            $this->markTestSkipped(
+                'The APC is not available.'
+            );
+        }
+
         (new APC())->flush();
     }
 

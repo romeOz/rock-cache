@@ -7,14 +7,7 @@ use rock\cache\CacheInterface;
 
 abstract class CommonCache extends \PHPUnit_Framework_TestCase
 {
-    public static function flush(){}
-
     public function setUp()
-    {
-        static::flush();
-    }
-
-    public static function tearDownAfterClass()
     {
         static::flush();
     }

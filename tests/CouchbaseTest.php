@@ -10,8 +10,19 @@ use rock\cache\Couchbase;
  */
 class CouchbaseTest extends CommonCache
 {
-    public static function flush()
+    public function setUp()
     {
+        if (!class_exists('\Couchbase')) {
+            $this->markTestSkipped(
+                'The Couchbase is not available.'
+            );
+
+        } elseif(defined('HHVM_VERSION')) {
+            $this->markTestSkipped(
+                'Couchbase does not seem to support HHVM right now.'
+            );
+        }
+
         (new Couchbase())->flush();
     }
 
