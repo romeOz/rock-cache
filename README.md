@@ -30,6 +30,7 @@ Features
  * Serializer for value (json or PHP serializer)
  * Automatic unserialization
  * Stub for caching
+ * Module for [Rock Framework](https://github.com/romeOz/rock)
 
 Installation
 -------------------
