@@ -1,9 +1,14 @@
 <?php
 namespace rock\cache;
+
+use rock\base\BaseException;
+use rock\events\EventsInterface;
 use rock\helpers\Json;
+use rock\log\Log;
 
 /**
- * Memcached storage
+ * Memcached storage.
+ *
  * if use expire "0", then time to live infinitely
  *
  * ```php
@@ -16,24 +21,24 @@ use rock\helpers\Json;
  * ```
  *
  */
-class Memcached implements CacheInterface
+class Memcached implements CacheInterface, EventsInterface
 {
     use CacheTrait {
         CacheTrait::__construct as parentConstruct;
     }
 
     /** @var  \Memcached */
-    protected static $storage;
+    public $storage;
     public $servers = [['localhost', 11211]];
 
-    public function __construct(array $config = [])
+    public function __construct($config = [])
     {
         $this->parentConstruct($config);
-        static::$storage = new \Memcached();
-        static::$storage->addServers($this->servers);
-        static::$storage->setOption(\Memcached::OPT_COMPRESSION, true);
+        $this->storage = new \Memcached();
+        $this->storage->addServers($this->servers);
+        $this->storage->setOption(\Memcached::OPT_COMPRESSION, true);
         if ($this->serializer !== self::SERIALIZE_JSON) {
-            static::$storage->setOption(\Memcached::OPT_SERIALIZER, \Memcached::SERIALIZER_PHP);
+            $this->storage->setOption(\Memcached::OPT_SERIALIZER, \Memcached::SERIALIZER_PHP);
         }
     }
 
@@ -44,7 +49,7 @@ class Memcached implements CacheInterface
      */
     public function getStorage()
     {
-        return static::$storage;
+        return $this->storage;
     }
 
     /**
@@ -58,7 +63,7 @@ class Memcached implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function set($key, $value = null, $expire = 0, array $tags = null)
+    public function set($key, $value = null, $expire = 0, array $tags = [])
     {
         if (empty($key)) {
             return false;
@@ -72,7 +77,7 @@ class Memcached implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function add($key, $value = null, $expire = 0, array $tags = null)
+    public function add($key, $value = null, $expire = 0, array $tags = [])
     {
         if (empty($key)) {
             return false;
@@ -90,7 +95,7 @@ class Memcached implements CacheInterface
      */
     public function exists($key)
     {
-        return (bool)static::$storage->get($this->prepareKey($key));
+        return (bool)$this->storage->get($this->prepareKey($key));
     }
 
     /**
@@ -108,27 +113,33 @@ class Memcached implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function increment($key, $offset = 1, $expire = 0)
+    public function increment($key, $offset = 1, $expire = 0, $create = true)
     {
         $hash = $this->prepareKey($key);
-        if (static::$storage->add($hash, $offset, $expire)) {
-            return $offset;
+        if ($this->exists($key) === false) {
+            if ($create === false) {
+                return false;
+            }
+            $this->storage->add($hash, 0, $expire);
         }
 
-        return static::$storage->increment($hash, $offset);
+        return $this->storage->increment($hash, $offset);
     }
 
     /**
      * @inheritdoc
      */
-    public function decrement($key, $offset = 1, $expire = 0)
+    public function decrement($key, $offset = 1, $expire = 0, $create = true)
     {
         $hash = $this->prepareKey($key);
         if ($this->exists($key) === false) {
-            return false;
+            if ($create === false) {
+                return false;
+            }
+            $this->storage->add($hash, 1, $expire);
         }
 
-        return static::$storage->decrement($hash, $offset);
+        return $this->storage->decrement($hash, $offset);
     }
 
     /**
@@ -136,7 +147,7 @@ class Memcached implements CacheInterface
      */
     public function remove($key)
     {
-        return static::$storage->delete($this->prepareKey($key));
+        return $this->storage->delete($this->prepareKey($key));
     }
 
     /**
@@ -150,7 +161,7 @@ class Memcached implements CacheInterface
             },
             $keys
         );
-        static::$storage->deleteMulti($keys);
+        $this->storage->deleteMulti($keys);
     }
 
     /**
@@ -158,7 +169,7 @@ class Memcached implements CacheInterface
      */
     public function getTag($tag)
     {
-        return $this->unserialize(static::$storage->get($this->prepareTag($tag)));
+        return $this->unserialize($this->storage->get($this->prepareTag($tag)));
     }
 
     /**
@@ -166,7 +177,7 @@ class Memcached implements CacheInterface
      */
     public function existsTag($tag)
     {
-        return (bool)static::$storage->get($this->prepareTag($tag));
+        return (bool)$this->storage->get($this->prepareTag($tag));
     }
 
     /**
@@ -175,12 +186,12 @@ class Memcached implements CacheInterface
     public function removeTag($tag)
     {
         $tag = $this->prepareTag($tag);
-        if (!$value = static::$storage->get($tag)) {
+        if (!$value = $this->storage->get($tag)) {
             return false;
         }
         $value = $this->unserialize($value);
         $value[] = $tag;
-        static::$storage->deleteMulti($value);
+        $this->storage->deleteMulti($value);
 
         return true;
     }
@@ -190,7 +201,7 @@ class Memcached implements CacheInterface
      */
     public function getAllKeys()
     {
-        return static::$storage->getAllKeys();
+        return $this->storage->getAllKeys();
     }
 
     /**
@@ -198,7 +209,7 @@ class Memcached implements CacheInterface
      */
     public function getAll()
     {
-        return static::$storage->fetchAll();
+        return $this->storage->fetchAll();
     }
 
     /**
@@ -206,7 +217,7 @@ class Memcached implements CacheInterface
      */
     public function flush()
     {
-        return static::$storage->flush();
+        return $this->storage->flush();
     }
 
     /**
@@ -214,23 +225,24 @@ class Memcached implements CacheInterface
      */
     public function status()
     {
-        return static::$storage->getStats();
+        return $this->storage->getStats();
     }
+
 
     /**
      * Set tags
      *
-     * @param string $key
-     * @param array  $tags
+     * @param string $key key of cache
+     * @param array  $tags list of tags
      */
-    protected function setTags($key, array $tags = null)
+    protected function setTags($key, array $tags = [])
     {
         if (empty($tags)) {
             return;
         }
 
         foreach ($this->prepareTags($tags) as $tag) {
-            if (($keys = static::$storage->get($tag)) !== false) {
+            if (($keys = $this->storage->get($tag)) !== false) {
                 $keys = $this->unserialize($keys);
                 if (in_array($key, $keys, true)) {
                     continue;
@@ -246,19 +258,17 @@ class Memcached implements CacheInterface
 
     protected function getLock($key)
     {
-        return static::$storage->get(self::LOCK_PREFIX . $key);
+        return $this->storage->get(self::LOCK_PREFIX . $key);
     }
 
-    /**
-     * @param string $key
-     * @param mixed $value
-     * @param int $expire
-     * @return bool
-     */
     protected function provideLock($key, $value, $expire)
     {
+        if ($this->lock === false) {
+            $this->storage->set($key, $value, $expire);
+            return true;
+        }
         if ($this->lock($key, $value)) {
-            static::$storage->set($key, $value, $expire);
+            $this->storage->set($key, $value, $expire);
             $this->unlock($key);
 
             return true;
@@ -268,23 +278,26 @@ class Memcached implements CacheInterface
     }
 
     /**
-     * Locking write.
+     * Set lock.
      *
-     * > Note: Dog-pile" ("cache miss storm") and "race condition" effects
+     * > Dog-pile" ("cache miss storm") and "race condition" effects
      *
      * @param string $key key of cache
-     * @param mixed  $value
-     * @param int    $max
+     * @param mixed $value content of cache
+     * @param int    $max max iteration
      * @return bool
      */
     protected function lock($key, $value, $max = 15)
     {
         $iteration = 0;
 
-        while (!static::$storage->add(self::LOCK_PREFIX . $key, $value, 5)) {
+        while (!$this->storage->add(self::LOCK_PREFIX . $key, $value, 5)) {
             $iteration++;
             if ($iteration > $max) {
-                //throw new Exception( Exception::INVALID_SAVE, 0, ['key' => $key]);
+                if (class_exists('\rock\log\Log')) {
+                    $message = BaseException::convertExceptionToString(new CacheException(CacheException::INVALID_SAVE, ['key' => $key]));
+                    Log::err($message);
+                }
                 return false;
             }
             usleep(1000);
@@ -294,15 +307,16 @@ class Memcached implements CacheInterface
     }
 
     /**
-     * Unlocking write.
+     * Delete lock
      *
      * @param string $key
      * @return bool|string[]
      */
     protected function unlock($key)
     {
-        return static::$storage->delete(self::LOCK_PREFIX . $key);
+        return $this->storage->delete(self::LOCK_PREFIX . $key);
     }
+
 
     protected function serialize($value)
     {

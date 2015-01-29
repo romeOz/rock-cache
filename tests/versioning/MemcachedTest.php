@@ -1,90 +1,72 @@
 <?php
-namespace rockunit\cache\versioning;
 
+namespace rockunit\core\cache\versioning;
 
 use rock\cache\CacheInterface;
-use rock\cache\Exception;
-use rock\cache\versioning\APC;
-use rockunit\cache\CommonTraitTest;
+use rock\cache\versioning\Memcached;
+use rockunit\CacheTestTrait;
 
 /**
  * @group cache
- * @group apc
+ * @group memcached
  */
-class APCTest extends \PHPUnit_Framework_TestCase
+class MemcachedTest extends \PHPUnit_Framework_TestCase
 {
-    use  CommonTraitTest;
+    use CacheTestTrait;
 
     public static function flush()
     {
-        (new APC())->flush();
+        (new Memcached())->flush();
     }
 
-    public function init($serialize)
+    public function init($serialize, $lock)
     {
-        if (!extension_loaded('apc')) {
+        if (!class_exists('\Memcached')) {
             $this->markTestSkipped(
-                'The APC is not available.'
+                'The \Memcached is not available.'
             );
         }
-        return new APC(['serializer' => $serialize]);
+        return new Memcached(['serializer' => $serialize, 'lock' => $lock]);
     }
 
     /**
      * @dataProvider providerCache
-     * @expectedException Exception
      */
     public function testGetStorage(CacheInterface $cache)
     {
-        $cache->getStorage();
+        $this->assertTrue($cache->getStorage() instanceof \Memcached);
     }
 
     /**
      * @dataProvider providerCache
      */
-    public function testTtl(CacheInterface $cache)
+    public function testGetAll(CacheInterface $cache)
     {
-        $this->markTestSkipped('Skipping: ' . __METHOD__);
+        $this->assertTrue($cache->set('key5', 'foo'), 'should be get: true');
+        $this->assertTrue($cache->set('key6', ['bar', 'baz']), 'should be get: true');
+        $this->assertFalse($cache->getAll());
     }
 
     /**
      * @dataProvider providerCache
      */
-    public function testExistsByTouchFalse(CacheInterface $cache)
+    public function testTtlDecrement(CacheInterface $cache)
     {
-        $this->markTestSkipped('Skipping: ' . __METHOD__);
+        $this->assertEquals($cache->increment('key7', 5), 5, 'should be get: 5');
+        $this->assertEquals($cache->decrement('key7', 2, 1), 3, 'should be get: 3');
+        sleep(2);
+        $this->assertFalse($cache->get('key7'), 'should be get: false');
     }
 
     /**
      * @dataProvider providerCache
      */
-    public function testTouch(CacheInterface $cache)
+    public function testHasTtlDecrement(CacheInterface $cache)
     {
-        $this->markTestSkipped('Skipping: ' . __METHOD__);
-    }
-
-    /**
-     * @dataProvider providerCache
-     */
-    public function testTouchMultiTrue(CacheInterface $cache)
-    {
-        $this->markTestSkipped('Skipping: ' . __METHOD__);
-    }
-
-    /**
-     * @dataProvider providerCache
-     */
-    public function testTouchMultiFalse(CacheInterface $cache)
-    {
-        $this->markTestSkipped('Skipping: ' . __METHOD__);
-    }
-
-    /**
-     * @dataProvider providerCache
-     */
-    public function testIncrementWithTtl(CacheInterface $cache)
-    {
-        $this->markTestSkipped('Skipping: ' . __METHOD__);
+        $this->assertEquals($cache->increment('key7', 5), 5, 'should be get: 5');
+        $this->assertEquals($cache->decrement('key7', 2, 1), 3, 'should be get: 3');
+        sleep(2);
+        $this->assertFalse($cache->exists('key7'), 'should be get: false');
     }
 
     /**
@@ -96,7 +78,6 @@ class APCTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
         $this->assertInternalType('string', $cache->getTag('foo'), 'var should be type string');
     }
-
 
     /**
      * @dataProvider providerCache
@@ -119,5 +100,15 @@ class APCTest extends \PHPUnit_Framework_TestCase
             sort($actual);
             $this->assertEquals($expected, $actual, 'should be get: ' . json_encode($actual));
         }
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testStatus(CacheInterface $cache)
+    {
+        $this->markTestSkipped(
+            'Memcached::status() skipped. Changed behavior TravisCI.'
+        );
     }
 }

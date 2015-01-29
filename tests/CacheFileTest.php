@@ -1,13 +1,13 @@
 <?php
 
-namespace rockunit\cache;
+namespace rockunit;
 
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Cache\Adapter;
 use rock\cache\CacheFile;
 use rock\cache\CacheInterface;
-use rock\cache\Exception;
-use rock\cache\filemanager\FileManager;
+use rock\file\FileManager;
+use rockunit\common\CommonTestTrait;
 
 /**
  * @group cache
@@ -15,7 +15,8 @@ use rock\cache\filemanager\FileManager;
  */
 class CacheFileTest extends \PHPUnit_Framework_TestCase
 {
-    use  CommonTraitTest;
+    use CommonTestTrait;
+    use CacheTestTrait;
 
     /** @var FileManager */
     protected static $fileManager;
@@ -32,48 +33,6 @@ class CacheFileTest extends \PHPUnit_Framework_TestCase
         static::clearRuntime();
     }
 
-    /**
-     * @return FileManager
-     */
-    protected static function getFileManager()
-    {
-        if (!isset(static::$fileManager)) {
-            static::$fileManager = new FileManager(
-                [
-                    'adapter' =>
-                        function () {
-                            return new Local(RUNTIME . '/cache');
-                        },
-                    'cache' => function () {
-                            $local = new Local(RUNTIME);
-                            $cache = new Adapter($local, 'cache.tmp');
-
-                            return $cache;
-                        }
-                ]
-            );
-        }
-
-        return static::$fileManager;
-    }
-
-    public function init($serialize)
-    {
-        return new CacheFile([
-                                 'adapter' => static::getFileManager(),
-                                 'serializer' => $serialize
-                             ]);
-    }
-
-    protected static function clearRuntime()
-    {
-        $runtime = RUNTIME;
-        @rmdir("{$runtime}/cache");
-        @rmdir("{$runtime}/filesystem");
-        @unlink("{$runtime}/cache.tmp");
-        @unlink("{$runtime}/filesystem.tmp");
-    }
-
     public static function flush()
     {
         (new CacheFile(
@@ -85,8 +44,33 @@ class CacheFileTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @return FileManager
+     */
+    protected static function getFileManager()
+    {
+        if (!isset(static::$fileManager)) {
+            $local = new Local(ROCKUNIT_RUNTIME);
+            $config = [
+                'adapter' => new Local(ROCKUNIT_RUNTIME . '/cache'),
+                'cache' => new Adapter($local, 'cache.tmp')
+            ];
+            static::$fileManager = new FileManager($config);
+        }
+
+        return static::$fileManager;
+    }
+
+    public function init($serialize, $lock = true)
+    {
+        return new CacheFile([
+           'adapter' => static::getFileManager(),
+           'serializer' => $serialize
+        ]);
+    }
+
+    /**
      * @dataProvider providerCache
-     * @expectedException Exception
+     * @expectedException \rock\cache\CacheException
      */
     public function testGetStorage(CacheInterface $cache)
     {
@@ -115,7 +99,6 @@ class CacheFileTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($cache->get('key7'), 'should be get: false');
     }
 
-
     /**
      * @dataProvider providerCache
      */
@@ -126,6 +109,7 @@ class CacheFileTest extends \PHPUnit_Framework_TestCase
         sleep(2);
         $this->assertFalse($cache->exists('key7'), 'should be get: false');
     }
+
 
     /**
      * @dataProvider providerCache
@@ -146,7 +130,7 @@ class CacheFileTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
-     * @expectedException Exception
+     * @expectedException \rock\cache\CacheException
      */
     public function testStatus(CacheInterface $cache)
     {

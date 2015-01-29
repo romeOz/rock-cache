@@ -1,34 +1,32 @@
 <?php
-namespace rockunit\cache\versioning;
+namespace rockunit\core\cache\versioning;
 
-use rock\cache\versioning\Couchbase;
-use rock\cache\Exception;
+
 use rock\cache\CacheInterface;
-use rockunit\cache\CommonTraitTest;
+use rock\cache\versioning\Redis;
+use rockunit\CacheTestTrait;
 
 /**
  * @group cache
- * @group couchbase
+ * @group redis
  */
-class CouchbaseTest extends \PHPUnit_Framework_TestCase
+class RedisTest extends \PHPUnit_Framework_TestCase
 {
-    use  CommonTraitTest {
-        CommonTraitTest::testGetAllKeys as parentTestGetAllKeys;
-    }
+    use CacheTestTrait;
 
     public static function flush()
     {
-        (new Couchbase())->flush();
+        (new Redis())->flush();
     }
 
-    public function init($serialize)
+    public function init($serialize, $lock)
     {
-        if (!class_exists('\Couchbase')) {
+        if (!class_exists('\Redis')) {
             $this->markTestSkipped(
-                'The Couchbase is not available.'
+                'The \Redis is not available.'
             );
         }
-        return new Couchbase(['serializer' => $serialize]);
+        return new Redis(['serializer' => $serialize, 'lock' => $lock]);
     }
 
     /**
@@ -36,12 +34,12 @@ class CouchbaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetStorage(CacheInterface $cache)
     {
-        $this->assertTrue($cache->getStorage() instanceof \Couchbase);
+        $this->assertTrue($cache->getStorage() instanceof \Redis);
     }
 
     /**
      * @dataProvider providerCache
-     * @expectedException Exception
+     * @expectedException \rock\cache\CacheException
      */
     public function testGetAll(CacheInterface $cache)
     {
@@ -80,6 +78,7 @@ class CouchbaseTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('string', $cache->getTag('foo'), 'var should be type string');
     }
 
+
     /**
      * @dataProvider providerCache
      */
@@ -91,14 +90,14 @@ class CouchbaseTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($cache->removeTag('bar'), 'tag "bar" does not remove');
         $this->assertFalse($cache->get('key1'), 'should be get: false');
         $this->assertNotEquals($cache->getTag('bar'), $timestamp, 'timestamps does not equals');
-    }
-
-    /**
-     * @dataProvider providerCache
-     * @expectedException Exception
-     */
-    public function testGetAllKeys(CacheInterface $cache)
-    {
-        $this->parentTestGetAllKeys($cache);
+        $this->assertTrue($cache->remove('key2'));
+        $this->assertFalse($cache->get('key2'), 'should be get: false');
+        $expected = $cache->getAllKeys();
+        if ($expected !== false) {
+            $actual = [CacheInterface::TAG_PREFIX . 'foo', CacheInterface::TAG_PREFIX . 'bar'];
+            sort($expected);
+            sort($actual);
+            $this->assertEquals($expected, $actual, 'should be get: ' . json_encode($actual));
+        }
     }
 }

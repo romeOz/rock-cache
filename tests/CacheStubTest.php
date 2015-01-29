@@ -1,10 +1,9 @@
 <?php
 
-namespace rockunit\cache;
+namespace rockunit;
 
 
 use rock\cache\CacheStub;
-use rock\cache\Exception;
 
 class CacheStubTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,7 +16,7 @@ class CacheStubTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \rock\cache\CacheException
      */
     public function testGetStorage()
     {
@@ -109,3 +108,4 @@ class CacheStubTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->storage->status());
     }
 }
+ 

@@ -2,7 +2,11 @@
 
 namespace rock\cache;
 
-class APC implements CacheInterface
+use rock\base\BaseException;
+use rock\events\EventsInterface;
+use rock\log\Log;
+
+class APC implements CacheInterface, EventsInterface
 {
     use CacheTrait;
 
@@ -11,7 +15,7 @@ class APC implements CacheInterface
      */
     public function getStorage()
     {
-        throw new Exception(Exception::UNKNOWN_METHOD, 0, ['method' => __METHOD__]);
+        throw new CacheException(CacheException::UNKNOWN_METHOD, ['method' => __METHOD__]);
     }
 
     /**
@@ -35,7 +39,7 @@ class APC implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function set($key, $value = null, $expire = 0, array $tags = null)
+    public function set($key, $value = null, $expire = 0, array $tags = [])
     {
         if (empty($key)) {
             return false;
@@ -49,7 +53,7 @@ class APC implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function add($key, $value = null, $expire = 0, array $tags = null)
+    public function add($key, $value = null, $expire = 0, array $tags = [])
     {
         if (empty($key)) {
             return false;
@@ -85,11 +89,14 @@ class APC implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function increment($key, $offset = 1, $expire = 0)
+    public function increment($key, $offset = 1, $expire = 0, $create = true)
     {
         $hash = $this->prepareKey($key);
-        if (apc_add($hash, $offset, $expire)) {
-            return $offset;
+        if ($this->exists($key) === false) {
+            if ($create === false) {
+                return false;
+            }
+            apc_add($hash, 0, $expire);
         }
 
         return apc_inc($hash, $offset);
@@ -98,11 +105,14 @@ class APC implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function decrement($key, $offset = 1, $expire = 0)
+    public function decrement($key, $offset = 1, $expire = 0, $create = true)
     {
         $hash = $this->prepareKey($key);
         if ($this->exists($key) === false) {
-            return false;
+            if ($create === false) {
+                return false;
+            }
+            apc_add($hash, 0, $expire);
         }
 
         return apc_dec($hash, $offset);
@@ -199,6 +209,10 @@ class APC implements CacheInterface
      */
     protected function provideLock($key, $value, $expire)
     {
+        if ($this->lock === false) {
+            apc_store($key, $value, $expire);
+            return true;
+        }
         if ($this->lock($key, $value)) {
             apc_store($key, $value, $expire);
             $this->unlock($key);
@@ -210,14 +224,13 @@ class APC implements CacheInterface
     }
 
     /**
-     * Locking write.
+     * Set lock.
      *
-     * > Note: Dog-pile" ("cache miss storm") and "race condition" effects
+     * > Dog-pile" ("cache miss storm") and "race condition" effects.
      *
      * @param string $key
      * @param mixed  $value
      * @param int    $max
-     * @throws Exception
      * @return bool
      */
     protected function lock($key, $value, $max = 15)
@@ -226,7 +239,10 @@ class APC implements CacheInterface
         while (!apc_add(self::LOCK_PREFIX . $key, $value, 5)) {
             $iteration++;
             if ($iteration > $max) {
-                //throw new Exception(Exception::INVALID_SAVE, 0, ['key' => $key]);
+                if (class_exists('\rock\log\Log')) {
+                    $message = BaseException::convertExceptionToString(new CacheException(CacheException::INVALID_SAVE, ['key' => $key]));
+                    Log::err($message);
+                }
                 return false;
             }
             usleep(1000);
@@ -236,7 +252,7 @@ class APC implements CacheInterface
     }
 
     /**
-     * Unlocking write.
+     * Delete lock
      *
      * @param string $key
      * @return bool|\string[]
@@ -248,9 +264,9 @@ class APC implements CacheInterface
 
 
     /**
-     * Adding tags.
+     * Set tags
      *
-     * @param string $key key of cache
+     * @param string $key
      * @param array  $tags
      */
     protected function setTags($key, array $tags = null)

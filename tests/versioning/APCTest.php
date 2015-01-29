@@ -1,72 +1,97 @@
 <?php
+namespace rockunit\versioning;
 
-namespace rockunit\cache\versioning;
 
 use rock\cache\CacheInterface;
-use rock\cache\versioning\Memcached;
-use rockunit\cache\CommonTraitTest;
+use rock\cache\versioning\APC;
+use rockunit\CacheTestTrait;
 
 /**
  * @group cache
- * @group memcached
+ * @group apc
  */
-class MemcachedTest extends \PHPUnit_Framework_TestCase
+class APCTest extends \PHPUnit_Framework_TestCase
 {
-    use  CommonTraitTest;
+    use CacheTestTrait;
 
     public static function flush()
     {
-        (new Memcached())->flush();
+        (new APC())->flush();
     }
 
-    public function init($serialize)
+    public function init($serialize, $lock)
     {
-        if (!class_exists('\Memcached')) {
+        if (!extension_loaded('apc')) {
             $this->markTestSkipped(
-                'The \Memcached is not available.'
+                'The APC is not available.'
             );
         }
-        return new Memcached(['serializer' => $serialize]);
+        return new APC(['serializer' => $serialize, 'lock' => $lock]);
     }
 
     /**
      * @dataProvider providerCache
+     * @expectedException \rock\cache\CacheException
      */
     public function testGetStorage(CacheInterface $cache)
     {
-        $this->assertTrue($cache->getStorage() instanceof \Memcached);
+        $cache->getStorage();
     }
 
     /**
      * @dataProvider providerCache
      */
-    public function testGetAll(CacheInterface $cache)
+    public function testTtl(CacheInterface $cache)
     {
-        $this->assertTrue($cache->set('key5', 'foo'), 'should be get: true');
-        $this->assertTrue($cache->set('key6', ['bar', 'baz']), 'should be get: true');
-        $this->assertFalse($cache->getAll());
+        $this->markTestSkipped('Skipping: ' . __METHOD__);
     }
 
     /**
      * @dataProvider providerCache
      */
-    public function testTtlDecrement(CacheInterface $cache)
+    public function testHasByTouchFalse(CacheInterface $cache)
     {
-        $this->assertEquals($cache->increment('key7', 5), 5, 'should be get: 5');
-        $this->assertEquals($cache->decrement('key7', 2, 1), 3, 'should be get: 3');
-        sleep(2);
-        $this->assertFalse($cache->get('key7'), 'should be get: false');
+        $this->markTestSkipped('Skipping: ' . __METHOD__);
     }
 
     /**
      * @dataProvider providerCache
      */
-    public function testHasTtlDecrement(CacheInterface $cache)
+    public function testTouch(CacheInterface $cache)
     {
-        $this->assertEquals($cache->increment('key7', 5), 5, 'should be get: 5');
-        $this->assertEquals($cache->decrement('key7', 2, 1), 3, 'should be get: 3');
-        sleep(2);
-        $this->assertFalse($cache->exists('key7'), 'should be get: false');
+        $this->markTestSkipped('Skipping: ' . __METHOD__);
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testTouchMultiTrue(CacheInterface $cache)
+    {
+        $this->markTestSkipped('Skipping: ' . __METHOD__);
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testTouchMultiFalse(CacheInterface $cache)
+    {
+        $this->markTestSkipped('Skipping: ' . __METHOD__);
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testIncrementWithTtl(CacheInterface $cache)
+    {
+        $this->markTestSkipped('Skipping: ' . __METHOD__);
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testExistsByTouchFalse(CacheInterface $cache)
+    {
+        $this->markTestSkipped('Skipping: ' . __METHOD__);
     }
 
     /**
@@ -101,17 +126,5 @@ class MemcachedTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($expected, $actual, 'should be get: ' . json_encode($actual));
         }
     }
-
-    /**
-     * @dataProvider providerCache
-     */
-    public function testStatus(CacheInterface $cache)
-    {
-//        /** @var $this \PHPUnit_Framework_TestCase */
-
-//        $this->assertFalse($cache->status());
-        $this->markTestSkipped(
-            'Memcached::status() skipped. Changed behavior TravisCI.'
-        );
-    }
 }
+ 

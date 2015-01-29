@@ -1,54 +1,55 @@
 <?php
 namespace rock\cache;
 
-use rock\cache\filemanager\FileManager;
+use rock\di\Container;
+use rock\events\EventsInterface;
+use rock\file\FileManager;
 use rock\helpers\ArrayHelper;
+use rock\helpers\Trace;
 
-class CacheFile implements CacheInterface
+class CacheFile implements CacheInterface, EventsInterface
 {
     use CommonTrait {
         CommonTrait::prepareTags as parentPrepareTags;
     }
 
     /**
-     * Max files in folder.
+     * Max files in folder
      * @var int
      */
     public $maxFiles = 100;
     /**
-     * Extension of cache file.
+     * Extension of cache file
      * @var string
      */
     public $extensionFileCache = 'tmp';
     /**
-     * Path to file of cache.
-     *
+     * Path to file of cache
      * @var string
      */
     protected $pathFileCache;
-    /** @var FileManager */
+    /** @var FileManager|array|string */
     public $adapter;
 
-
-    /**
-     * @return FileManager
-     * @throws Exception
-     */
-    public function getAdapter()
+    public function init()
     {
-        if (!$this->adapter instanceof FileManager) {
-            throw new Exception(Exception::UNKNOWN_CLASS, 0, ['class' => $this->adapter]);
+        $this->parentInit();
+
+        if (!is_object($this->adapter)) {
+            if (class_exists('\rock\di\Container')) {
+                $this->adapter = Container::load($this->adapter);
+                return;
+            }
+            throw new CacheException(CacheException::NOT_INSTALL_FILE);
         }
-
-        return $this->adapter;
     }
-
+        
     /**
      * @inheritdoc
      */
     public function getStorage()
     {
-        throw new Exception(Exception::UNKNOWN_METHOD, 0, ['method' => __METHOD__]);
+        throw new CacheException(CacheException::UNKNOWN_METHOD, ['method' => __METHOD__]);
     }
 
     /**
@@ -59,10 +60,20 @@ class CacheFile implements CacheInterface
         if (empty($key)) {
             return false;
         }
-        $key = $this->prepareKey($key);
 
+        $key = $this->prepareKey($key);
         if (($result = $this->provideGet($key, $file)) === false) {
             return false;
+        }
+
+        if (class_exists('\rock\helpers\Trace')) {
+            $token = [
+                'class' => static::className(),
+                'key' => $key,
+                'path' => $file['path'] . DIRECTORY_SEPARATOR . $key . '.' . $this->extensionFileCache,
+                'value' => $result
+            ];
+            Trace::trace(Trace::CACHE_GET, $token);
         }
 
         return $result;
@@ -71,7 +82,7 @@ class CacheFile implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function set($key, $value = null, $expire = 0, array $tags = null)
+    public function set($key, $value = null, $expire = 0, array $tags = [])
     {
         if (empty($key)) {
             return false;
@@ -86,7 +97,7 @@ class CacheFile implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function add($key, $value = null, $expire = 0, array $tags = null)
+    public function add($key, $value = null, $expire = 0, array $tags = [])
     {
         if (empty($key)) {
             return false;
@@ -106,8 +117,6 @@ class CacheFile implements CacheInterface
     public function exists($key)
     {
         $key = $this->prepareKey($key);
-
-
         if ($this->provideGet($key, $file) === false) {
             return false;
         }
@@ -132,7 +141,7 @@ class CacheFile implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function increment($key, $offset = 1, $expire = 0)
+    public function increment($key, $offset = 1, $expire = 0, $create = true)
     {
         $hash = $this->prepareKey($key);
 
@@ -145,7 +154,7 @@ class CacheFile implements CacheInterface
             return $data['value'];
         }
 
-        if ($this->set($key, $offset, $expire) === false) {
+        if ($create === false || $this->set($key, $offset, $expire) === false) {
             return false;
         }
         return $offset;
@@ -154,7 +163,7 @@ class CacheFile implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function decrement($key, $offset = 1, $expire = 0)
+    public function decrement($key, $offset = 1, $expire = 0, $create = true)
     {
         $hash = $this->prepareKey($key);
         if ($this->provideGet($hash, $file, $data) !== false) {
@@ -167,7 +176,10 @@ class CacheFile implements CacheInterface
             return $data['value'];
         }
 
-        return false;
+        if ($create === false || $this->set($key, $offset * -1, $expire) === false) {
+            return false;
+        }
+        return $offset * -1;
     }
 
     /**
@@ -176,7 +188,7 @@ class CacheFile implements CacheInterface
     public function remove($key)
     {
         $key = $this->prepareKey($key);
-        return $this->getAdapter()->delete("~/{$key}.{$this->extensionFileCache}$/");
+        return $this->adapter->delete("~/{$key}.{$this->extensionFileCache}$/");
     }
 
     /**
@@ -195,7 +207,7 @@ class CacheFile implements CacheInterface
     public function getTag($tag)
     {
         $tag = $this->prepareTag($tag);
-        if (!$result = $this->getAdapter()->listContents("~/[^\/]*{$tag}[^\/]*/", true, FileManager::TYPE_FILE)) {
+        if (!$result = $this->adapter->listContents("~/[^\/]*{$tag}[^\/]*/", true, FileManager::TYPE_FILE)) {
             return false;
         }
 
@@ -208,7 +220,7 @@ class CacheFile implements CacheInterface
     public function existsTag($tag)
     {
         $tag = $this->prepareTag($tag);
-        return $this->getAdapter()->has("~/[^\/]*{$tag}[^\/]*$/", FileManager::TYPE_DIR);
+        return $this->adapter->has("~/[^\/]*{$tag}[^\/]*$/", FileManager::TYPE_DIR);
     }
 
     /**
@@ -218,8 +230,8 @@ class CacheFile implements CacheInterface
     {
         $result = false;
         $tag = $this->prepareTag($tag);
-        foreach ($this->getAdapter()->listContents("~/[^\/]*{$tag}[^\/]*$/", false, FileManager::TYPE_DIR) as $value) {
-            $result = $this->getAdapter()->deleteDir($value['path']);
+        foreach ($this->adapter->listContents("~/[^\/]*{$tag}[^\/]*$/", false, FileManager::TYPE_DIR) as $value) {
+            $result = $this->adapter->deleteDir($value['path']);
         }
 
         return $result;
@@ -230,7 +242,7 @@ class CacheFile implements CacheInterface
      */
     public function getAllKeys()
     {
-        if (!$result = $this->getAdapter()->listContents("~/{$this->extensionFileCache}$/i", true, FileManager::TYPE_FILE)) {
+        if (!$result = $this->adapter->listContents("~/{$this->extensionFileCache}$/i", true, FileManager::TYPE_FILE)) {
             return null;
         }
 
@@ -242,9 +254,9 @@ class CacheFile implements CacheInterface
      */
     public function getAll()
     {
-        $result = $this->getAdapter()->listContents('', true, FileManager::TYPE_FILE);
+        $result = $this->adapter->listContents('', true, FileManager::TYPE_FILE);
         foreach ($result as $key => $value) {
-            $result[$key]['value'] = $this->getAdapter()->read($value['path']);
+            $result[$key]['value'] = $this->adapter->read($value['path']);
         }
         return $result;
     }
@@ -254,7 +266,7 @@ class CacheFile implements CacheInterface
      */
     public function flush()
     {
-        $this->getAdapter()->deleteAll();
+        $this->adapter->deleteAll();
         return true;
     }
 
@@ -263,7 +275,7 @@ class CacheFile implements CacheInterface
      */
     public function status()
     {
-        throw new Exception(Exception::UNKNOWN_METHOD, 0, ['method' => __METHOD__]);
+        throw new CacheException(CacheException::UNKNOWN_METHOD, ['method' => __METHOD__]);
     }
 
     /**
@@ -278,14 +290,12 @@ class CacheFile implements CacheInterface
         if (!empty($tags)) {
             $pathname[] = $tags;
         }
-        /**
-         * max files
-         */
+        // max files
         $num = null;
         if (!empty($this->maxFiles)) {
             $num = floor(
                            count(
-                    $this->getAdapter()
+                    $this->adapter
                         ->listContents(
                             !empty($tags)
                                 ? $tags
@@ -307,7 +317,7 @@ class CacheFile implements CacheInterface
      * @param array $tags tags
      * @return string|null
      */
-    protected function prepareTags(array $tags = null)
+    protected function prepareTags(array $tags = [])
     {
         if (!$tags = $this->parentPrepareTags($tags)) {
             return null;
@@ -319,13 +329,13 @@ class CacheFile implements CacheInterface
     /**
      * Get data file cache
      *
-     * @param string|int $key key
-     * @throws Exception
+     * @param string|int $key - key
+     * @throws CacheException
      * @return bool|mixed
      */
     protected function getDataFile($key)
     {
-        if (!$metadata = $this->getAdapter()->getMetadata("~/{$key}.{$this->extensionFileCache}$/")) {
+        if (!$metadata = $this->adapter->getMetadata("~/{$key}.{$this->extensionFileCache}$/")) {
             return false;
         }
 
@@ -334,18 +344,18 @@ class CacheFile implements CacheInterface
 
     protected function provideSet($value, $expire)
     {
-        return $this->getAdapter()->put(
+        return $this->adapter->put(
             $this->pathFileCache,
             $this->serialize([
-                                 'expire' => $this->calculateExpire($expire),
-                                 'value' => $value
-                             ])
+                 'expire' => $this->calculateExpire($expire),
+                 'value' => $value
+            ])
         );
     }
 
     /**
-     * @param string $key  hash-key
-     * @param array  $metadata array data of file
+     * @param string $key  - hash-key
+     * @param array  $metadata - array data of file
      * @param null   $result
      * @return mixed
      */
@@ -359,7 +369,7 @@ class CacheFile implements CacheInterface
             return false;
         }
         if ($this->validExpire(isset($result['expire']) ? $result['expire'] : 0) === false) {
-            $this->getAdapter()->delete($metadata['path']);
+            $this->adapter->delete($metadata['path']);
 
             return false;
         }
@@ -369,20 +379,20 @@ class CacheFile implements CacheInterface
 
     protected function getContent($path)
     {
-        if (!$this->getAdapter()->has($path, FileManager::TYPE_FILE)) {
+        if (!$this->adapter->has($path, FileManager::TYPE_FILE)) {
             return false;
         }
 
-        return $this->unserialize($this->getAdapter()->read($path));
+        return $this->unserialize($this->adapter->read($path));
     }
 
     protected function setContent($path, $value)
     {
-        if (!$this->getAdapter()->has($path, FileManager::TYPE_FILE)) {
+        if (!$this->adapter->has($path, FileManager::TYPE_FILE)) {
             return false;
         }
 
-        return $this->getAdapter()->update($path, $this->serialize($value));
+        return $this->adapter->update($path, $this->serialize($value));
     }
 
     /**

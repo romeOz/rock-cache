@@ -1,10 +1,9 @@
 <?php
-namespace rockunit\cache\versioning;
+namespace rockunit\core\cache\versioning;
 
 use rock\cache\CacheInterface;
-use rock\cache\Exception;
 use rock\cache\versioning\Memcache;
-use rockunit\cache\CommonTraitTest;
+use rockunit\CacheTestTrait;
 
 /**
  * @group cache
@@ -12,23 +11,21 @@ use rockunit\cache\CommonTraitTest;
  */
 class MemcacheTest extends \PHPUnit_Framework_TestCase
 {
-    use  CommonTraitTest {
-        CommonTraitTest::testGetAllKeys as parentTestGetAllKeys;
-    }
+    use CacheTestTrait;
 
     public static function flush()
     {
         (new Memcache())->flush();
     }
 
-    public function init($serialize)
+    public function init($serialize, $lock)
     {
         if (!class_exists('\Memcache')) {
             $this->markTestSkipped(
                 'The \Memcache is not available.'
             );
         }
-        return new Memcache(['serializer' => $serialize]);
+        return new Memcache(['serializer' => $serialize, 'lock' => $lock]);
     }
 
     /**
@@ -41,7 +38,7 @@ class MemcacheTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
-     * @expectedException Exception
+     * @expectedException \rock\cache\CacheException
      */
     public function testGetAll(CacheInterface $cache)
     {
@@ -80,7 +77,6 @@ class MemcacheTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('string', $cache->getTag('foo'), 'var should be type string');
     }
 
-
     /**
      * @dataProvider providerCache
      */
@@ -96,7 +92,7 @@ class MemcacheTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
-     * @expectedException Exception
+     * @expectedException \rock\cache\CacheException
      */
     public function testGetAllKeys(CacheInterface $cache)
     {

@@ -1,9 +1,8 @@
 <?php
 
-namespace rockunit\cache;
+namespace rockunit;
 
 use rock\cache\CacheInterface;
-use rock\cache\Exception;
 use rock\cache\Redis;
 
 /**
@@ -12,21 +11,21 @@ use rock\cache\Redis;
  */
 class RedisTest extends \PHPUnit_Framework_TestCase
 {
-    use  CommonTraitTest;
+    use CacheTestTrait;
 
     public static function flush()
     {
         (new Redis())->flush();
     }
 
-    public function init($serialize)
+    public function init($serialize, $lock = true)
     {
         if (!class_exists('\Redis')) {
             $this->markTestSkipped(
-                'The Redis is not available.'
+                'The \Redis is not available.'
             );
         }
-        return new Redis(['serializer' => $serialize]);
+        return new Redis(['serializer' => $serialize, 'lock' => $lock]);
     }
 
     /**
@@ -39,10 +38,11 @@ class RedisTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
-     * @expectedException Exception
+     * @expectedException \rock\cache\CacheException
      */
     public function testGetAll(CacheInterface $cache)
     {
         $cache->getAll();
     }
 }
+ 

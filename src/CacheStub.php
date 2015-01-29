@@ -3,7 +3,9 @@
 namespace rock\cache;
 
 
-class CacheStub implements CacheInterface
+use rock\events\EventsInterface;
+
+class CacheStub implements CacheInterface, EventsInterface
 {
     use CacheTrait;
 
@@ -12,7 +14,7 @@ class CacheStub implements CacheInterface
      */
     public function getStorage()
     {
-        throw new Exception(Exception::UNKNOWN_METHOD, 0, ['method' => __METHOD__]);
+        throw new CacheException(CacheException::UNKNOWN_METHOD, ['method' => __METHOD__]);
     }
 
     /**
@@ -34,7 +36,7 @@ class CacheStub implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function set($key, $value = null, $expire = 0, array $tags = null)
+    public function set($key, $value = null, $expire = 0, array $tags = [])
     {
         return false;
     }
@@ -42,14 +44,14 @@ class CacheStub implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function setMulti($values, $expire = 0, array $tags = null)
+    public function setMulti($values, $expire = 0, array $tags = [])
     {
     }
 
     /**
      * @inheritdoc
      */
-    public function add($key, $value = null, $expire = 0, array $tags = null)
+    public function add($key, $value = null, $expire = 0, array $tags = [])
     {
         return false;
     }
@@ -80,7 +82,7 @@ class CacheStub implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function increment($key, $offset = 1, $expire = 0)
+    public function increment($key, $offset = 1, $expire = 0, $create = true)
     {
         return false;
     }
@@ -88,7 +90,7 @@ class CacheStub implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function decrement($key, $offset = 1, $expire = 0)
+    public function decrement($key, $offset = 1, $expire = 0, $create = true)
     {
         return false;
     }
@@ -168,7 +170,7 @@ class CacheStub implements CacheInterface
      */
     public function flush()
     {
-       return false;
+        return false;
     }
 
     /**
@@ -178,4 +180,4 @@ class CacheStub implements CacheInterface
     {
         return null;
     }
-}
+} 

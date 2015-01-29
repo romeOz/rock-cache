@@ -2,22 +2,20 @@
 namespace rock\cache\versioning;
 
 use rock\cache\CacheInterface;
-use rock\cache\CacheTrait;
-use rock\cache\helpers\Date;
 
 class Memcached extends \rock\cache\Memcached implements CacheInterface
 {
     use VersioningTrait;
 
     /** @var  \Memcached */
-    protected static $storage;
+    public $storage;
 
     /**
      * @inheritdoc
      */
     public function getTag($tag)
     {
-        return static::$storage->get($this->prepareTag($tag));
+        return $this->storage->get($this->prepareTag($tag));
     }
 
     /**
@@ -25,26 +23,48 @@ class Memcached extends \rock\cache\Memcached implements CacheInterface
      */
     public function removeTag($tag)
     {
-        return static::$storage->replace($this->prepareTag($tag), microtime(), 0);
+        return $this->storage->replace($this->prepareTag($tag), microtime(), 0);
     }
 
 
-    protected function validTimestamp($key, array $tagsByValue = null)
+    protected function validTimestamp($key, array $tagsByValue = [])
     {
         if (empty($tagsByValue)) {
             return true;
         }
-        $tags = static::$storage->getMulti(array_keys($tagsByValue));
+        $tags = $this->storage->getMulti(array_keys($tagsByValue));
         foreach ($tagsByValue as $tag => $timestamp) {
             if (!isset($tags[$tag]) ||
-                (isset($tags[$tag]) && Date::microtime($tags[$tag]) > Date::microtime($timestamp))
+                (isset($tags[$tag]) && $this->microtime($tags[$tag]) > $this->microtime($timestamp))
             ) {
-                static::$storage->delete($key);
+                $this->storage->delete($key);
 
                 return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function setTags($key, array $tags = [], &$value = null)
+    {
+        $value = ['value' => $value, 'tags' => []];
+        if (empty($tags)) {
+            return;
+        }
+        $timestamp = microtime();
+        $tags = $this->prepareTags($tags);
+        $data = $this->storage->getMulti($tags);
+        foreach ($tags as $tag) {
+            if (isset($data[$tag])) {
+                $value['tags'][$tag] = $data[$tag];
+                continue;
+            }
+            $this->provideLock($tag, $timestamp, 0);
+            $value['tags'][$tag] = $timestamp;
+        }
     }
 }

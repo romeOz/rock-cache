@@ -2,32 +2,35 @@
 
 namespace rock\cache;
 
+
+use rock\events\EventsTrait;
 use rock\helpers\Serialize;
 
 trait CommonTrait
 {
-    use ObjectTrait;
+    use EventsTrait {
+        EventsTrait::init as parentInit;
+    }
 
     /**
-     * Prefix of key.
+     * Prefix of key
      * @var string
      */
     public $prefix;
+
     /**
      * @var int
      */
     public $hashKey = self::HASH_MD5;
     public $hashTag = 0;
     /**
-     * Serializer.
+     * Serializer
      * @var int
      */
     public $serializer = self::SERIALIZE_PHP;
 
-
     /**
-     * Add prefix to key.
-     *
+     * Add prefix to key
      * @param string $prefix
      */
     public function addPrefix($prefix)
@@ -36,15 +39,13 @@ trait CommonTrait
     }
 
     /**
-     * Get prepare key of cache.
+     * Get prepare key of cache
      *
      * @param string $key
      * @return string
      */
     public function prepareKey($key)
     {
-        /** @var $this CacheTrait|CacheInterface */
-
         if ($this->hashKey & self::HASH_MD5) {
             return $this->prefix . md5($key);
         } elseif ($this->hashKey & self::HASH_SHA) {
@@ -54,13 +55,31 @@ trait CommonTrait
     }
 
     /**
-     * @param array $tags tags
+     * @param array $keys
      * @return string|null
      */
-    protected function prepareTags(array $tags = null)
+    protected function prepareKeys(array $keys = [])
+    {
+        if (empty($keys)) {
+            return null;
+        }
+
+        return array_map(
+            function($value){
+                return $this->prepareKey($value);
+            },
+            $keys
+        );
+    }
+
+    /**
+     * @param array $tags tags
+     * @return array|null
+     */
+    protected function prepareTags(array $tags = [])
     {
         if (empty($tags)) {
-            return $tags;
+            return null;
         }
         $tags = array_unique($tags);
         sort($tags);
@@ -113,7 +132,7 @@ trait CommonTrait
     /**
      * @inheritdoc
      */
-    public function setMulti($values, $expire = 0, array $tags = null)
+    public function setMulti($values, $expire = 0, array $tags = [])
     {
         /** @var $this CacheTrait|CacheInterface */
 
@@ -131,7 +150,9 @@ trait CommonTrait
 
         $result = [];
         foreach ($keys as $key) {
-            $result[$key] = $this->get($key);
+            if (($value = $this->get($key)) !== false) {
+                $result[$key] = $value;
+            }
         }
 
         return $result;
@@ -182,4 +203,16 @@ trait CommonTrait
             $this->removeTag($tag);
         }
     }
-}
+
+    /**
+     * Get microtime.
+     *
+     * @param int|null $microtime
+     * @return float
+     */
+    protected function microtime($microtime = null)
+    {
+        list($usec, $sec) = explode(" ", $microtime ? : microtime());
+        return (float)$usec + (float)$sec;
+    }
+} 

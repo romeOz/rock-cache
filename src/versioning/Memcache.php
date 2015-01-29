@@ -3,21 +3,20 @@
 namespace rock\cache\versioning;
 
 use rock\cache\CacheInterface;
-use rock\cache\helpers\Date;
 
 class Memcache extends \rock\cache\Memcache implements CacheInterface
 {
     use VersioningTrait;
 
     /** @var  \Memcache */
-    protected static $storage;
+    public $storage;
 
     /**
      * @inheritdoc
      */
     public function getTag($tag)
     {
-        return static::$storage->get($this->prepareTag($tag));
+        return $this->storage->get($this->prepareTag($tag));
     }
 
     /**
@@ -25,19 +24,20 @@ class Memcache extends \rock\cache\Memcache implements CacheInterface
      */
     public function removeTag($tag)
     {
-        return static::$storage->replace($this->prepareTag($tag), microtime(), MEMCACHE_COMPRESSED, 0);
+        return $this->storage->replace($this->prepareTag($tag), microtime(), MEMCACHE_COMPRESSED, 0);
     }
 
-    protected function validTimestamp($key, array $tags = null)
+
+    protected function validTimestamp($key, array $tags = [])
     {
         if (empty($tags)) {
             return true;
         }
         foreach ($tags as $tag => $timestamp) {
-            if ((!$tagTimestamp = static::$storage->get($tag)) ||
-                Date::microtime($tagTimestamp) > Date::microtime($timestamp)
+            if ((!$tagTimestamp = $this->storage->get($tag)) ||
+                $this->microtime($tagTimestamp) > $this->microtime($timestamp)
             ) {
-                static::$storage->delete($key);
+                $this->storage->delete($key);
 
                 return false;
             }

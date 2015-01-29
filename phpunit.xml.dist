@@ -21,6 +21,12 @@
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
+    <filter>
+        <blacklist>
+            <file>./src/CacheException.php</file>
+            <file>./src/polyfill/Couchbase.php</file>
+        </blacklist>
+    </filter>
     <logging>
         <log type="coverage-clover" target="build/logs/clover.xml"/>
     </logging>

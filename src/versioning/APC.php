@@ -2,10 +2,7 @@
 
 namespace rock\cache\versioning;
 
-
-
 use rock\cache\CacheInterface;
-use rock\cache\helpers\Date;
 
 class APC extends \rock\cache\APC implements CacheInterface
 {
@@ -30,17 +27,15 @@ class APC extends \rock\cache\APC implements CacheInterface
         return $this->provideLock($this->prepareTag($tag), microtime(), 0);
     }
 
-
-    protected function validTimestamp($key, array $tagsByValue = null)
+    protected function validTimestamp($key, array $tagsByValue = [])
     {
         if (empty($tagsByValue)) {
             return true;
         }
 
         foreach ($tagsByValue as $tag => $timestamp) {
-
             if ((!$tagTimestamp = apc_fetch($tag)) ||
-                Date::microtime($tagTimestamp) > Date::microtime($timestamp)) {
+                $this->microtime($tagTimestamp) > $this->microtime($timestamp)) {
                 apc_delete($key);
                 return false;
             }
@@ -50,13 +45,9 @@ class APC extends \rock\cache\APC implements CacheInterface
     }
 
     /**
-     * Adding tags.
-     *
-     * @param string $key key of cache
-     * @param array  $tags
-     * @param        $value
+     * @inheritdoc
      */
-    protected function setTags($key, array $tags = null, &$value = null)
+    protected function setTags($key, array $tags = [], &$value = null)
     {
         $value = ['value' => $value, 'tags' => []];
         if (empty($tags)) {

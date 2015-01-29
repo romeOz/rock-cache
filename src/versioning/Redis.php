@@ -3,21 +3,21 @@
 namespace rock\cache\versioning;
 
 use rock\cache\CacheInterface;
-use rock\cache\helpers\Date;
 
 class Redis extends \rock\cache\Redis implements CacheInterface
 {
     use VersioningTrait;
 
     /** @var  \Redis */
-    protected static $storage;
+    public $storage;
+
 
     /**
      * @inheritdoc
      */
     public function getTag($tag)
     {
-        return static::$storage->get($this->prepareTag($tag));
+        return $this->storage->get($this->prepareTag($tag));
     }
 
     /**
@@ -32,16 +32,16 @@ class Redis extends \rock\cache\Redis implements CacheInterface
         return $this->provideLock($this->prepareTag($tag), microtime(), 0);
     }
 
-    protected function validTimestamp($key, array $tagsByValue = null)
+    protected function validTimestamp($key, array $tagsByValue = [])
     {
         if (empty($tagsByValue)) {
             return true;
         }
         foreach ($tagsByValue as $tag => $timestamp) {
-            if ((!$tagTimestamp = static::$storage->get($tag)) ||
-                Date::microtime($tagTimestamp) > Date::microtime($timestamp)
+            if ((!$tagTimestamp = $this->storage->get($tag)) ||
+                $this->microtime($tagTimestamp) > $this->microtime($timestamp)
             ) {
-                static::$storage->delete($key);
+                $this->storage->delete($key);
 
                 return false;
             }

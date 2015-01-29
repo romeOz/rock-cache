@@ -2,9 +2,12 @@
 
 namespace rock\cache;
 
+use rock\base\BaseException;
+use rock\events\EventsInterface;
 use rock\helpers\Json;
+use rock\log\Log;
 
-class Couchbase implements CacheInterface
+class Couchbase implements CacheInterface, EventsInterface
 {
     use CacheTrait {
         CacheTrait::__construct as parentConstruct;
@@ -20,15 +23,16 @@ class Couchbase implements CacheInterface
     public $password = '';
     /** @var string  */
     public $bucket = 'default';
-    /** @var  \Couchbase */
-    protected static $storage;
 
-    public function __construct($config = [])
+    /** @var  \Couchbase */
+    public $storage;
+
+    public function __construct(array $config = [])
     {
         $this->parentConstruct($config);
-        static::$storage = new \Couchbase($this->host, $this->user, $this->password, $this->bucket);
+        $this->storage = new \Couchbase($this->host, $this->user, $this->password, $this->bucket);
         if ($this->serializer !== self::SERIALIZE_JSON) {
-            static::$storage->setOption(COUCHBASE_OPT_SERIALIZER, COUCHBASE_SERIALIZER_PHP);
+            $this->storage->setOption(COUCHBASE_OPT_SERIALIZER, COUCHBASE_SERIALIZER_PHP);
         }
     }
 
@@ -37,7 +41,7 @@ class Couchbase implements CacheInterface
      */
     public function getStorage()
     {
-        return static::$storage;
+        return $this->storage;
     }
 
     /**
@@ -51,7 +55,7 @@ class Couchbase implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function set($key, $value = null, $expire = 0, array $tags = null)
+    public function set($key, $value = null, $expire = 0, array $tags = [])
     {
         if (empty($key)) {
             return false;
@@ -67,7 +71,7 @@ class Couchbase implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function add($key, $value = null, $expire = 0, array $tags = null)
+    public function add($key, $value = null, $expire = 0, array $tags = [])
     {
         if (empty($key)) {
             return false;
@@ -98,8 +102,8 @@ class Couchbase implements CacheInterface
     public function exists($key)
     {
         $key = $this->prepareKey($key);
-        if (static::$storage->add($key, true)) {
-            static::$storage->delete($key);
+        if ($this->storage->add($key, true)) {
+            $this->storage->delete($key);
             return false;
         }
         return true;
@@ -108,27 +112,33 @@ class Couchbase implements CacheInterface
     /**
      * @inheritdoc
      */
-    public function increment($key, $offset = 1, $expire = 0)
+    public function increment($key, $offset = 1, $expire = 0, $create = true)
     {
         $hash = $this->prepareKey($key);
-        if (static::$storage->add($hash, $offset, $expire)) {
-            return $offset;
+        if ($this->exists($key) === false) {
+            if ($create === false) {
+                return false;
+            }
+            $this->storage->add($hash, 0, $expire);
         }
 
-        return static::$storage->increment($hash, $offset, false, $expire);
+        return $this->storage->increment($hash, $offset, $expire);
     }
 
     /**
      * @inheritdoc
      */
-    public function decrement($key, $offset = 1, $expire = 0)
+    public function decrement($key, $offset = 1, $expire = 0, $create = true)
     {
         $hash = $this->prepareKey($key);
         if ($this->exists($key) === false) {
-            return false;
+            if ($create === false) {
+                return false;
+            }
+            $this->storage->add($hash, 0, $expire);
         }
 
-        return static::$storage->decrement($hash, $offset, false, $expire);
+        return $this->storage->decrement($hash, $offset, $expire);
     }
 
     /**
@@ -136,7 +146,7 @@ class Couchbase implements CacheInterface
      */
     public function remove($key)
     {
-        return is_string(static::$storage->delete($this->prepareKey($key)));
+        return is_string($this->storage->delete($this->prepareKey($key)));
     }
 
     /**
@@ -144,7 +154,7 @@ class Couchbase implements CacheInterface
      */
     public function getTag($tag)
     {
-        return $this->unserialize(static::$storage->get($this->prepareTag($tag)));
+        return $this->unserialize($this->storage->get($this->prepareTag($tag)));
     }
 
     /**
@@ -153,8 +163,8 @@ class Couchbase implements CacheInterface
     public function existsTag($tag)
     {
         $tag = $this->prepareTag($tag);
-        if (static::$storage->add($tag, true)) {
-            static::$storage->delete($tag);
+        if ($this->storage->add($tag, true)) {
+            $this->storage->delete($tag);
             return false;
         }
         return true;
@@ -166,14 +176,14 @@ class Couchbase implements CacheInterface
     public function removeTag($tag)
     {
         $tag = $this->prepareTag($tag);
-        if (!$value = static::$storage->get($tag)) {
+        if (!$value = $this->storage->get($tag)) {
             return false;
         }
         $value = $this->unserialize($value);
         $value[] = $tag;
         foreach ($value as $key) {
             if (!empty($key)) {
-                static::$storage->delete($key);
+                $this->storage->delete($key);
             }
         }
 
@@ -185,7 +195,7 @@ class Couchbase implements CacheInterface
      */
     public function getAllKeys()
     {
-        throw new Exception(Exception::UNKNOWN_METHOD, 0, ['method' => __METHOD__]);
+        throw new CacheException(CacheException::UNKNOWN_METHOD, ['method' => __METHOD__]);
     }
 
     /**
@@ -193,7 +203,7 @@ class Couchbase implements CacheInterface
      */
     public function getAll()
     {
-        throw new Exception(Exception::UNKNOWN_METHOD, 0, ['method' => __METHOD__]);
+        throw new CacheException(CacheException::UNKNOWN_METHOD, ['method' => __METHOD__]);
     }
 
     /**
@@ -201,7 +211,7 @@ class Couchbase implements CacheInterface
      */
     public function flush()
     {
-        return static::$storage->flush();
+        return $this->storage->flush();
     }
 
     /**
@@ -209,23 +219,23 @@ class Couchbase implements CacheInterface
      */
     public function status()
     {
-        return static::$storage->getStats();
+        return $this->storage->getStats();
     }
 
     /**
-     * Adding tags.
+     * Set tags.
      *
      * @param string $key
      * @param array  $tags
      */
-    protected function setTags($key, array $tags = null)
+    protected function setTags($key, array $tags = [])
     {
         if (empty($tags)) {
             return;
         }
 
         foreach ($this->prepareTags($tags) as $tag) {
-            if ($keys = static::$storage->get($tag)) {
+            if ($keys = $this->storage->get($tag)) {
                 $keys = $this->unserialize($keys);
                 if (is_object($keys)) {
                     $keys = (array)$keys;
@@ -249,8 +259,12 @@ class Couchbase implements CacheInterface
      */
     protected function provideLock($key, $value, $expire)
     {
+        if ($this->lock === false) {
+            $this->storage->set($key, $value, $expire);
+            return true;
+        }
         if ($this->lock($key, $value)) {
-            static::$storage->set($key, $value, $expire);
+            $this->storage->set($key, $value, $expire);
             $this->unlock($key);
 
             return true;
@@ -260,9 +274,9 @@ class Couchbase implements CacheInterface
     }
 
     /**
-     * Locking write.
+     * Set lock.
      *
-     * > Note: Dog-pile" ("cache miss storm") and "race condition" effects
+     * > Dog-pile" ("cache miss storm") and "race condition" effects.
      *
      * @param string $key
      * @param mixed  $value
@@ -273,10 +287,13 @@ class Couchbase implements CacheInterface
     {
         $iteration = 0;
 
-        while (!(bool)static::$storage->add(self::LOCK_PREFIX . $key, $value, 5)) {
+        while (!(bool)$this->storage->add(self::LOCK_PREFIX . $key, $value, 5)) {
             $iteration++;
             if ($iteration > $max) {
-                //throw new Exception(Exception::INVALID_SAVE, 0, ['key' => $key]);
+                if (class_exists('\rock\log\Log')) {
+                    $message = BaseException::convertExceptionToString(new CacheException(CacheException::INVALID_SAVE, ['key' => $key]));
+                    Log::err($message);
+                }
                 return false;
             }
             usleep(1000);
@@ -285,30 +302,34 @@ class Couchbase implements CacheInterface
         return true;
     }
 
+
     /**
-     * Unlocking write.
+     * Delete lock
      *
      * @param string $key
      * @return bool|\string[]
      */
     protected function unlock($key)
     {
-        return static::$storage->delete(self::LOCK_PREFIX . $key);
+        return $this->storage->delete(self::LOCK_PREFIX . $key);
     }
 
     protected function getLock($key)
     {
-        return static::$storage->get(self::LOCK_PREFIX . $key);
+        return $this->storage->get(self::LOCK_PREFIX . $key);
     }
+
 
     protected function serialize($value)
     {
         if (!is_array($value)) {
             return $value;
         }
+
         if ($this->serializer & self::SERIALIZE_JSON) {
             return Json::encode($value);
         }
+
         return $value;
     }
 }

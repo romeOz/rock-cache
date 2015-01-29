@@ -2,15 +2,18 @@
 
 namespace rock\cache;
 
+use rock\base\BaseException;
+use rock\log\Log;
+
 class Memcache extends Memcached
 {
     /** @var  \Memcache */
-    protected  static $storage;
+    public $storage;
 
-    public function __construct(array $config = [])
+    public function __construct($config = [])
     {
         parent::__construct($config);
-        static::$storage = new \Memcache();
+        $this->storage = new \Memcache();
         foreach ($this->servers as $server) {
             if (!isset($server[1])) {
                 $server[1] = 11211;
@@ -22,21 +25,40 @@ class Memcache extends Memcached
                 $server[3] = 1;
             }
             list($host, $port, $persistent, $weight) = $server;
-            static::$storage->addserver($host, $port, $persistent, $weight);
+            $this->storage->addserver($host, $port, $persistent, $weight);
         }
     }
 
     /**
      * @inheritdoc
      */
-    public function increment($key, $offset = 1, $expire = 0)
+    public function increment($key, $offset = 1, $expire = 0, $create = true)
     {
         $hash = $this->prepareKey($key);
-        if (static::$storage->add($hash, $offset, MEMCACHE_COMPRESSED, $expire)) {
-            return $offset;
+        if ($this->exists($key) === false) {
+            if ($create === false) {
+                return false;
+            }
+            $this->storage->add($hash, 0, MEMCACHE_COMPRESSED, $expire);
         }
 
-        return static::$storage->increment($hash, $offset);
+        return $this->storage->increment($hash, $offset);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function decrement($key, $offset = 1, $expire = 0, $create = true)
+    {
+        $hash = $this->prepareKey($key);
+        if ($this->exists($key) === false) {
+            if ($create === false) {
+                return false;
+            }
+            $this->storage->add($hash, 0, MEMCACHE_COMPRESSED, $expire);
+        }
+
+        return $this->storage->decrement($hash, $offset);
     }
 
     /**
@@ -55,13 +77,13 @@ class Memcache extends Memcached
     public function removeTag($tag)
     {
         $tag = $this->prepareTag($tag);
-        if (($value = static::$storage->get($tag)) === false) {
+        if (($value = $this->storage->get($tag)) === false) {
             return false;
         }
         $value = $this->unserialize($value);
         $value[] = $tag;
         foreach ($value as $key) {
-            static::$storage->delete($key);
+            $this->storage->delete($key);
         }
 
         return true;
@@ -72,7 +94,7 @@ class Memcache extends Memcached
      */
     public function getAllKeys()
     {
-        throw new Exception(Exception::UNKNOWN_METHOD, 0, ['method' => __METHOD__]);
+        throw new CacheException(CacheException::UNKNOWN_METHOD, ['method' => __METHOD__]);
     }
 
     /**
@@ -80,25 +102,21 @@ class Memcache extends Memcached
      */
     public function getAll()
     {
-        throw new Exception(Exception::UNKNOWN_METHOD, 0, ['method' => __METHOD__]);
+        throw new CacheException(CacheException::UNKNOWN_METHOD, ['method' => __METHOD__]);
     }
 
     /**
-     * Locking write.
-     * "Dog-pile" ("cache miss storm") and "race condition" effects
-     *
-     * @param string $key key of cache
-     * @param mixed $value content of cache
-     * @param int   $expire expire of cache
-     * @param int   $count iteration
-     * @return bool
+     * @inheritdoc
      */
     protected function provideLock($key, $value, $expire, &$count = 0)
     {
+        if ($this->lock === false) {
+            $this->storage->set($key, $value, MEMCACHE_COMPRESSED, $expire);
+            return true;
+        }
         if ($this->lock($key, $value)) {
-            static::$storage->set($key, $value, MEMCACHE_COMPRESSED, $expire);
+            $this->storage->set($key, $value, MEMCACHE_COMPRESSED, $expire);
             $this->unlock($key);
-
             return true;
         }
 
@@ -107,23 +125,19 @@ class Memcache extends Memcached
 
 
     /**
-     * Unlocking write.
-     *
-     * > Note: Dog-pile" ("cache miss storm") and "race condition" effects
-     *
-     * @param string $key key of cache
-     * @param mixed $value content of cache
-     * @param int    $max max iteration
-     * @return bool
+     * @inheritdoc
      */
     protected function lock($key, $value, $max = 15)
     {
         $iteration = 0;
 
-        while (!static::$storage->add(self::LOCK_PREFIX . $key, $value, MEMCACHE_COMPRESSED, 5)) {
+        while (!$this->storage->add(self::LOCK_PREFIX . $key, $value, MEMCACHE_COMPRESSED, 5)) {
             $iteration++;
             if ($iteration > $max) {
-                //throw new Exception( Exception::INVALID_SAVE, 0, ['key' => $key]);
+                if (class_exists('\rock\log\Log')) {
+                    $message = BaseException::convertExceptionToString(new CacheException(CacheException::INVALID_SAVE, ['key' => $key]));
+                    Log::err($message);
+                }
                 return false;
             }
             usleep(1000);
@@ -133,19 +147,16 @@ class Memcache extends Memcached
     }
 
     /**
-     * Adding tags.
-     *
-     * @param string $key key of cache
-     * @param array  $tags list of tags
+     * @inheritdoc
      */
-    protected function setTags($key, array $tags = null)
+    protected function setTags($key, array $tags = [])
     {
         if (empty($tags)) {
             return;
         }
 
         foreach ($this->prepareTags($tags) as $tag) {
-            if (($value = static::$storage->get($tag)) !== false) {
+            if (($value = $this->storage->get($tag)) !== false) {
                 $value = $this->unserialize($value);
                 if (in_array($key, $value, true)) {
                     continue;

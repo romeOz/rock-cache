@@ -1,9 +1,9 @@
 <?php
-namespace rockunit\cache;
+namespace rockunit;
+
 
 use rock\cache\APC;
 use rock\cache\CacheInterface;
-use rock\cache\Exception;
 
 /**
  * @group cache
@@ -11,27 +11,27 @@ use rock\cache\Exception;
  */
 class APCTest extends \PHPUnit_Framework_TestCase
 {
-    use  CommonTraitTest;
+    use CacheTestTrait;
 
     public static function flush()
     {
         (new APC())->flush();
     }
 
-    public function init($serialize)
+    public function init($serialize, $lock = true)
     {
         if (!extension_loaded('apc')) {
             $this->markTestSkipped(
                 'The APC is not available.'
             );
         }
-        $cache = new APC(['serializer' => $serialize]);
+        $cache = new APC(['serializer' => $serialize, 'lock' => $lock]);
         return $cache;
     }
 
     /**
      * @dataProvider providerCache
-     * @expectedException Exception
+     * @expectedException \rock\cache\CacheException
      */
     public function testGetStorage(CacheInterface $cache)
     {
@@ -86,3 +86,4 @@ class APCTest extends \PHPUnit_Framework_TestCase
         $this->markTestSkipped('Skipping: ' . __METHOD__);
     }
 }
+ 

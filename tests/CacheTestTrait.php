@@ -1,11 +1,11 @@
 <?php
 
-namespace rockunit\cache;
+namespace rockunit;
 
 
 use rock\cache\CacheInterface;
 
-trait CommonTraitTest
+trait CacheTestTrait
 {
     public static function flush(){}
 
@@ -19,14 +19,14 @@ trait CommonTraitTest
         static::flush();
     }
 
-    abstract public function init($serialize);
+    abstract public function init($serialize, $lock);
 
     public function providerCache()
     {
-        return array(
-            [$this->init(CacheInterface::SERIALIZE_PHP)],
-            [$this->init(CacheInterface::SERIALIZE_JSON)],
-        );
+        return [
+            [$this->init(CacheInterface::SERIALIZE_PHP, true)],
+            [$this->init(CacheInterface::SERIALIZE_JSON, false)],
+        ];
     }
 
     /**
@@ -125,7 +125,7 @@ trait CommonTraitTest
         /** @var $this \PHPUnit_Framework_TestCase */
 
         $cache->setMulti(['foo' => 'text foo', 'bar' => 'text bar']);
-        $this->assertEquals($cache->getMulti(['foo', 'baz', 'bar']), ['foo' => 'text foo', 'baz' => false, 'bar' => 'text bar']);
+        $this->assertEquals($cache->getMulti(['foo', 'baz', 'bar']), ['foo' => 'text foo', /*'baz' => false, */'bar' => 'text bar']);
     }
 
     /**
@@ -277,11 +277,11 @@ trait CommonTraitTest
     {
         /** @var $this \PHPUnit_Framework_TestCase */
 
-        $this->assertEquals($cache->increment('key7', 5), 5, 'should be get: 5');
-        $this->assertEquals($cache->get('key7'), 5, 'should be get: 5');
+        $this->assertEquals(5, $cache->increment('key7', 5), 'should be get: 5');
+        $this->assertEquals(5, $cache->get('key7'), 'should be get: 5');
 
-        $this->assertEquals($cache->increment('key7'), 6, 'should be get: 6');
-        $this->assertEquals($cache->get('key7'), 6, 'should be get: 6');
+        $this->assertEquals(6, $cache->increment('key7'), 'should be get: 6');
+        $this->assertEquals(6, $cache->get('key7'), 'should be get: 6');
     }
 
     /**
@@ -291,9 +291,33 @@ trait CommonTraitTest
     {
         /** @var $this \PHPUnit_Framework_TestCase */
 
-        $this->assertEquals($cache->increment('key7', 5, 1), 5, 'should be get: 5');
+        $this->assertEquals(5,$cache->increment('key7', 5, 1), 'should be get: 5');
         sleep(3);
         $this->assertFalse($cache->get('key7'), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testIncrementFalse(CacheInterface $cache)
+    {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
+        $this->assertFalse($cache->increment('key7', 5, 0, false), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testDecrement(CacheInterface $cache)
+    {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
+        $this->assertEquals(5, $cache->increment('key7', 5), 'should be get: 5');
+        $this->assertEquals(3, $cache->decrement('key7', 2), 'should be get: 3');
+        $this->assertEquals(3, $cache->get('key7'), 'should be get: 3');
+
+        $this->assertEquals(-2, $cache->decrement('key17', 2), 'should be get: -2');
     }
 
     /**
@@ -303,20 +327,7 @@ trait CommonTraitTest
     {
         /** @var $this \PHPUnit_Framework_TestCase */
 
-        $this->assertFalse($cache->decrement('key7', 5), 'should be get: false');
-    }
-
-
-    /**
-     * @dataProvider providerCache
-     */
-    public function testDecrement(CacheInterface $cache)
-    {
-        /** @var $this \PHPUnit_Framework_TestCase */
-
-        $this->assertEquals($cache->increment('key7', 5), 5, 'should be get: 5');
-        $this->assertEquals($cache->decrement('key7', 2), 3, 'should be get: 3');
-        $this->assertEquals($cache->get('key7'), 3, 'should be get: 3');
+        $this->assertFalse($cache->decrement('key7', 5, 0, false), 'should be get: false');
     }
 
     /**
@@ -523,4 +534,4 @@ trait CommonTraitTest
 
         $this->assertNotEmpty($cache->status());
     }
-}
+} 
