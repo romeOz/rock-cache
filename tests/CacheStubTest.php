@@ -38,6 +38,11 @@ class CacheStubTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->storage->set('foo'));
     }
 
+    public function testSetMulti()
+    {
+        $this->storage->setMulti([]);
+    }
+
     public function testAdd()
     {
         $this->assertFalse($this->storage->add('foo'));
@@ -53,6 +58,11 @@ class CacheStubTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->storage->touch('foo'));
     }
 
+    public function testTouchMulti()
+    {
+        $this->storage->touchMulti([]);
+    }
+
     public function testIncrement()
     {
         $this->assertFalse($this->storage->increment('foo'));
@@ -66,6 +76,11 @@ class CacheStubTest extends \PHPUnit_Framework_TestCase
     public function testRemove()
     {
         $this->assertFalse($this->storage->remove('foo'));
+    }
+
+    public function testRemoveMulti()
+    {
+        $this->storage->removeMulti([]);
     }
 
     public function testGetTag()
@@ -86,6 +101,11 @@ class CacheStubTest extends \PHPUnit_Framework_TestCase
     public function testRemoveTag()
     {
         $this->assertFalse($this->storage->removeTag('foo'));
+    }
+
+    public function testRemoveMultiTags()
+    {
+        $this->storage->removeMultiTags([]);
     }
 
     public function testGetAllKeys()

@@ -25,6 +25,8 @@
         <blacklist>
             <file>./src/CacheException.php</file>
             <file>./src/polyfill/Couchbase.php</file>
+            <file>./src/polyfill/Couchbase.php</file>
+            <file>./tests/common/CommonTestTrait.php</file>
         </blacklist>
     </filter>
     <logging>
