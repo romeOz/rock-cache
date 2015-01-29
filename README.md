@@ -4,7 +4,7 @@ PHP library caching
 [![Latest Stable Version](https://poser.pugx.org/romeOz/rock-cache/v/stable.svg)](https://packagist.org/packages/romeOz/rock-cache)
 [![Total Downloads](https://poser.pugx.org/romeOz/rock-cache/downloads.svg)](https://packagist.org/packages/romeOz/rock-cache)
 [![Build Status](https://travis-ci.org/romeOz/rock-cache.svg?branch=master)](https://travis-ci.org/romeOz/rock-cache)
-[![Coverage Status](https://coveralls.io/repos/romeOz/rock-cache/badge.png)](https://coveralls.io/r/romeOz/rock-cache)
+[![Coverage Status](https://coveralls.io/repos/romeOz/rock-cache/badge.svg)](https://coveralls.io/r/romeOz/rock-cache)
 [![License](https://poser.pugx.org/romeOz/rock-cache/license.svg)](https://packagist.org/packages/romeOz/rock-cache)
 
 [Rock cache on Packagist](https://packagist.org/packages/romeOz/rock-cache)
