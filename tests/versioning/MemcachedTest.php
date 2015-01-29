@@ -89,6 +89,11 @@ class MemcachedTest extends CommonCache
      */
     public function testRemoveTag(CacheInterface $cache)
     {
+        if(defined('HHVM_VERSION')) {
+            $this->markTestSkipped(
+                '\Memcached::deleteMulti() does not seem to support HHVM right now.'
+            );
+        }
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
 
@@ -115,5 +120,44 @@ class MemcachedTest extends CommonCache
         $this->markTestSkipped(
             'Memcached::status() skipped. Changed behavior TravisCI.'
         );
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testRemoves(CacheInterface $cache)
+    {
+        if(defined('HHVM_VERSION')) {
+            $this->markTestSkipped(
+                '\Memcached::deleteMulti() does not seem to support HHVM right now.'
+            );
+        }
+        parent::testRemoves($cache);
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testRemoveTagFalse(CacheInterface $cache)
+    {
+        if(defined('HHVM_VERSION')) {
+            $this->markTestSkipped(
+                '\Memcached::deleteMulti() does not seem to support HHVM right now.'
+            );
+        }
+        parent::testRemoveTagFalse($cache);
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testRemoveMultiTags(CacheInterface $cache)
+    {
+        if(defined('HHVM_VERSION')) {
+            $this->markTestSkipped(
+                '\Memcached::deleteMulti() does not seem to support HHVM right now.'
+            );
+        }
+        parent::testRemoveMultiTags($cache);
     }
 }
