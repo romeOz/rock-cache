@@ -20,43 +20,16 @@ class CacheFileTest extends CommonCache
     /** @var FileManager */
     protected static $fileManager;
 
-    public static function setUpBeforeClass()
+    protected function setUp()
     {
-        parent::setUpBeforeClass();
-        static::clearRuntime();
+        parent::setUp();
+        static::flush();
     }
 
     public static function tearDownAfterClass()
     {
         parent::tearDownAfterClass();
         static::clearRuntime();
-    }
-
-    public static function flush()
-    {
-        (new CacheFile(
-            [
-                'adapter' => static::getFileManager(),
-            ]
-        ))->flush();
-        static::getFileManager()->flushCache();
-    }
-
-    /**
-     * @return FileManager
-     */
-    protected static function getFileManager()
-    {
-        if (!isset(static::$fileManager)) {
-            $local = new Local(ROCKUNIT_RUNTIME);
-            $config = [
-                'adapter' => new Local(ROCKUNIT_RUNTIME . '/cache'),
-                'cache' => new Adapter($local, 'cache.tmp')
-            ];
-            static::$fileManager = new FileManager($config);
-        }
-
-        return static::$fileManager;
     }
 
     public function init($serialize, $lock = true)
@@ -134,5 +107,32 @@ class CacheFileTest extends CommonCache
     public function testStatus(CacheInterface $cache)
     {
         $cache->status();
+    }
+
+    public static function flush()
+    {
+        (new CacheFile(
+            [
+                'adapter' => static::getFileManager(),
+            ]
+        ))->flush();
+        static::getFileManager()->flushCache();
+    }
+
+    /**
+     * @return FileManager
+     */
+    protected static function getFileManager()
+    {
+        if (!isset(static::$fileManager)) {
+            $local = new Local(ROCKUNIT_RUNTIME);
+            $config = [
+                'adapter' => new Local(ROCKUNIT_RUNTIME . '/cache'),
+                'cache' => new Adapter($local, 'cache.tmp')
+            ];
+            static::$fileManager = new FileManager($config);
+        }
+
+        return static::$fileManager;
     }
 }
