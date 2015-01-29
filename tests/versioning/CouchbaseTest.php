@@ -24,6 +24,11 @@ class CouchbaseTest extends \PHPUnit_Framework_TestCase
             $this->markTestSkipped(
                 'The Couchbase is not available.'
             );
+
+        } elseif(defined('HHVM_VERSION')) {
+            $this->markTestSkipped(
+                'Couchbase does not seem to support HHVM right now.'
+            );
         }
 
         return new Couchbase(['serializer' => $serialize, 'lock' => $lock]);
