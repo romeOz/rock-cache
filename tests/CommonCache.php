@@ -7,11 +7,6 @@ use rock\cache\CacheInterface;
 
 abstract class CommonCache extends \PHPUnit_Framework_TestCase
 {
-    public function setUp()
-    {
-        static::flush();
-    }
-
     abstract public function init($serialize, $lock);
 
     public function providerCache()
@@ -27,6 +22,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
      */
     public function testGet(CacheInterface $cache)
     {
+        $this->assertFalse($cache->set('', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
         $this->assertEquals(
@@ -109,6 +105,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
      */
     public function testAdd(CacheInterface $cache)
     {
+        $this->assertFalse($cache->add(''));
         $this->assertTrue($cache->add('key3'), 'should be get: true');
     }
 
