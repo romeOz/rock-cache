@@ -9,10 +9,8 @@ use rock\cache\Redis;
  * @group cache
  * @group redis
  */
-class RedisTest extends \PHPUnit_Framework_TestCase
+class RedisTest extends CommonCache
 {
-    use CacheTestTrait;
-
     public static function flush()
     {
         (new Redis())->flush();

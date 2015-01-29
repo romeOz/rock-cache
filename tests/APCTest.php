@@ -9,10 +9,8 @@ use rock\cache\CacheInterface;
  * @group cache
  * @group apc
  */
-class APCTest extends \PHPUnit_Framework_TestCase
+class APCTest extends CommonCache
 {
-    use CacheTestTrait;
-
     public static function flush()
     {
         (new APC())->flush();

@@ -3,16 +3,14 @@ namespace rockunit\core\cache\versioning;
 
 use rock\cache\versioning\Couchbase;
 use rock\cache\CacheInterface;
-use rockunit\CacheTestTrait;
+use rockunit\CommonCache;
 
 /**
  * @group couchbase
  * @group cache
  */
-class CouchbaseTest extends \PHPUnit_Framework_TestCase
+class CouchbaseTest extends CommonCache
 {
-    use CacheTestTrait;
-
     public static function flush()
     {
         (new Couchbase())->flush();

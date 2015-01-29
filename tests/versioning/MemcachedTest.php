@@ -4,16 +4,14 @@ namespace rockunit\core\cache\versioning;
 
 use rock\cache\CacheInterface;
 use rock\cache\versioning\Memcached;
-use rockunit\CacheTestTrait;
+use rockunit\CommonCache;
 
 /**
  * @group cache
  * @group memcached
  */
-class MemcachedTest extends \PHPUnit_Framework_TestCase
+class MemcachedTest extends CommonCache
 {
-    use CacheTestTrait;
-
     public static function flush()
     {
         (new Memcached())->flush();

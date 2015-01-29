@@ -4,15 +4,14 @@ namespace rockunit\core\cache\versioning;
 
 use rock\cache\CacheInterface;
 use rock\cache\versioning\Redis;
-use rockunit\CacheTestTrait;
+use rockunit\CommonCache;
 
 /**
  * @group cache
  * @group redis
  */
-class RedisTest extends \PHPUnit_Framework_TestCase
+class RedisTest extends CommonCache
 {
-    use CacheTestTrait;
 
     public static function flush()
     {
