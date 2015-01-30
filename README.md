@@ -104,10 +104,10 @@ Documentation
 -------------------
 
 ####get($key)
-Gets cache by key.
+Returns cache by key.
 
 ####getMulti(array $keys)
-Gets multiple cache by keys.
+Returns multiple cache by keys.
 
 ####set($key, mixed $value, $expire = 0, array $tags = null)
 Set cache.
@@ -141,10 +141,10 @@ Removes cache.
 Removes multiple keys.
 
 ####getTag($tag)
-Gets the keys of cache in accordance with the tag.
+Returns the keys of cache in accordance with the tag.
 
 ####getMultiTags(array $tags)
-Gets the keys of cache in accordance with the multiple tags.
+Returns the keys of cache in accordance with the multiple tags.
 
 ####existsTag($tag)
 Checks existence tag.
@@ -156,12 +156,12 @@ Removes tag.
 Removes multiple tags.
 
 ####getAllKeys()
-Gets all keys of cache.
+Returns all keys of cache.
 
 >Supported: `Memcached`, `Redis`, `APC`.
 
 ####getAll()
-Gets all cache.
+Returns all cache.
 
 >Supported: `Memcached`, `APC`.
 
@@ -169,12 +169,12 @@ Gets all cache.
 Removes all cache.
 
 ####status()
-Get status server of cache.
+Returns status server of cache.
 
 >Supported: `Memcached`, `Memcache`, `Redis`, `APC`, `Couchbase`.
 
 ####getStorage()
-Gets current cache-storage.
+Returns current cache-storage.
 
 Demo & Tests (one of three ways)
 -------------------
