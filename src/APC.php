@@ -252,7 +252,7 @@ class APC implements CacheInterface, EventsInterface
     }
 
     /**
-     * Delete lock
+     * Delete lock.
      *
      * @param string $key
      * @return bool|\string[]
@@ -262,13 +262,6 @@ class APC implements CacheInterface, EventsInterface
         return apc_delete(self::LOCK_PREFIX . $key);
     }
 
-
-    /**
-     * Set tags
-     *
-     * @param string $key
-     * @param array  $tags
-     */
     protected function setTags($key, array $tags = null)
     {
         if (empty($tags)) {

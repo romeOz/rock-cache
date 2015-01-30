@@ -13,7 +13,7 @@ interface CacheInterface extends SerializeInterface
     const TAG_PREFIX   = 'tag_';
 
     /**
-     * Gets current cache-storage.
+     * Returns current cache-storage.
      *
      * @throws CacheException
      * @return \Memcached|\Memcache|\Redis|\Couchbase
@@ -21,7 +21,7 @@ interface CacheInterface extends SerializeInterface
     public function getStorage();
 
     /**
-     * Gets prepare key of cache.
+     * Returns prepare key of cache.
      *
      * @param string $key key of cache
      * @return bool|string
@@ -29,14 +29,14 @@ interface CacheInterface extends SerializeInterface
     public function prepareKey($key);
 
     /**
-     * Add prefix to key.
+     * Adds prefix to key.
      *
      * @param string $prefix
      */
     public function addPrefix($prefix);
 
     /**
-     * Gets cache by key.
+     * Returns cache by key.
      *
      * @param string $key key of cache
      * @return mixed|bool
@@ -44,7 +44,7 @@ interface CacheInterface extends SerializeInterface
     public function get($key);
 
     /**
-     * Gets multiple cache by keys.
+     * Returns multiple cache by keys.
      *
      * @param array $keys keys of cache
      * @return array
@@ -151,7 +151,7 @@ interface CacheInterface extends SerializeInterface
     public function removeMulti(array $keys);
 
     /**
-     * Gets tag.
+     * Returns tag.
      *
      * @param string $tag name of tag
      * @return mixed
@@ -159,7 +159,7 @@ interface CacheInterface extends SerializeInterface
     public function getTag($tag);
 
     /**
-     * Gets tags.
+     * Returns tags.
      *
      * @param array $tags names of tags
      * @return array
@@ -190,13 +190,13 @@ interface CacheInterface extends SerializeInterface
     public function removeMultiTags(array $tags);
 
     /**
-     * Gets all keys of cache.
+     * Returns all keys of cache.
      * @return array
      */
     public function getAllKeys();
 
     /**
-     * Gets all cache.
+     * Returns all cache.
      * @return array
      * @throws CacheException
      */
@@ -209,7 +209,7 @@ interface CacheInterface extends SerializeInterface
     public function flush();
 
     /**
-     * Get status server of cache.
+     * Returns status server of cache.
      * @throws CacheException
      * @return mixed
      */

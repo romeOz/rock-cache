@@ -14,17 +14,17 @@ class CacheFile implements CacheInterface, EventsInterface
     }
 
     /**
-     * Max files in folder
+     * Max files in folder.
      * @var int
      */
     public $maxFiles = 100;
     /**
-     * Extension of cache file
+     * Extension of cache file.
      * @var string
      */
     public $extensionFileCache = 'tmp';
     /**
-     * Path to file of cache
+     * Path to file of cache.
      * @var string
      */
     protected $pathFileCache;
@@ -327,9 +327,9 @@ class CacheFile implements CacheInterface, EventsInterface
     }
 
     /**
-     * Get data file cache
+     * Returns data file cache
      *
-     * @param string|int $key - key
+     * @param string|int $key key
      * @throws CacheException
      * @return bool|mixed
      */
@@ -353,12 +353,6 @@ class CacheFile implements CacheInterface, EventsInterface
         );
     }
 
-    /**
-     * @param string $key  - hash-key
-     * @param array  $metadata - array data of file
-     * @param null   $result
-     * @return mixed
-     */
     protected function provideGet($key, &$metadata = null, &$result = null)
     {
         if (!$metadata = $this->getDataFile($key)) {

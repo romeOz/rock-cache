@@ -27,7 +27,6 @@ class Memcache extends \rock\cache\Memcache implements CacheInterface
         return $this->storage->replace($this->prepareTag($tag), microtime(), MEMCACHE_COMPRESSED, 0);
     }
 
-
     protected function validTimestamp($key, array $tags = [])
     {
         if (empty($tags)) {

@@ -307,7 +307,7 @@ class Memcached implements CacheInterface, EventsInterface
     }
 
     /**
-     * Delete lock
+     * Delete lock.
      *
      * @param string $key
      * @return bool|string[]
@@ -316,7 +316,6 @@ class Memcached implements CacheInterface, EventsInterface
     {
         return $this->storage->delete(self::LOCK_PREFIX . $key);
     }
-
 
     protected function serialize($value)
     {

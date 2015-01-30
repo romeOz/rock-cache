@@ -94,7 +94,7 @@ trait VersioningTrait
     }
 
     /**
-     * Set tags
+     * Set tags.
      *
      * @param string $key
      * @param array  $tags

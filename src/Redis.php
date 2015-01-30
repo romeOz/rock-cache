@@ -259,7 +259,7 @@ class Redis implements CacheInterface, EventsInterface
     }
 
     /**
-     * Delete lock
+     * Delete lock.
      *
      * @param string $key
      */
@@ -269,7 +269,7 @@ class Redis implements CacheInterface, EventsInterface
     }
 
     /**
-     * Set tags
+     * Set tags.
      *
      * @param string $key
      * @param array  $tags

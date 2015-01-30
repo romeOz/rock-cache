@@ -222,12 +222,6 @@ class Couchbase implements CacheInterface, EventsInterface
         return $this->storage->getStats();
     }
 
-    /**
-     * Set tags.
-     *
-     * @param string $key
-     * @param array  $tags
-     */
     protected function setTags($key, array $tags = [])
     {
         if (empty($tags)) {
@@ -251,12 +245,6 @@ class Couchbase implements CacheInterface, EventsInterface
         }
     }
 
-    /**
-     * @param string $key
-     * @param mixed $value
-     * @param int $expire
-     * @return bool
-     */
     protected function provideLock($key, $value, $expire)
     {
         if ($this->lock === false) {
@@ -302,9 +290,8 @@ class Couchbase implements CacheInterface, EventsInterface
         return true;
     }
 
-
     /**
-     * Delete lock
+     * Delete lock.
      *
      * @param string $key
      * @return bool|\string[]
@@ -319,7 +306,9 @@ class Couchbase implements CacheInterface, EventsInterface
         return $this->storage->get(self::LOCK_PREFIX . $key);
     }
 
-
+    /**
+     * @inheritdoc
+     */
     protected function serialize($value)
     {
         if (!is_array($value)) {
