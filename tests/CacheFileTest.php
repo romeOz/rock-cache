@@ -3,7 +3,7 @@
 namespace rockunit;
 
 use League\Flysystem\Adapter\Local;
-use League\Flysystem\Cache\Adapter;
+use League\Flysystem\Cached\Storage\Adapter;
 use rock\cache\CacheFile;
 use rock\cache\CacheInterface;
 use rock\file\FileManager;
@@ -116,7 +116,7 @@ class CacheFileTest extends CommonCache
                 'adapter' => static::getFileManager(),
             ]
         ))->flush();
-        static::getFileManager()->flushCache();
+        static::getFileManager()->cache->flush();
     }
 
     /**
