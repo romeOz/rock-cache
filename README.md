@@ -231,11 +231,7 @@ You can use each storage separately, requirements are individually for storages.
  Memcached demon should be installed `apt-get install memcached`. Also, should be installed php extension [Memcache](http://pecl.php.net/package/memcache) `apt-get install php5-memcache` or [Memcached](http://pecl.php.net/package/memcached) `apt-get install php5-memcached`.
  * [APCu](http://pecl.php.net/package/APCu) should be installed ```apt-get install php5-apcu```.
  * Couchbase: [Step-by-step installation](http://www.couchbase.com/communities/php/getting-started).
- * Session as memory storage **(optional):** suggested to use [Rock Session](https://github.com/romeOz/rock-session). Should be installed: 
- 
-```
-composer require romeoz/rock-session:*
-```
+ * Session as memory storage **(optional):** suggested to use [Rock Session](https://github.com/romeOz/rock-session). Should be installed: `composer require romeoz/rock-session:*`
 
 Storages comparison
 -------------------
