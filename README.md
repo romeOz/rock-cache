@@ -27,9 +27,10 @@ Features
  * One interface for all storages - you can change storage without changing your code
  * Tags for keys (approach versioning and grouping)
  * Autolocker - "dog-pile"/"cache miss storm"/"race condition" effects are excluded
- * Serializer for value (json or PHP serializer)
+ * Serializer for value (json or PHP-serializer)
  * Automatic unserialization
  * Stub for caching
+ * Stores session data in a key-value storage
  * Module for [Rock Framework](https://github.com/romeOz/rock)
 
 Installation
@@ -37,7 +38,9 @@ Installation
 
 From the Command Line:
 
-```composer require romeoz/rock-cache:*```
+```
+composer require romeoz/rock-cache:*
+```
 
 or in your composer.json:
 
@@ -53,7 +56,7 @@ or in your composer.json:
 Quick Start
 -------------------
 
-###Memcached
+####Memcached
 
 ```php
 use rock\cache\CacheInterface;
@@ -75,7 +78,7 @@ $memcached->get('key_1'); // result: ['foo', 'bar'];
 $memcached->flush(); // Invalidate all items in the cache
 ```
 
-###Local storage
+####Local storage
 
 ```php
 use League\Flysystem\Adapter\Local;
@@ -98,6 +101,18 @@ $cacheFile = new CacheFile($config);
 $cacheFile->set('key_1', 'foo');
 
 $memcached->get('key_1'); // result: foo;
+```
+
+####Session as key-value storage
+
+```php
+$config = [
+    'cache' => new \rock\cache\Memcached
+];
+$session = new \rock\cache\MemorySession($config);
+$session ->add('name', 'Tom');
+
+echo $session->get('name'); // result: Tom
 ```
 
 Documentation
@@ -207,18 +222,20 @@ Requirements
 You can use each storage separately, requirements are individually for storages.
 
  * **PHP 5.4+**
- * **For Local storage:**
- Used library [flysystem](https://github.com/thephpleague/flysystem) which is an filesystem abstraction which allows you to easily swap out a local filesystem for a remote one. Note: contains composser.
- * **For Redis:**
- [Redis](http://redis.io) server should be installed ```apt-get install redis-server```. Also, should be installed [PHP extension](http://pecl.php.net/package/redis) ```apt-get install php5-redis```
- * **For Memcached/Memcache:**
- Memcached demon should be installed ```apt-get install memcached```. Also, should be installed php extensions [Memcache](http://pecl.php.net/package/memcache) ```apt-get install php5-memcache``` or [Memcached](http://pecl.php.net/package/memcached) ```apt-get install php5-memcached```.
- * **For APCu:**
- [APCu](http://pecl.php.net/package/APCu) should be installed ```apt-get install php5-apcu```.
- * **For Couchbase:**
- [Step-by-step installation](http://www.couchbase.com/communities/php/getting-started).
+ * For Local storage:
+ Used library [flysystem](https://github.com/thephpleague/flysystem) which is an filesystem abstraction which allows you to easily swap out a local filesystem for a remote one.
+> Note: contains composer.
 
->If you have difficulty in setting up, then see [playbooks](https://github.com/romeOz/rock-cache/tree/master/provisioning/roles).
+ * [Redis](http://redis.io) server should be installed `apt-get install redis-server`. Also, should be installed [PHP extension](http://pecl.php.net/package/redis) `apt-get install php5-redis`
+ * Memcached/Memcache:
+ Memcached demon should be installed `apt-get install memcached`. Also, should be installed php extension [Memcache](http://pecl.php.net/package/memcache) `apt-get install php5-memcache` or [Memcached](http://pecl.php.net/package/memcached) `apt-get install php5-memcached`.
+ * [APCu](http://pecl.php.net/package/APCu) should be installed ```apt-get install php5-apcu```.
+ * Couchbase: [Step-by-step installation](http://www.couchbase.com/communities/php/getting-started).
+ * Session as memory storage **(optional):** suggested to use [Rock Session](https://github.com/romeOz/rock-session). Should be installed: 
+ 
+```
+composer require romeoz/rock-session:*
+```
 
 Storages comparison
 -------------------
