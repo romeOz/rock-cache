@@ -15,19 +15,8 @@
             "email": "serggalka@gmail.com"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/romeOz/rock-base"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/romeOz/rock-file"
-        }
-    ],
     "require": {
         "php": ">=5.4.0",
-        "romeoz/rock-base" : "*@dev",
         "romeoz/rock-helpers" : "*@dev",
         "romeoz/rock-events" : "*@dev",
         "romeoz/rock-file": "*@dev"
@@ -45,7 +34,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "0.9-dev"
         }
     }
 }
