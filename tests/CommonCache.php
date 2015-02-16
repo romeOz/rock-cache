@@ -26,11 +26,11 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
         $this->assertEquals(
-            $cache->get('key1'),
             ['one', 'two'],
+            $cache->get('key1'),
             'should be get: ' . json_encode(['one', 'two'])
         );
-        $this->assertEquals($cache->get('key2'), 'three', 'should be get: "three"');
+        $this->assertEquals('three', $cache->get('key2'), 'should be get: "three"');
     }
 
     /**
@@ -57,11 +57,11 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
     {
         $cache->addPrefix('test');
         $this->assertTrue($cache->set('key5', ['foo']));
-        $this->assertSame($cache->get('key5'), ['foo']);
+        $this->assertSame(['foo'], $cache->get('key5'));
 
         $cache->hashKey = 0;
         $this->assertTrue($cache->set('key6', ['foo']));
-        $this->assertSame($cache->get('key6'), ['foo']);
+        $this->assertSame(['foo'], $cache->get('key6'));
     }
 
     /**
@@ -72,7 +72,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
         $cache->addPrefix('test');
         $cache->hashKey = CacheInterface::HASH_SHA;
         $this->assertTrue($cache->set('key5', ['foo']));
-        $this->assertSame($cache->get('key5'), ['foo']);
+        $this->assertSame(['foo'], $cache->get('key5'));
     }
 
     /**
@@ -97,7 +97,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
     public function testSetMulti(CacheInterface $cache)
     {
         $cache->setMulti(['foo' => 'text foo', 'bar' => 'text bar']);
-        $this->assertEquals($cache->getMulti(['foo', 'baz', 'bar']), ['foo' => 'text foo', /*'baz' => false, */'bar' => 'text bar']);
+        $this->assertEquals(['foo' => 'text foo', /*'baz' => false, */'bar' => 'text bar'], $cache->getMulti(['foo', 'baz', 'bar']));
     }
 
     /**
@@ -323,8 +323,8 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
         $this->assertEquals(
-            array_keys($cache->getMultiTags(['bar', 'foo'])),
             ['bar', 'foo'],
+            array_keys($cache->getMultiTags(['bar', 'foo'])),
             'should be get: ' . json_encode(['bar', 'foo'])
         );
     }
