@@ -196,18 +196,19 @@ Demo & Tests (one of three ways)
 
 ####1. [Destination](http://demo.cache.framerock.net/)
 
-####2. Docker + Ansible (see [out of the box](https://github.com/romeOz/vagrant-rock-cache#out-of-the-box))
+####2. Docker + Ansible
 
  * [Install Docker](https://docs.docker.com/installation/) or [askubuntu](http://askubuntu.com/a/473720)
  * `docker run -d -p 8080:80 romeoz/vagrant-rock-cache`
  * Open demo [http://localhost:8080/](http://localhost:8080/)
  
-####3. Vagrant + Ansible (see [out of the box](https://github.com/romeOz/vagrant-rock-cache#out-of-the-box))
+####3. VirtualBox + Vagrant + Ansible
 
  * `git clone https://github.com/romeOz/vagrant-rock-cache.git`
+ * [Install VirtualBox](https://www.virtualbox.org/wiki/Downloads)
  * [Install Vagrant](https://www.vagrantup.com/downloads), and additional Vagrant plugins `vagrant plugin install vagrant-hostsupdater vagrant-vbguest vagrant-cachier`
  * `vagrant up`
- 5. Open demo [http://rock.cache/](http://rock.cache/) or [http://192.168.33.33/](http://192.168.33.33/)
+ * Open demo [http://www.rock-cache/](http://www.rock-cache/) or [http://192.168.33.33/](http://192.168.33.33/)
 
 > Work/editing the project can be done via ssh:
 
@@ -229,7 +230,7 @@ You can use each storage separately, requirements are individually for storages.
  * [Redis](http://redis.io) server should be installed `apt-get install redis-server`. Also, should be installed [PHP extension](http://pecl.php.net/package/redis) `apt-get install php5-redis`
  * Memcached/Memcache:
  Memcached demon should be installed `apt-get install memcached`. Also, should be installed php extension [Memcache](http://pecl.php.net/package/memcache) `apt-get install php5-memcache` or [Memcached](http://pecl.php.net/package/memcached) `apt-get install php5-memcached`.
- * [APCu](http://pecl.php.net/package/APCu) should be installed ```apt-get install php5-apcu```.
+ * [APCu](http://pecl.php.net/package/APCu) should be installed `apt-get install php5-apcu`.
  * Couchbase: [Step-by-step installation](http://www.couchbase.com/communities/php/getting-started).
  * Session as memory storage **(optional):** suggested to use [Rock Session](https://github.com/romeOz/rock-session). Should be installed: `composer require romeoz/rock-session:*`
 
