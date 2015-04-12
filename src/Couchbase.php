@@ -11,6 +11,7 @@ class Couchbase implements CacheInterface, EventsInterface
 {
     use CacheTrait {
         CacheTrait::__construct as parentConstruct;
+        CacheTrait::setMulti as parentSetMulti;
     }
 
     /**
@@ -66,6 +67,24 @@ class Couchbase implements CacheInterface, EventsInterface
         $this->setTags($key, $tags);
 
         return $this->provideLock($key, $this->serialize($value), $expire);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setMulti($values, $expire = 0, array $tags = [])
+    {
+        if ($this->lock === false) {
+            foreach ($values as $key => $value) {
+                $key = $this->prepareKey($key);
+                $this->setTags($key, $tags);
+                $values[$key] = $value;
+            }
+            $this->storage->setMulti($values, $expire);
+            return;
+        }
+
+        $this->parentSetMulti($values, $expire, $tags);
     }
 
     /**
