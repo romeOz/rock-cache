@@ -83,8 +83,8 @@ class Memcached implements CacheInterface, EventsInterface
         if ($this->lock === false) {
             foreach ($values as $key => $value) {
                 $key = $this->prepareKey($key);
-                $this->setTags($key, $tags);
-                $values[$key] = $value;
+                $this->setTags($key, $tags, $value);
+                $values[$key] = $this->serialize($value);
             }
             $this->storage->setMulti($values, $expire);
             return;

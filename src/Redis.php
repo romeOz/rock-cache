@@ -68,24 +68,6 @@ class Redis implements CacheInterface, EventsInterface
     /**
      * @inheritdoc
      */
-    public function setMulti($values, $expire = 0, array $tags = [])
-    {
-        if ($this->lock === false) {
-            foreach ($values as $key => $value) {
-                $key = $this->prepareKey($key);
-                $this->setTags($key, $tags);
-                $values[$key] = $value;
-            }
-            $this->storage->mset($values, $expire);
-            return;
-        }
-
-        $this->parentSetMulti($values, $expire, $tags);
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function add($key, $value = null, $expire = 0, array $tags = [])
     {
         if (empty($key)) {
