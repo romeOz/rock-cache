@@ -32,6 +32,14 @@ class Memcache extends Memcached
     /**
      * @inheritdoc
      */
+    public function setMulti($values, $expire = 0, array $tags = [])
+    {
+        $this->parentSetMulti($values, $expire, $tags);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function increment($key, $offset = 1, $expire = 0, $create = true)
     {
         $hash = $this->prepareKey($key);
