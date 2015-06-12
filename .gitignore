@@ -2,12 +2,9 @@
 ## Project
 ############
 
-vendor
-assets/*
+vendor/
 composer.lock
-./index.php
 *~
-
 
 ############
 ## Windows
@@ -23,10 +20,9 @@ Desktop.ini
 ############
 ## Vagrant
 ############
-.vagrant/*
-
+.vagrant/
 
 ############
 ## PHPStorm
 ############
-.idea/*
+.idea/
