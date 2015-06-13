@@ -24,13 +24,13 @@ sudo apt-get install libcouchbase-dev
 sudo apt-get install autoconf
 
 # install this version
-VERSION=1.2.2
+VERSION=2.0.7
 
 #cd /tmp/
 
 # compile manually, because `pecl install` keep asking questions
-wget http://pecl.php.net/get/couchbase-$VERSION.tgz
-tar zxvf couchbase-$VERSION.tgz
+wget http://pecl.php.net/get/couchbase-${VERSION}.tgz
+tar zxvf couchbase-${VERSION}.tgz
 cd "couchbase-${VERSION}"
 phpize && ./configure && make install && echo "Installed ext/couchbase-${VERSION}"
 
