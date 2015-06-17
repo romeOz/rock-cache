@@ -25,6 +25,7 @@
         <blacklist>
             <file>./src/CacheException.php</file>
             <directory>./src/stub/</directory>
+            <directory>./tests/</directory>
         </blacklist>
     </filter>
     <logging>
