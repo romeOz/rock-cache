@@ -18,7 +18,6 @@ class MemcachedTest extends CommonCache
             $this->markTestSkipped(
                 'The \Memcached is not available.'
             );
-
         }
 
         (new Memcached())->flush();
@@ -80,6 +79,7 @@ class MemcachedTest extends CommonCache
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testGetTag(CacheInterface $cache)
     {
@@ -90,6 +90,7 @@ class MemcachedTest extends CommonCache
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testRemoveTag(CacheInterface $cache)
     {
@@ -118,12 +119,88 @@ class MemcachedTest extends CommonCache
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testStatus(CacheInterface $cache)
     {
         $this->markTestSkipped(
             'Memcached::status() skipped. Changed behavior TravisCI.'
         );
+    }
+
+    /**
+     * @dataProvider providerCache
+     * @param CacheInterface $cache
+     */
+    public function testTouch(CacheInterface $cache)
+    {
+        if(defined('HHVM_VERSION')) {
+            $this->markTestSkipped(
+                '\Memcached::touch() does not seem to support HHVM right now.'
+            );
+        }
+
+        parent::testTouch($cache);
+    }
+
+    /**
+     * @dataProvider providerCache
+     * @param CacheInterface $cache
+     */
+    public function testTouchMultiFalse(CacheInterface $cache)
+    {
+        if(defined('HHVM_VERSION')) {
+            $this->markTestSkipped(
+                '\Memcached::touch() does not seem to support HHVM right now.'
+            );
+        }
+
+        parent::testTouchMultiFalse($cache);
+    }
+
+    /**
+     * @dataProvider providerCache
+     * @param CacheInterface $cache
+     */
+    public function testTouchMultiTrue(CacheInterface $cache)
+    {
+        if(defined('HHVM_VERSION')) {
+            $this->markTestSkipped(
+                '\Memcached::touch() does not seem to support HHVM right now.'
+            );
+        }
+
+        parent::testTouchMultiTrue($cache);
+    }
+
+    /**
+     * @dataProvider providerCache
+     * @param CacheInterface $cache
+     */
+    public function testTouchFalse(CacheInterface $cache)
+    {
+        if(defined('HHVM_VERSION')) {
+            $this->markTestSkipped(
+                '\Memcached::touch() does not seem to support HHVM right now.'
+            );
+        }
+
+        parent::testTouchFalse($cache);
+    }
+
+    /**
+     * @dataProvider providerCache
+     * @param CacheInterface $cache
+     */
+    public function testExistsByTouchFalse(CacheInterface $cache)
+    {
+        if(defined('HHVM_VERSION')) {
+            $this->markTestSkipped(
+                '\Memcached::touch() does not seem to support HHVM right now.'
+            );
+        }
+
+        parent::testExistsByTouchFalse($cache);
     }
 
     /**
