@@ -22,7 +22,7 @@
         "romeoz/rock-file": "*@dev"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.6.*",
+        "phpunit/phpunit": "4.7.*",
         "romeoz/rock-session": "*@dev"
     },
     "suggest": {
