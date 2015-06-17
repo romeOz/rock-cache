@@ -122,11 +122,7 @@ class Memcached implements CacheInterface, EventsInterface
      */
     public function touch($key, $expire = 0)
     {
-        if (($value = $this->get($key)) === false) {
-            return false;
-        }
-
-        return $this->set($key, $value, $expire);
+        return $this->storage->touch($this->prepareKey($key), $expire);
     }
 
     /**
@@ -272,7 +268,6 @@ class Memcached implements CacheInterface, EventsInterface
             }
             $this->provideLock($tag, $this->serialize((array)$key), 0);
         }
-
     }
 
     protected function getLock($key)

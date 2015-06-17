@@ -40,6 +40,18 @@ class Memcache extends Memcached
     /**
      * @inheritdoc
      */
+    public function touch($key, $expire = 0)
+    {
+        if (($value = $this->get($key)) === false) {
+            return false;
+        }
+
+        return $this->set($key, $value, $expire);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function increment($key, $offset = 1, $expire = 0, $create = true)
     {
         $hash = $this->prepareKey($key);
@@ -116,7 +128,7 @@ class Memcache extends Memcached
     /**
      * @inheritdoc
      */
-    protected function provideLock($key, $value, $expire, &$count = 0)
+    protected function provideLock($key, $value, $expire)
     {
         if ($this->lock === false) {
             $this->storage->set($key, $value, MEMCACHE_COMPRESSED, $expire);
