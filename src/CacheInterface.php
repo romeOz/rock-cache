@@ -3,7 +3,11 @@ namespace rock\cache;
 
 use rock\helpers\SerializeInterface;
 
-
+/**
+ * @property int $hashKey hashing key
+ * @property int $hashTag hashing tag
+ * @property int $serializer select serializer
+ */
 interface CacheInterface extends SerializeInterface
 {
     const HASH_MD5 = 1;
@@ -16,7 +20,7 @@ interface CacheInterface extends SerializeInterface
      * Returns current cache-storage.
      *
      * @throws CacheException
-     * @return \Memcached|\Memcache|\Redis|\Couchbase
+     * @return \Memcached|\Memcache|\Redis|\CouchbaseBucket
      */
     public function getStorage();
 
