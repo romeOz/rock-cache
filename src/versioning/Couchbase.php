@@ -8,7 +8,7 @@ class Couchbase extends \rock\cache\Couchbase implements CacheInterface
 {
     use VersioningTrait;
 
-    /** @var  \Couchbase */
+    /** @var  \CouchbaseBucket */
     public $storage;
 
     /**
@@ -16,7 +16,7 @@ class Couchbase extends \rock\cache\Couchbase implements CacheInterface
      */
     public function getTag($tag)
     {
-        return $this->storage->get($this->prepareTag($tag));
+        return $this->getInternal($this->prepareTag($tag));
     }
 
     /**
@@ -24,7 +24,13 @@ class Couchbase extends \rock\cache\Couchbase implements CacheInterface
      */
     public function removeTag($tag)
     {
-        return is_string($this->storage->replace($this->prepareTag($tag), microtime(), 0));
+        try {
+            $this->storage->replace($this->prepareTag($tag), microtime());
+        } catch (\CouchbaseException $e) {
+            return false;
+        }
+
+        return true;
     }
 
     protected function validTimestamp($key, array $tagsByValue = [])
@@ -32,12 +38,12 @@ class Couchbase extends \rock\cache\Couchbase implements CacheInterface
         if (empty($tagsByValue)) {
             return true;
         }
-        $tags = $this->storage->getMulti(array_keys($tagsByValue));
+        $tags = $this->storage->get(array_keys($tagsByValue));
         foreach ($tagsByValue as $tag => $timestamp) {
             if (!isset($tags[$tag]) ||
-                (isset($tags[$tag]) && $this->microtime($tags[$tag]) > $this->microtime($timestamp))
+                (isset($tags[$tag]) && !isset($tags[$tag]->error) && $this->microtime($tags[$tag]->value) > $this->microtime($timestamp))
             ) {
-                $this->storage->delete($key);
+                $this->removeInternal($key);
 
                 return false;
             }
@@ -57,13 +63,13 @@ class Couchbase extends \rock\cache\Couchbase implements CacheInterface
         }
         $timestamp = microtime();
         $tags = $this->prepareTags($tags);
-        $data = $this->storage->getMulti($tags);
+        $data = $this->storage->get($tags);
         foreach ($tags as $tag) {
-            if (isset($data[$tag])) {
-                $value['tags'][$tag] = $data[$tag];
+            if (isset($data[$tag]) && !isset($data[$tag]->error)) {
+                $value['tags'][$tag] = $data[$tag]->value;
                 continue;
             }
-            $this->provideLock($tag, $timestamp, 0);
+            $this->provideLock($tag, $timestamp, 0, true);
             $value['tags'][$tag] = $timestamp;
         }
     }

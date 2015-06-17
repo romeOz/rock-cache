@@ -19,6 +19,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testGet(CacheInterface $cache)
     {
@@ -35,6 +36,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testGetNotKey(CacheInterface $cache)
     {
@@ -43,6 +45,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testGetNull(CacheInterface $cache)
     {
@@ -52,6 +55,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testAddPrefix(CacheInterface $cache)
     {
@@ -66,6 +70,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testKeySHA(CacheInterface $cache)
     {
@@ -77,6 +82,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testSet(CacheInterface $cache)
     {
@@ -85,6 +91,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testSetFalse(CacheInterface $cache)
     {
@@ -93,6 +100,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testSetMulti(CacheInterface $cache)
     {
@@ -102,6 +110,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testAdd(CacheInterface $cache)
     {
@@ -111,6 +120,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testAddFalse(CacheInterface $cache)
     {
@@ -120,6 +130,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testTtl(CacheInterface $cache)
     {
@@ -130,6 +141,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testTouch(CacheInterface $cache)
     {
@@ -149,6 +161,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testTouchMultiFalse(CacheInterface $cache)
     {
@@ -164,6 +177,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testTouchMultiTrue(CacheInterface $cache)
     {
@@ -177,6 +191,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testTouchFalse(CacheInterface $cache)
     {
@@ -185,6 +200,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testExistsTrue(CacheInterface $cache)
     {
@@ -194,6 +210,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testExistsFalse(CacheInterface $cache)
     {
@@ -202,6 +219,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testExistsByTouchFalse(CacheInterface $cache)
     {
@@ -213,6 +231,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testExistsByRemoveFalse(CacheInterface $cache)
     {
@@ -223,6 +242,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testIncrement(CacheInterface $cache)
     {
@@ -235,6 +255,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testIncrementWithTtl(CacheInterface $cache)
     {
@@ -245,6 +266,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testIncrementFalse(CacheInterface $cache)
     {
@@ -253,6 +275,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testDecrement(CacheInterface $cache)
     {
@@ -265,6 +288,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testDecrementFalse(CacheInterface $cache)
     {
@@ -273,6 +297,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testRemove(CacheInterface $cache)
     {
@@ -283,6 +308,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testRemoveFalse(CacheInterface $cache)
     {
@@ -291,6 +317,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testRemoves(CacheInterface $cache)
     {
@@ -303,6 +330,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testGetTag(CacheInterface $cache)
     {
@@ -317,6 +345,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testGetTags(CacheInterface $cache)
     {
@@ -331,6 +360,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testGetHashMd5Tags(CacheInterface $cache)
     {
@@ -345,6 +375,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testGetHashSHATags(CacheInterface $cache)
     {
@@ -359,6 +390,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testExistsTag(CacheInterface $cache)
     {
@@ -369,6 +401,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testExistsTagFalse(CacheInterface $cache)
     {
@@ -377,6 +410,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testRemoveTag(CacheInterface $cache)
     {
@@ -389,6 +423,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testRemoveTagFalse(CacheInterface $cache)
     {
@@ -397,6 +432,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testRemoveMultiTags(CacheInterface $cache)
     {
@@ -409,6 +445,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testGetAllKeys(CacheInterface $cache)
     {
@@ -430,6 +467,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testGetAll(CacheInterface $cache)
     {
@@ -440,6 +478,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testStatus(CacheInterface $cache)
     {

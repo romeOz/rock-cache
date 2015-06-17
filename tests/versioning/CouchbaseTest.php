@@ -13,7 +13,7 @@ class CouchbaseTest extends CommonCache
 {
     public function setUp()
     {
-        if (!class_exists('\Couchbase')) {
+        if (!class_exists('\CouchbaseBucket')) {
             $this->markTestSkipped(
                 'The Couchbase is not available.'
             );
@@ -29,7 +29,7 @@ class CouchbaseTest extends CommonCache
 
     public function init($serialize, $lock = true)
     {
-        if (!class_exists('\Couchbase')) {
+        if (!class_exists('\CouchbaseBucket')) {
             $this->markTestSkipped(
                 'The Couchbase is not available.'
             );
@@ -45,15 +45,17 @@ class CouchbaseTest extends CommonCache
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testGetStorage(CacheInterface $cache)
     {
-        $this->assertTrue($cache->getStorage() instanceof \Couchbase);
+        $this->assertTrue($cache->getStorage() instanceof \CouchbaseBucket);
     }
 
     /**
      * @dataProvider providerCache
      * @expectedException \rock\cache\CacheException
+     * @param CacheInterface $cache
      */
     public function testGetAll(CacheInterface $cache)
     {
@@ -62,6 +64,7 @@ class CouchbaseTest extends CommonCache
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testTtlDecrement(CacheInterface $cache)
     {
@@ -73,6 +76,7 @@ class CouchbaseTest extends CommonCache
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testHasTtlDecrement(CacheInterface $cache)
     {
@@ -84,6 +88,7 @@ class CouchbaseTest extends CommonCache
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testGetTag(CacheInterface $cache)
     {
@@ -94,6 +99,7 @@ class CouchbaseTest extends CommonCache
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testRemoveTag(CacheInterface $cache)
     {
@@ -108,6 +114,7 @@ class CouchbaseTest extends CommonCache
     /**
      * @dataProvider providerCache
      * @expectedException \rock\cache\CacheException
+     * @param CacheInterface $cache
      */
     public function testGetAllKeys(CacheInterface $cache)
     {

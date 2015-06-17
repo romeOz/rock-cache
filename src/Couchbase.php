@@ -4,7 +4,6 @@ namespace rock\cache;
 
 use rock\base\BaseException;
 use rock\events\EventsInterface;
-use rock\helpers\Json;
 use rock\log\Log;
 
 class Couchbase implements CacheInterface, EventsInterface
@@ -15,26 +14,47 @@ class Couchbase implements CacheInterface, EventsInterface
     }
 
     /**
-     * @var string|array
+     * @var string
      */
-    public $host = 'localhost:8091';
+    public $host = '127.0.0.1:8091'; // or http://10.4.4.1,10.4.4.2,10.4.4.3
     /** @var  string */
-    public $user = '';
+    public $username = '';
     /** @var  string */
     public $password = '';
     /** @var string  */
     public $bucket = 'default';
 
-    /** @var  \Couchbase */
+    /** @var  \CouchbaseBucket */
     public $storage;
 
     public function __construct(array $config = [])
     {
         $this->parentConstruct($config);
-        $this->storage = new \Couchbase($this->host, $this->user, $this->password, $this->bucket);
-        if ($this->serializer !== self::SERIALIZE_JSON) {
-            $this->storage->setOption(COUCHBASE_OPT_SERIALIZER, COUCHBASE_SERIALIZER_PHP);
+        $this->storage = (new \CouchbaseCluster($this->host, $this->username, $this->password))->openBucket($this->bucket);
+        switch ($this->serializer) {
+            case self::SERIALIZE_JSON:
+                $encode = 'couchbase_default_encoder';
+                $decode = function($bytes, $flags, $datatype) {
+                    $options = [
+                        'jsonassoc' => true
+                    ];
+                    return couchbase_basic_decoder_v1($bytes, $flags, $datatype, $options);
+                };
+                break;
+            default:
+                $encode = function($value) {
+                    $options = [
+                        'sertype' => COUCHBASE_SERTYPE_PHP,
+                        'cmprtype' => COUCHBASE_CMPRTYPE_NONE,
+                        'cmprthresh' => 2000,
+                        'cmprfactor' => 1.3
+                    ];
+                    return couchbase_basic_encoder_v1($value,$options);
+                };
+                $decode = 'couchbase_default_decoder';
         }
+
+        $this->storage->setTranscoder($encode, $decode);
     }
 
     /**
@@ -79,8 +99,8 @@ class Couchbase implements CacheInterface, EventsInterface
                 $key = $this->prepareKey($key);
                 $this->setTags($key, $tags, $value);
                 $values[$key] = $this->serialize($value);
+                $this->storage->insert($key, $values[$key], ['expiry'=> $expire]);
             }
-            $this->storage->setMulti($values, $expire);
             return;
         }
 
@@ -108,11 +128,7 @@ class Couchbase implements CacheInterface, EventsInterface
      */
     public function touch($key, $expire = 0)
     {
-        if (($value = $this->get($key)) === false) {
-            return false;
-        }
-
-        return $this->set($key, $value, $expire);
+        return $this->touchInternal($this->prepareKey($key), $expire);
     }
 
     /**
@@ -121,11 +137,7 @@ class Couchbase implements CacheInterface, EventsInterface
     public function exists($key)
     {
         $key = $this->prepareKey($key);
-        if ($this->storage->add($key, true)) {
-            $this->storage->delete($key);
-            return false;
-        }
-        return true;
+        return $this->existsInternal($key);
     }
 
     /**
@@ -134,14 +146,11 @@ class Couchbase implements CacheInterface, EventsInterface
     public function increment($key, $offset = 1, $expire = 0, $create = true)
     {
         $hash = $this->prepareKey($key);
-        if ($this->exists($key) === false) {
-            if ($create === false) {
-                return false;
-            }
-            $this->storage->add($hash, 0, $expire);
+        if (!$create && $this->exists($key) === false) {
+            return false;
         }
 
-        return $this->storage->increment($hash, $offset, $expire);
+        return $this->storage->counter($hash, $offset, ['expiry'=> $expire, 'initial'=> $offset])->value;
     }
 
     /**
@@ -150,14 +159,11 @@ class Couchbase implements CacheInterface, EventsInterface
     public function decrement($key, $offset = 1, $expire = 0, $create = true)
     {
         $hash = $this->prepareKey($key);
-        if ($this->exists($key) === false) {
-            if ($create === false) {
-                return false;
-            }
-            $this->storage->add($hash, 0, $expire);
+        if (!$create && $this->exists($key) === false) {
+            return false;
         }
 
-        return $this->storage->decrement($hash, $offset, $expire);
+        return $this->storage->counter($hash, $offset * -1, ['expiry'=> $expire, 'initial'=> 0])->value;
     }
 
     /**
@@ -165,7 +171,7 @@ class Couchbase implements CacheInterface, EventsInterface
      */
     public function remove($key)
     {
-        return is_string($this->storage->delete($this->prepareKey($key)));
+        return $this->removeInternal($this->prepareKey($key));
     }
 
     /**
@@ -173,7 +179,7 @@ class Couchbase implements CacheInterface, EventsInterface
      */
     public function getTag($tag)
     {
-        return $this->unserialize($this->storage->get($this->prepareTag($tag)));
+        return $this->unserialize($this->getInternal($this->prepareTag($tag)));
     }
 
     /**
@@ -182,11 +188,7 @@ class Couchbase implements CacheInterface, EventsInterface
     public function existsTag($tag)
     {
         $tag = $this->prepareTag($tag);
-        if ($this->storage->add($tag, true)) {
-            $this->storage->delete($tag);
-            return false;
-        }
-        return true;
+        return $this->existsInternal($tag);
     }
 
     /**
@@ -195,16 +197,12 @@ class Couchbase implements CacheInterface, EventsInterface
     public function removeTag($tag)
     {
         $tag = $this->prepareTag($tag);
-        if (!$value = $this->storage->get($tag)) {
+        if (!$value = $this->getInternal($tag)) {
             return false;
         }
-        $value = $this->unserialize($value);
-        $value[] = $tag;
-        foreach ($value as $key) {
-            if (!empty($key)) {
-                $this->storage->delete($key);
-            }
-        }
+        $keys = $this->unserialize($value);
+        $keys[] = $tag;
+        $this->storage->remove($keys);
 
         return true;
     }
@@ -230,7 +228,7 @@ class Couchbase implements CacheInterface, EventsInterface
      */
     public function flush()
     {
-        return $this->storage->flush();
+        return $this->storage->manager()->flush();
     }
 
     /**
@@ -238,7 +236,7 @@ class Couchbase implements CacheInterface, EventsInterface
      */
     public function status()
     {
-        return $this->storage->getStats();
+        return $this->storage->manager()->info();
     }
 
     protected function setTags($key, array $tags = [])
@@ -248,7 +246,7 @@ class Couchbase implements CacheInterface, EventsInterface
         }
 
         foreach ($this->prepareTags($tags) as $tag) {
-            if ($keys = $this->storage->get($tag)) {
+            if ($keys = $this->getInternal($tag)) {
                 $keys = $this->unserialize($keys);
                 if (is_object($keys)) {
                     $keys = (array)$keys;
@@ -257,21 +255,29 @@ class Couchbase implements CacheInterface, EventsInterface
                     continue;
                 }
                 $keys[] = $key;
-                $this->provideLock($tag, $this->serialize($keys), 0);
+                $this->provideLock($tag, $this->serialize($keys), 0, true);
                 continue;
             }
             $this->provideLock($tag, $this->serialize((array)$key), 0);
         }
     }
 
-    protected function provideLock($key, $value, $expire)
+    protected function provideLock($key, $value, $expire, $upsert = false)
     {
         if ($this->lock === false) {
-            $this->storage->set($key, $value, $expire);
+            if ($upsert) {
+                $this->storage->upsert($key, $value, ['expiry'=> $expire]);
+            } else {
+                $this->storage->insert($key, $value, ['expiry'=> $expire]);
+            }
             return true;
         }
         if ($this->lock($key, $value)) {
-            $this->storage->set($key, $value, $expire);
+            if ($upsert) {
+                $this->storage->upsert($key, $value, ['expiry'=> $expire]);
+            } else {
+                $this->storage->insert($key, $value, ['expiry'=> $expire]);
+            }
             $this->unlock($key);
 
             return true;
@@ -294,7 +300,7 @@ class Couchbase implements CacheInterface, EventsInterface
     {
         $iteration = 0;
 
-        while (!(bool)$this->storage->add(self::LOCK_PREFIX . $key, $value, 5)) {
+        while (!(bool)$this->existsAndUpsert(self::LOCK_PREFIX . $key, $value, 5)) {
             $iteration++;
             if ($iteration > $max) {
                 if (class_exists('\rock\log\Log')) {
@@ -309,20 +315,84 @@ class Couchbase implements CacheInterface, EventsInterface
         return true;
     }
 
+    private function existsAndUpsert($key, $value, $expire = 0)
+    {
+        if ($this->existsInternal($key)) {
+            return false;
+        }
+        $this->storage->upsert($key, $value, ['expiry'=> $expire]);
+        return true;
+    }
+
     /**
      * Delete lock.
      *
      * @param string $key
-     * @return bool|\string[]
+     * @return bool
      */
     protected function unlock($key)
     {
-        return $this->storage->delete(self::LOCK_PREFIX . $key);
+        return $this->removeInternal(self::LOCK_PREFIX . $key);
     }
 
     protected function getLock($key)
     {
-        return $this->storage->get(self::LOCK_PREFIX . $key);
+        return $this->getInternal(self::LOCK_PREFIX . $key);
+    }
+
+    protected function provideGet($key)
+    {
+        if (empty($key)) {
+            return false;
+        }
+
+        $key = $this->prepareKey($key);
+        if (($result = $this->getInternal($key)) === false) {
+            if ($this->lock === false || ($result = $this->getLock($key)) === false) {
+                return false;
+            }
+        }
+
+        return $result;
+    }
+
+    protected function getInternal($key)
+    {
+        try {
+            return $this->storage->get($key)->value;
+        } catch (\CouchbaseException $e){
+            return false;
+        }
+    }
+
+    protected function existsInternal($key)
+    {
+        try {
+            $this->storage->get($key);
+            return true;
+        } catch (\CouchbaseException $e){
+            return false;
+        }
+    }
+
+    protected function touchInternal($key, $expire = 0)
+    {
+        try {
+            $this->storage->touch($key, $expire);
+            return true;
+        } catch (\CouchbaseException $e){
+            return false;
+        }
+    }
+
+    protected function removeInternal($key)
+    {
+        try {
+            $this->storage->remove($key);
+            return true;
+        } catch (\CouchbaseException $e){
+            return false;
+        }
     }
 
     /**
@@ -330,14 +400,14 @@ class Couchbase implements CacheInterface, EventsInterface
      */
     protected function serialize($value)
     {
-        if (!is_array($value)) {
-            return $value;
-        }
+        return $value;
+    }
 
-        if ($this->serializer & self::SERIALIZE_JSON) {
-            return Json::encode($value);
-        }
-
+    /**
+     * @inheritdoc
+     */
+    protected function unserialize($value)
+    {
         return $value;
     }
 }

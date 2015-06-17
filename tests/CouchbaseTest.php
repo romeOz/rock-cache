@@ -12,7 +12,7 @@ class CouchbaseTest extends CommonCache
 {
     public function setUp()
     {
-        if (!class_exists('\Couchbase')) {
+        if (!class_exists('\CouchbaseBucket')) {
             $this->markTestSkipped(
                 'The Couchbase is not available.'
             );
@@ -28,7 +28,7 @@ class CouchbaseTest extends CommonCache
 
     public function init($serialize, $lock = true)
     {
-        if (!class_exists('\Couchbase')) {
+        if (!class_exists('\CouchbaseBucket')) {
             $this->markTestSkipped(
                 'The Couchbase is not available.'
             );
@@ -46,7 +46,7 @@ class CouchbaseTest extends CommonCache
      */
     public function testGetStorage(CacheInterface $cache)
     {
-        $this->assertTrue($cache->getStorage() instanceof \Couchbase);
+        $this->assertTrue($cache->getStorage() instanceof \CouchbaseBucket);
     }
 
     /**
