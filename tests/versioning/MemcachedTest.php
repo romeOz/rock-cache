@@ -36,6 +36,7 @@ class MemcachedTest extends CommonCache
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testGetStorage(CacheInterface $cache)
     {
@@ -44,16 +45,18 @@ class MemcachedTest extends CommonCache
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testGetAll(CacheInterface $cache)
     {
         $this->assertTrue($cache->set('key5', 'foo'), 'should be get: true');
         $this->assertTrue($cache->set('key6', ['bar', 'baz']), 'should be get: true');
-        $this->assertFalse($cache->getAll());
+        $this->assertEmpty($cache->getAll());
     }
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testTtlDecrement(CacheInterface $cache)
     {
@@ -65,6 +68,7 @@ class MemcachedTest extends CommonCache
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testHasTtlDecrement(CacheInterface $cache)
     {
@@ -124,6 +128,7 @@ class MemcachedTest extends CommonCache
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testRemoves(CacheInterface $cache)
     {
@@ -137,6 +142,7 @@ class MemcachedTest extends CommonCache
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testRemoveTagFalse(CacheInterface $cache)
     {
@@ -150,6 +156,7 @@ class MemcachedTest extends CommonCache
 
     /**
      * @dataProvider providerCache
+     * @param CacheInterface $cache
      */
     public function testRemoveMultiTags(CacheInterface $cache)
     {
