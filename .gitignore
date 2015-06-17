@@ -21,6 +21,8 @@ Desktop.ini
 ## Vagrant
 ############
 .vagrant/
+provisioning/
+Vagrantfile
 
 ############
 ## PHPStorm
