@@ -31,8 +31,8 @@ trait VersioningTrait
             $result = (array)$result;
         }
 
-        $result['tags'] = (array) $result['tags'];
-        if ($this->validTimestamp($this->prepareKey($key), $result['tags'] ? : []) === false) {
+        $result['tags'] = (array)$result['tags'];
+        if ($this->validTimestamp($this->prepareKey($key), $result['tags'] ?: []) === false) {
             return false;
         }
 
@@ -62,9 +62,10 @@ trait VersioningTrait
         }
 
         if ($this->provideLock(
-                 $hash,
-                 $this->serialize(['value' => $result['value'] + $offset, 'tags' => $result['tags']]),
-                 $expire, true) === false) {
+                $hash,
+                $this->serialize(['value' => $result['value'] + $offset, 'tags' => $result['tags']]),
+                $expire, true) === false
+        ) {
             return false;
         }
         return $result['value'] + $offset;
@@ -84,9 +85,9 @@ trait VersioningTrait
         }
 
         if ($this->provideLock(
-                 $hash,
-                 $this->serialize(['value' => $result['value'] - $offset, 'tags' => $result['tags']]),
-                 $expire, true) === false
+                $hash,
+                $this->serialize(['value' => $result['value'] - $offset, 'tags' => $result['tags']]),
+                $expire, true) === false
         ) {
             return false;
         }
@@ -98,7 +99,7 @@ trait VersioningTrait
      * Set tags.
      *
      * @param string $key
-     * @param array  $tags
+     * @param array $tags
      * @param        $value
      */
     protected function setTags($key, array $tags = [], &$value = null)

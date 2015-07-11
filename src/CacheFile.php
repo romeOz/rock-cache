@@ -43,7 +43,7 @@ class CacheFile implements CacheInterface, EventsInterface
             throw new CacheException(CacheException::NOT_INSTALL_FILE);
         }
     }
-        
+
     /**
      * @inheritdoc
      */
@@ -294,7 +294,7 @@ class CacheFile implements CacheInterface, EventsInterface
         $num = null;
         if (!empty($this->maxFiles)) {
             $num = floor(
-                           count(
+                count(
                     $this->adapter
                         ->listContents(
                             !empty($tags)
@@ -307,7 +307,7 @@ class CacheFile implements CacheInterface, EventsInterface
         }
 
         if (isset($num)) {
-            $pathname[] =$num;
+            $pathname[] = $num;
         }
         $pathname[] = $key;
         $this->pathFileCache = implode(DIRECTORY_SEPARATOR, $pathname) . '.' . $this->extensionFileCache;
@@ -347,8 +347,8 @@ class CacheFile implements CacheInterface, EventsInterface
         return $this->adapter->put(
             $this->pathFileCache,
             $this->serialize([
-                 'expire' => $this->calculateExpire($expire),
-                 'value' => $value
+                'expire' => $this->calculateExpire($expire),
+                'value' => $value
             ])
         );
     }

@@ -35,7 +35,8 @@ class APC extends \rock\cache\APC implements CacheInterface
 
         foreach ($tagsByValue as $tag => $timestamp) {
             if ((!$tagTimestamp = apc_fetch($tag)) ||
-                $this->microtime($tagTimestamp) > $this->microtime($timestamp)) {
+                $this->microtime($tagTimestamp) > $this->microtime($timestamp)
+            ) {
                 apc_delete($key);
                 return false;
             }

@@ -203,8 +203,8 @@ class APC implements CacheInterface, EventsInterface
 
     /**
      * @param string $key
-     * @param mixed  $value
-     * @param int    $expire
+     * @param mixed $value
+     * @param int $expire
      * @return bool
      */
     protected function provideLock($key, $value, $expire)
@@ -229,8 +229,8 @@ class APC implements CacheInterface, EventsInterface
      * > Dog-pile" ("cache miss storm") and "race condition" effects.
      *
      * @param string $key
-     * @param mixed  $value
-     * @param int    $max
+     * @param mixed $value
+     * @param int $max
      * @return bool
      */
     protected function lock($key, $value, $max = 15)

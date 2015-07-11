@@ -151,7 +151,7 @@ class Redis implements CacheInterface, EventsInterface
      */
     public function getTag($tag)
     {
-        return $this->storage->sMembers($this->prepareTag($tag)) ? : false;
+        return $this->storage->sMembers($this->prepareTag($tag)) ?: false;
     }
 
     /**
@@ -236,8 +236,8 @@ class Redis implements CacheInterface, EventsInterface
      * > Dog-pile" ("cache miss storm") and "race condition" effects.
      *
      * @param string $key
-     * @param mixed  $value
-     * @param int    $max
+     * @param mixed $value
+     * @param int $max
      * @return bool
      */
     protected function lock($key, $value, $max = 15)
@@ -273,7 +273,7 @@ class Redis implements CacheInterface, EventsInterface
      * Set tags.
      *
      * @param string $key
-     * @param array  $tags
+     * @param array $tags
      */
     protected function setTags($key, array $tags = null)
     {

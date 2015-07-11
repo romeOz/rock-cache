@@ -21,7 +21,7 @@ class Couchbase implements CacheInterface, EventsInterface
     public $username = '';
     /** @var  string */
     public $password = '';
-    /** @var string  */
+    /** @var string */
     public $bucket = 'default';
 
     /** @var  \CouchbaseBucket */
@@ -34,7 +34,7 @@ class Couchbase implements CacheInterface, EventsInterface
         switch ($this->serializer) {
             case self::SERIALIZE_JSON:
                 $encode = 'couchbase_default_encoder';
-                $decode = function($bytes, $flags, $datatype) {
+                $decode = function ($bytes, $flags, $datatype) {
                     $options = [
                         'jsonassoc' => true
                     ];
@@ -42,14 +42,14 @@ class Couchbase implements CacheInterface, EventsInterface
                 };
                 break;
             default:
-                $encode = function($value) {
+                $encode = function ($value) {
                     $options = [
                         'sertype' => COUCHBASE_SERTYPE_PHP,
                         'cmprtype' => COUCHBASE_CMPRTYPE_NONE,
                         'cmprthresh' => 2000,
                         'cmprfactor' => 1.3
                     ];
-                    return couchbase_basic_encoder_v1($value,$options);
+                    return couchbase_basic_encoder_v1($value, $options);
                 };
                 $decode = 'couchbase_default_decoder';
         }
@@ -99,7 +99,7 @@ class Couchbase implements CacheInterface, EventsInterface
                 $key = $this->prepareKey($key);
                 $this->setTags($key, $tags, $value);
                 $values[$key] = $this->serialize($value);
-                $this->storage->insert($key, $values[$key], ['expiry'=> $expire]);
+                $this->storage->insert($key, $values[$key], ['expiry' => $expire]);
             }
             return;
         }
@@ -150,7 +150,7 @@ class Couchbase implements CacheInterface, EventsInterface
             return false;
         }
 
-        return $this->storage->counter($hash, $offset, ['expiry'=> $expire, 'initial'=> $offset])->value;
+        return $this->storage->counter($hash, $offset, ['expiry' => $expire, 'initial' => $offset])->value;
     }
 
     /**
@@ -163,7 +163,7 @@ class Couchbase implements CacheInterface, EventsInterface
             return false;
         }
 
-        return $this->storage->counter($hash, $offset * -1, ['expiry'=> $expire, 'initial'=> 0])->value;
+        return $this->storage->counter($hash, $offset * -1, ['expiry' => $expire, 'initial' => 0])->value;
     }
 
     /**
@@ -266,17 +266,17 @@ class Couchbase implements CacheInterface, EventsInterface
     {
         if ($this->lock === false) {
             if ($upsert) {
-                $this->storage->upsert($key, $value, ['expiry'=> $expire]);
+                $this->storage->upsert($key, $value, ['expiry' => $expire]);
             } else {
-                $this->storage->insert($key, $value, ['expiry'=> $expire]);
+                $this->storage->insert($key, $value, ['expiry' => $expire]);
             }
             return true;
         }
         if ($this->lock($key, $value)) {
             if ($upsert) {
-                $this->storage->upsert($key, $value, ['expiry'=> $expire]);
+                $this->storage->upsert($key, $value, ['expiry' => $expire]);
             } else {
-                $this->storage->insert($key, $value, ['expiry'=> $expire]);
+                $this->storage->insert($key, $value, ['expiry' => $expire]);
             }
             $this->unlock($key);
 
@@ -292,8 +292,8 @@ class Couchbase implements CacheInterface, EventsInterface
      * > Dog-pile" ("cache miss storm") and "race condition" effects.
      *
      * @param string $key
-     * @param mixed  $value
-     * @param int    $max
+     * @param mixed $value
+     * @param int $max
      * @return bool
      */
     protected function lock($key, $value, $max = 15)
@@ -320,7 +320,7 @@ class Couchbase implements CacheInterface, EventsInterface
         if ($this->existsInternal($key)) {
             return false;
         }
-        $this->storage->upsert($key, $value, ['expiry'=> $expire]);
+        $this->storage->upsert($key, $value, ['expiry' => $expire]);
         return true;
     }
 
@@ -360,7 +360,7 @@ class Couchbase implements CacheInterface, EventsInterface
     {
         try {
             return $this->storage->get($key)->value;
-        } catch (\CouchbaseException $e){
+        } catch (\CouchbaseException $e) {
             return false;
         }
     }
@@ -370,7 +370,7 @@ class Couchbase implements CacheInterface, EventsInterface
         try {
             $this->storage->get($key);
             return true;
-        } catch (\CouchbaseException $e){
+        } catch (\CouchbaseException $e) {
             return false;
         }
     }
@@ -380,7 +380,7 @@ class Couchbase implements CacheInterface, EventsInterface
         try {
             $this->storage->touch($key, $expire);
             return true;
-        } catch (\CouchbaseException $e){
+        } catch (\CouchbaseException $e) {
             return false;
         }
     }
@@ -390,7 +390,7 @@ class Couchbase implements CacheInterface, EventsInterface
         try {
             $this->storage->remove($key);
             return true;
-        } catch (\CouchbaseException $e){
+        } catch (\CouchbaseException $e) {
             return false;
         }
     }

@@ -171,7 +171,7 @@ class Memcached implements CacheInterface, EventsInterface
     public function removeMulti(array $keys)
     {
         $keys = array_map(
-            function($value){
+            function ($value) {
                 return $this->prepareKey($value);
             },
             $keys
@@ -248,7 +248,7 @@ class Memcached implements CacheInterface, EventsInterface
      * Set tags
      *
      * @param string $key key of cache
-     * @param array  $tags list of tags
+     * @param array $tags list of tags
      */
     protected function setTags($key, array $tags = [])
     {
@@ -298,7 +298,7 @@ class Memcached implements CacheInterface, EventsInterface
      *
      * @param string $key key of cache
      * @param mixed $value content of cache
-     * @param int    $max max iteration
+     * @param int $max max iteration
      * @return bool
      */
     protected function lock($key, $value, $max = 15)

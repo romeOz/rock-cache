@@ -141,7 +141,7 @@ trait CommonTrait
         }
 
         return array_map(
-            function($value){
+            function ($value) {
                 return $this->prepareKey($value);
             },
             $keys
@@ -161,7 +161,7 @@ trait CommonTrait
         sort($tags);
 
         return array_map(
-            function($value){
+            function ($value) {
                 return $this->prepareTag($value);
             },
             $tags
@@ -213,7 +213,7 @@ trait CommonTrait
      */
     protected function microtime($microtime = null)
     {
-        list($usec, $sec) = explode(" ", $microtime ? : microtime());
+        list($usec, $sec) = explode(" ", $microtime ?: microtime());
         return (float)$usec + (float)$sec;
     }
 }

@@ -13,8 +13,8 @@ interface CacheInterface extends SerializeInterface
     const HASH_MD5 = 1;
     const HASH_SHA = 2;
 
-    const LOCK_PREFIX  = 'lock_';
-    const TAG_PREFIX   = 'tag_';
+    const LOCK_PREFIX = 'lock_';
+    const TAG_PREFIX = 'tag_';
 
     /**
      * Returns current cache-storage.
@@ -120,10 +120,10 @@ interface CacheInterface extends SerializeInterface
     /**
      * Increment.
      *
-     * @param string $key    key of cache
-     * @param int    $offset
-     * @param int    $expire time to live (sec)
-     * @param bool   $create should the value be created if it doesn't exist
+     * @param string $key key of cache
+     * @param int $offset
+     * @param int $expire time to live (sec)
+     * @param bool $create should the value be created if it doesn't exist
      * @return bool|int
      */
     public function increment($key, $offset = 1, $expire = 0, $create = true);
@@ -134,7 +134,7 @@ interface CacheInterface extends SerializeInterface
      * @param string $key key of cache.
      * @param int $offset
      * @param int $expire time to live (sec)
-     * @param bool   $create should the value be created if it doesn't exist
+     * @param bool $create should the value be created if it doesn't exist
      * @return int|bool
      */
     public function decrement($key, $offset = 1, $expire = 0, $create = true);
