@@ -82,7 +82,6 @@ class CacheFileTest extends CommonCache
         $this->assertFalse($cache->exists('key7'), 'should be get: false');
     }
 
-
     /**
      * @dataProvider providerCache
      */
