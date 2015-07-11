@@ -24,6 +24,8 @@ services:
 
 addons:
   apt:
+    sources:
+      - couchbase-precise
     packages:
       - autoconf
       - libcouchbase2-libevent
