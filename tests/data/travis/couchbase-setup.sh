@@ -7,7 +7,7 @@ fi
 
 # Download and uncompress Couchbase Server
 wget http://packages.couchbase.com/releases/3.0.1/couchbase-server-community_3.0.1-ubuntu12.04_amd64.deb
-dpkg -i couchbase-server-community_3.0.1-ubuntu12.04_amd64.deb
+sudo dpkg -i couchbase-server-community_3.0.1-ubuntu12.04_amd64.deb
 
 # install this version
 VERSION=2.0.7
