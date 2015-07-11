@@ -6,7 +6,7 @@ if (php --version | grep -i HipHop > /dev/null); then
 fi
 
 # this is helpful to compile extension
-sudo apt-get install autoconf
+#sudo apt-get install autoconf
 
 # install this version
 APCU_VERSION=4.0.6
