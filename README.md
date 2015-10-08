@@ -1,4 +1,4 @@
-PHP library caching
+Cache library
 ====================
 
 [![Latest Stable Version](https://poser.pugx.org/romeOz/rock-cache/v/stable.svg)](https://packagist.org/packages/romeOz/rock-cache)
