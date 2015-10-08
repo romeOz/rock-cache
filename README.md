@@ -26,7 +26,7 @@ Features
 
  * One interface for all storages - you can change storage without changing your code
  * Tagging cache (approach versioning and grouping)
- * Locking - "dog-pile"/"cache miss storm"/"race condition" effects are excluded
+ * Locking - "race condition" ("dog-pile" or "cache miss storm") effects are excluded
  * Serializer for value (json or PHP-serializer)
  * Automatic unserialization
  * Stub for caching
