@@ -29,8 +29,6 @@ Features
  * Locking - "race condition" ("dog-pile" or "cache miss storm") effects are excluded
  * Serializer for value (json or PHP-serializer)
  * Automatic unserialization
- * Stub for caching
- * Stores session data in a key-value storage
  * Standalone module/component for [Rock Framework](https://github.com/romeOz/rock)
 
 Installation
