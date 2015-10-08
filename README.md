@@ -122,18 +122,6 @@ if ($memcached->lock('key_1')) {
 }
 ```
 
-####Session as key-value storage
-
-```php
-$config = [
-    'cache' => new \rock\cache\Memcached
-];
-$session = new \rock\cache\MemorySession($config);
-$session ->add('name', 'Tom');
-
-echo $session->get('name'); // result: Tom
-```
-
 Documentation
 -------------------
 
