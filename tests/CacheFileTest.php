@@ -32,7 +32,7 @@ class CacheFileTest extends CommonCache
         static::clearRuntime();
     }
 
-    public function init($serialize, $lock = true)
+    public function init($serialize)
     {
         return new CacheFile([
            'adapter' => static::getFileManager(),
@@ -97,6 +97,15 @@ class CacheFileTest extends CommonCache
         sort($expected);
         sort($actual);
         $this->assertEquals($expected, $actual, 'should be get: ' . json_encode($actual));
+    }
+
+    /**
+     * @dataProvider providerCache
+     * @expectedException \rock\cache\CacheException
+     */
+    public function testLockAndUnlock(CacheInterface $cache)
+    {
+        $cache->lock('key1');
     }
 
     /**

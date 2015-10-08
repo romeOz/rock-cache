@@ -10,13 +10,13 @@ PHP library caching
 [Rock cache on Packagist](https://packagist.org/packages/romeOz/rock-cache)
 
 What storages can be used:
-
- * Local storage
+ 
  * [Memcached](http://pecl.php.net/package/memcached)
  * [Memcache](http://pecl.php.net/package/memcache)
  * [APCu](http://pecl.php.net/package/APCu)
  * [Redis](http://redis.io)
  * [Couchbase](http://www.couchbase.com)
+ * Local (caching to file)
  * CacheStub (stub for caching) 
 
 All storage objects have one interface, so you can switch them without changing the working code.
@@ -25,13 +25,13 @@ Features
 -------------------
 
  * One interface for all storages - you can change storage without changing your code
- * Tags for keys (approach versioning and grouping)
- * Autolocker - "dog-pile"/"cache miss storm"/"race condition" effects are excluded
+ * Tagging cache (approach versioning and grouping)
+ * Locking - "dog-pile"/"cache miss storm"/"race condition" effects are excluded
  * Serializer for value (json or PHP-serializer)
  * Automatic unserialization
  * Stub for caching
  * Stores session data in a key-value storage
- * Module for [Rock Framework](https://github.com/romeOz/rock)
+ * Standalone module/component for [Rock Framework](https://github.com/romeOz/rock)
 
 Installation
 -------------------
@@ -59,8 +59,6 @@ Quick Start
 ####Memcached
 
 ```php
-use rock\cache\CacheInterface;
-
 $config = [
     'hashKey' => CacheInterface::HASH_MD5, // Default: HASH_MD5
     'serializer' => CacheInterface::SERIALIZE_JSON // Default: SERIALIZE_PHP - php serializator
@@ -103,6 +101,27 @@ $cacheFile->set('key_1', 'foo');
 $memcached->get('key_1'); // result: foo;
 ```
 
+####Locking key
+
+Race conditions can occur in multi-threaded mode. To avoid the effect, you need to install a lock on the key.
+
+```php
+$memcached = new \rock\cache\Memcached
+
+$value = $memcached->get('key_1');
+if ($value !== false) {
+    return $value;
+}
+
+if ($memcached->lock('key_1')) {
+    
+    // the query to DBMS or other...
+    
+    $memcached->set('key_1', 'foo');
+    $memcached->unlock('key_1');
+}
+```
+
 ####Session as key-value storage
 
 ```php
@@ -125,10 +144,10 @@ Returns cache by key.
 Returns multiple cache by keys.
 
 ####set($key, mixed $value, $expire = 0, array $tags = null)
-Set cache.
+Sets cache.
 
 ####setMulti($key, mixed $value, $expire = 0, array $tags = null)
-Set multiple cache.
+Sets multiple cache.
 
 ####add($key, mixed $value, $expire = 0, array $tags = null)
 Add cache.
@@ -180,6 +199,12 @@ Returns all cache.
 
 >Supported: `Memcached`, `APC`.
 
+####lock($key)
+Sets a lock on the key.
+
+####Unlock($key)
+Unlocking key.
+
 ####flush()
 Removes all cache.
 
@@ -191,17 +216,20 @@ Returns status server of cache.
 ####getStorage()
 Returns current cache-storage.
 
-Demo
+
+[Demo](https://github.com/romeOz/docker-rock-cache)
 -------------------
 
-**[Docker + Ansible/VirtualBox + Vagrant + Ansible](https://github.com/romeOz/vagrant-rock-cache)**
+ * [Install Docker](https://docs.docker.com/installation/) or [askubuntu](http://askubuntu.com/a/473720)
+ * `docker run --name demo -d -p 8080:80 romeoz/docker-rock-cache`
+ * Open demo [http://localhost:8080/](http://localhost:8080/)
 
 Requirements
 -------------------
 
 You can use each storage separately, requirements are individually for storages.
 
- * **PHP 5.4+**
+ * PHP 5.4+
  * For Local storage:
  Used library [flysystem](https://github.com/thephpleague/flysystem) which is an filesystem abstraction which allows you to easily swap out a local filesystem for a remote one.
 > Note: contains composer.
@@ -210,7 +238,7 @@ You can use each storage separately, requirements are individually for storages.
  * Memcached/Memcache:
  Memcached demon should be installed `apt-get install memcached`. Also, should be installed php extension [Memcache](http://pecl.php.net/package/memcache) `apt-get install php5-memcache` or [Memcached](http://pecl.php.net/package/memcached) `apt-get install php5-memcached`.
  * [APCu](http://pecl.php.net/package/APCu) should be installed `apt-get install php5-apcu`.
- * Couchbase: [Step-by-step installation](http://www.couchbase.com/communities/php/getting-started) (or [see playbook](https://github.com/romeOz/vagrant-rock-cache/blob/master/provisioning/roles/couchbase/tasks/main.yml)).
+ * Couchbase 3.0: [Step-by-step installation](http://www.couchbase.com/communities/php/getting-started) (or [see playbook](https://github.com/romeOz/vagrant-rock-cache/blob/master/provisioning/roles/couchbase/tasks/main.yml)).
  * Session as memory storage **(optional):** suggested to use [Rock Session](https://github.com/romeOz/rock-session). Should be installed: `composer require romeoz/rock-session:*`
 
 Storages comparison

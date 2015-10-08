@@ -22,14 +22,14 @@ class MemcacheTest extends CommonCache
         (new Memcache())->flush();
     }
 
-    public function init($serialize, $lock = true)
+    public function init($serialize)
     {
         if (!class_exists('\Memcache')) {
             $this->markTestSkipped(
                 'The \Memcache is not available.'
             );
         }
-        return new Memcache(['serializer' => $serialize, 'lock' => $lock]);
+        return new Memcache(['serializer' => $serialize]);
     }
 
     /**

@@ -168,6 +168,22 @@ class CacheStub implements CacheInterface, EventsInterface
     /**
      * @inheritdoc
      */
+    public function lock($key, $iteration = 15)
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function unlock($key)
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function flush()
     {
         return false;

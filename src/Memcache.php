@@ -2,7 +2,6 @@
 
 namespace rock\cache;
 
-use rock\base\BaseException;
 use rock\log\Log;
 
 class Memcache extends Memcached
@@ -128,42 +127,9 @@ class Memcache extends Memcached
     /**
      * @inheritdoc
      */
-    protected function provideLock($key, $value, $expire)
+    protected function setInternal($key, $value, $expire)
     {
-        if ($this->lock === false) {
-            $this->storage->set($key, $value, MEMCACHE_COMPRESSED, $expire);
-            return true;
-        }
-        if ($this->lock($key, $value)) {
-            $this->storage->set($key, $value, MEMCACHE_COMPRESSED, $expire);
-            $this->unlock($key);
-            return true;
-        }
-
-        return false;
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    protected function lock($key, $value, $max = 15)
-    {
-        $iteration = 0;
-
-        while (!$this->storage->add(self::LOCK_PREFIX . $key, $value, MEMCACHE_COMPRESSED, 5)) {
-            $iteration++;
-            if ($iteration > $max) {
-                if (class_exists('\rock\log\Log')) {
-                    $message = BaseException::convertExceptionToString(new CacheException(CacheException::INVALID_SAVE, ['key' => $key]));
-                    Log::err($message);
-                }
-                return false;
-            }
-            usleep(1000);
-        }
-
-        return true;
+        return $this->storage->set($key, $value, MEMCACHE_COMPRESSED, $expire);
     }
 
     /**
@@ -182,11 +148,19 @@ class Memcache extends Memcached
                     continue;
                 }
                 $value[] = $key;
-                $this->provideLock($tag, $this->serialize($value), 0);
+                $this->setInternal($tag, $this->serialize($value), 0);
                 continue;
             }
 
-            $this->provideLock($tag, $this->serialize((array)$key), 0);
+            $this->setInternal($tag, $this->serialize((array)$key), 0);
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function lockInternal($key)
+    {
+        return $this->storage->add(self::LOCK_PREFIX . $key, 1, MEMCACHE_COMPRESSED, $this->lockExpire);
     }
 }

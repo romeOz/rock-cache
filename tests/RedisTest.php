@@ -22,14 +22,14 @@ class RedisTest extends CommonCache
         (new Redis())->flush();
     }
 
-    public function init($serialize, $lock = true)
+    public function init($serialize)
     {
         if (!class_exists('\Redis')) {
             $this->markTestSkipped(
                 'The \Redis is not available.'
             );
         }
-        return new Redis(['serializer' => $serialize, 'lock' => $lock]);
+        return new Redis(['serializer' => $serialize]);
     }
 
     /**

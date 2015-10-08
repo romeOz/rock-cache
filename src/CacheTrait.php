@@ -10,10 +10,10 @@ trait CacheTrait
     use CommonTrait;
 
     /**
-     * Pessimistic locking.
-     * @var bool
+     * Time to live on lock (sec)
+     * @var int
      */
-    public $lock = true;
+    public $lockExpire = 30;
 
     /**
      * @inheritdoc
@@ -35,19 +35,14 @@ trait CacheTrait
         return Serialize::serialize($value, $this->serializer);
     }
 
-    protected function provideGet($key)
+    protected function getInternal($key)
     {
         if (empty($key)) {
             return false;
         }
 
         $key = $this->prepareKey($key);
-        if (($result = $this->storage->get($key)) === false) {
-            if ($this->lock === false || ($result = $this->getLock($key)) === false) {
-                return false;
-            }
-        }
 
-        return $result;
+        return $this->storage->get($key);
     }
 }

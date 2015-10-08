@@ -26,7 +26,7 @@ class CouchbaseTest extends CommonCache
         (new Couchbase())->flush();
     }
 
-    public function init($serialize, $lock = true)
+    public function init($serialize)
     {
         if (!class_exists('\CouchbaseBucket')) {
             $this->markTestSkipped(
@@ -38,7 +38,7 @@ class CouchbaseTest extends CommonCache
                 'Couchbase does not seem to support HHVM right now.'
             );
         }
-        return new Couchbase(['serializer' => $serialize, 'lock' => $lock]);
+        return new Couchbase(['serializer' => $serialize]);
     }
 
     /**

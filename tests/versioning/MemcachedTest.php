@@ -23,14 +23,14 @@ class MemcachedTest extends CommonCache
         (new Memcached())->flush();
     }
 
-    public function init($serialize, $lock)
+    public function init($serialize)
     {
         if (!class_exists('\Memcached')) {
             $this->markTestSkipped(
                 'The \Memcached is not available.'
             );
         }
-        return new Memcached(['serializer' => $serialize, 'lock' => $lock]);
+        return new Memcached(['serializer' => $serialize]);
     }
 
     /**

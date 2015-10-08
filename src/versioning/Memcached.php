@@ -62,7 +62,7 @@ class Memcached extends \rock\cache\Memcached implements CacheInterface
                 $value['tags'][$tag] = $data[$tag];
                 continue;
             }
-            $this->provideLock($tag, $timestamp, 0);
+            $this->setInternal($tag, $timestamp, 0);
             $value['tags'][$tag] = $timestamp;
         }
     }

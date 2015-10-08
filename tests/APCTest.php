@@ -22,14 +22,14 @@ class APCTest extends CommonCache
         (new APC())->flush();
     }
 
-    public function init($serialize, $lock = true)
+    public function init($serialize)
     {
         if (!extension_loaded('apc')) {
             $this->markTestSkipped(
                 'The APC is not available.'
             );
         }
-        $cache = new APC(['serializer' => $serialize, 'lock' => $lock]);
+        $cache = new APC(['serializer' => $serialize]);
         return $cache;
     }
 

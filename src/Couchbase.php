@@ -70,7 +70,12 @@ class Couchbase implements CacheInterface, EventsInterface
      */
     public function get($key)
     {
-        return $this->unserialize($this->provideGet($key));
+        if (empty($key)) {
+            return false;
+        }
+
+        $key = $this->prepareKey($key);
+        return $this->unserialize($this->getInternal($key));
     }
 
     /**
@@ -86,7 +91,7 @@ class Couchbase implements CacheInterface, EventsInterface
 
         $this->setTags($key, $tags);
 
-        return $this->provideLock($key, $this->serialize($value), $expire);
+        return $this->setInternal($key, $this->serialize($value), $expire);
     }
 
     /**
@@ -94,17 +99,12 @@ class Couchbase implements CacheInterface, EventsInterface
      */
     public function setMulti($values, $expire = 0, array $tags = [])
     {
-        if ($this->lock === false) {
-            foreach ($values as $key => $value) {
-                $key = $this->prepareKey($key);
-                $this->setTags($key, $tags, $value);
-                $values[$key] = $this->serialize($value);
-                $this->storage->insert($key, $values[$key], ['expiry' => $expire]);
-            }
-            return;
+        foreach ($values as $key => $value) {
+            $key = $this->prepareKey($key);
+            $this->setTags($key, $tags, $value);
+            $values[$key] = $this->serialize($value);
+            $this->storage->insert($key, $values[$key], ['expiry' => $expire]);
         }
-
-        $this->parentSetMulti($values, $expire, $tags);
     }
 
     /**
@@ -226,6 +226,37 @@ class Couchbase implements CacheInterface, EventsInterface
     /**
      * @inheritdoc
      */
+    public function lock($key, $iteration = 15)
+    {
+        $i = 0;
+
+        while (!(bool)$this->existsAndUpsert(self::LOCK_PREFIX . $key, 1, $this->lockExpire)) {
+            $i++;
+            if ($i > $iteration) {
+                if (class_exists('\rock\log\Log')) {
+                    $message = BaseException::convertExceptionToString(new CacheException(CacheException::INVALID_SAVE, ['key' => $key]));
+                    Log::err($message);
+                }
+                return false;
+            }
+            usleep(rand(10, 1000));
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function unlock($key)
+    {
+        return $this->removeInternal(self::LOCK_PREFIX . $key);
+    }
+
+    /**
+     * {@inheritdoc}
+     * >Note: might need to be enabled for a specific bucket.
+     */
     public function flush()
     {
         return $this->storage->manager()->flush();
@@ -255,63 +286,20 @@ class Couchbase implements CacheInterface, EventsInterface
                     continue;
                 }
                 $keys[] = $key;
-                $this->provideLock($tag, $this->serialize($keys), 0, true);
+                $this->setInternal($tag, $this->serialize($keys), 0, true);
                 continue;
             }
-            $this->provideLock($tag, $this->serialize((array)$key), 0);
+            $this->setInternal($tag, $this->serialize((array)$key), 0);
         }
     }
 
-    protected function provideLock($key, $value, $expire, $upsert = false)
+    protected function setInternal($key, $value, $expire, $upsert = false)
     {
-        if ($this->lock === false) {
-            if ($upsert) {
-                $this->storage->upsert($key, $value, ['expiry' => $expire]);
-            } else {
-                $this->storage->insert($key, $value, ['expiry' => $expire]);
-            }
-            return true;
+        if ($upsert) {
+            $this->storage->upsert($key, $value, ['expiry' => $expire]);
+        } else {
+            $this->storage->insert($key, $value, ['expiry' => $expire]);
         }
-        if ($this->lock($key, $value)) {
-            if ($upsert) {
-                $this->storage->upsert($key, $value, ['expiry' => $expire]);
-            } else {
-                $this->storage->insert($key, $value, ['expiry' => $expire]);
-            }
-            $this->unlock($key);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Set lock.
-     *
-     * > Dog-pile" ("cache miss storm") and "race condition" effects.
-     *
-     * @param string $key
-     * @param mixed $value
-     * @param int $max
-     * @return bool
-     */
-    protected function lock($key, $value, $max = 15)
-    {
-        $iteration = 0;
-
-        while (!(bool)$this->existsAndUpsert(self::LOCK_PREFIX . $key, $value, 5)) {
-            $iteration++;
-            if ($iteration > $max) {
-                if (class_exists('\rock\log\Log')) {
-                    $message = BaseException::convertExceptionToString(new CacheException(CacheException::INVALID_SAVE, ['key' => $key]));
-                    Log::err($message);
-                }
-                return false;
-            }
-            usleep(1000);
-        }
-
         return true;
     }
 
@@ -322,38 +310,6 @@ class Couchbase implements CacheInterface, EventsInterface
         }
         $this->storage->upsert($key, $value, ['expiry' => $expire]);
         return true;
-    }
-
-    /**
-     * Delete lock.
-     *
-     * @param string $key
-     * @return bool
-     */
-    protected function unlock($key)
-    {
-        return $this->removeInternal(self::LOCK_PREFIX . $key);
-    }
-
-    protected function getLock($key)
-    {
-        return $this->getInternal(self::LOCK_PREFIX . $key);
-    }
-
-    protected function provideGet($key)
-    {
-        if (empty($key)) {
-            return false;
-        }
-
-        $key = $this->prepareKey($key);
-        if (($result = $this->getInternal($key)) === false) {
-            if ($this->lock === false || ($result = $this->getLock($key)) === false) {
-                return false;
-            }
-        }
-
-        return $result;
     }
 
     protected function getInternal($key)

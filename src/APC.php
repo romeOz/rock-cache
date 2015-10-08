@@ -27,13 +27,7 @@ class APC implements CacheInterface, EventsInterface
             return false;
         }
         $key = $this->prepareKey($key);
-        if (($result = $this->getLock($key)) === false) {
-            if (($result = apc_fetch($key)) === false) {
-                return false;
-            }
-        }
-
-        return $this->unserialize($result);
+        return $this->unserialize(apc_fetch($key));
     }
 
     /**
@@ -47,7 +41,7 @@ class APC implements CacheInterface, EventsInterface
         $key = $this->prepareKey($key);
         $this->setTags($key, $tags);
 
-        return $this->provideLock($key, $this->serialize($value), $expire);
+        return $this->setInternal($key, $this->serialize($value), $expire);
     }
 
     /**
@@ -183,6 +177,35 @@ class APC implements CacheInterface, EventsInterface
     /**
      * @inheritdoc
      */
+    public function lock($key, $iteration = 15)
+    {
+        $i = 0;
+        while (!apc_add(self::LOCK_PREFIX . $key, 1, $this->lockExpire)) {
+            $i++;
+            if ($i > $iteration) {
+                if (class_exists('\rock\log\Log')) {
+                    $message = BaseException::convertExceptionToString(new CacheException(CacheException::INVALID_SAVE, ['key' => $key]));
+                    Log::err($message);
+                }
+                return false;
+            }
+            usleep(rand(10, 1000));
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function unlock($key)
+    {
+        return apc_delete(self::LOCK_PREFIX . $key);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function flush()
     {
         return apc_clear_cache('user');
@@ -196,70 +219,16 @@ class APC implements CacheInterface, EventsInterface
         return apc_cache_info('user');
     }
 
-    protected function getLock($key)
-    {
-        return apc_fetch(self::LOCK_PREFIX . $key);
-    }
-
     /**
      * @param string $key
      * @param mixed $value
      * @param int $expire
      * @return bool
      */
-    protected function provideLock($key, $value, $expire)
+    protected function setInternal($key, $value, $expire)
     {
-        if ($this->lock === false) {
-            apc_store($key, $value, $expire);
-            return true;
-        }
-        if ($this->lock($key, $value)) {
-            apc_store($key, $value, $expire);
-            $this->unlock($key);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Set lock.
-     *
-     * > Dog-pile" ("cache miss storm") and "race condition" effects.
-     *
-     * @param string $key
-     * @param mixed $value
-     * @param int $max
-     * @return bool
-     */
-    protected function lock($key, $value, $max = 15)
-    {
-        $iteration = 0;
-        while (!apc_add(self::LOCK_PREFIX . $key, $value, 5)) {
-            $iteration++;
-            if ($iteration > $max) {
-                if (class_exists('\rock\log\Log')) {
-                    $message = BaseException::convertExceptionToString(new CacheException(CacheException::INVALID_SAVE, ['key' => $key]));
-                    Log::err($message);
-                }
-                return false;
-            }
-            usleep(1000);
-        }
-
+        apc_store($key, $value, $expire);
         return true;
-    }
-
-    /**
-     * Delete lock.
-     *
-     * @param string $key
-     * @return bool|\string[]
-     */
-    protected function unlock($key)
-    {
-        return apc_delete(self::LOCK_PREFIX . $key);
     }
 
     protected function setTags($key, array $tags = null)
@@ -274,10 +243,10 @@ class APC implements CacheInterface, EventsInterface
                     continue;
                 }
                 $value[] = $key;
-                $this->provideLock($tag, $this->serialize($value), 0);
+                $this->setInternal($tag, $this->serialize($value), 0);
                 continue;
             }
-            $this->provideLock($tag, $this->serialize((array)$key), 0);
+            $this->setInternal($tag, $this->serialize((array)$key), 0);
         }
     }
 }

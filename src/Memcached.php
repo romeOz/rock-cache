@@ -58,7 +58,7 @@ class Memcached implements CacheInterface, EventsInterface
      */
     public function get($key)
     {
-        return $this->unserialize($this->provideGet($key));
+        return $this->unserialize($this->getInternal($key));
     }
 
     /**
@@ -72,7 +72,7 @@ class Memcached implements CacheInterface, EventsInterface
         $key = $this->prepareKey($key);
         $this->setTags($key, $tags);
 
-        return $this->provideLock($key, $this->serialize($value), $expire);
+        return $this->setInternal($key, $this->serialize($value), $expire);
     }
 
     /**
@@ -80,17 +80,12 @@ class Memcached implements CacheInterface, EventsInterface
      */
     public function setMulti($values, $expire = 0, array $tags = [])
     {
-        if ($this->lock === false) {
-            foreach ($values as $key => $value) {
-                $key = $this->prepareKey($key);
-                $this->setTags($key, $tags, $value);
-                $values[$key] = $this->serialize($value);
-            }
-            $this->storage->setMulti($values, $expire);
-            return;
+        foreach ($values as $key => $value) {
+            $key = $this->prepareKey($key);
+            $this->setTags($key, $tags, $value);
+            $values[$key] = $this->serialize($value);
         }
-
-        $this->parentSetMulti($values, $expire, $tags);
+        $this->storage->setMulti($values, $expire);
     }
 
     /**
@@ -230,6 +225,36 @@ class Memcached implements CacheInterface, EventsInterface
     /**
      * @inheritdoc
      */
+    public function lock($key, $iteration = 15)
+    {
+        $i = 0;
+
+        while (!$this->lockInternal($key)) {
+            $i++;
+            if ($i > $iteration) {
+                if (class_exists('\rock\log\Log')) {
+                    $message = BaseException::convertExceptionToString(new CacheException(CacheException::INVALID_SAVE, ['key' => $key]));
+                    Log::err($message);
+                }
+                return false;
+            }
+            usleep(rand(10, 1000));
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function unlock($key)
+    {
+        return $this->storage->delete(self::LOCK_PREFIX . $key);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function flush()
     {
         return $this->storage->flush();
@@ -242,7 +267,6 @@ class Memcached implements CacheInterface, EventsInterface
     {
         return $this->storage->getStats();
     }
-
 
     /**
      * Set tags
@@ -263,72 +287,16 @@ class Memcached implements CacheInterface, EventsInterface
                     continue;
                 }
                 $keys[] = $key;
-                $this->provideLock($tag, $this->serialize($keys), 0);
+                $this->setInternal($tag, $this->serialize($keys), 0);
                 continue;
             }
-            $this->provideLock($tag, $this->serialize((array)$key), 0);
+            $this->setInternal($tag, $this->serialize((array)$key), 0);
         }
     }
 
-    protected function getLock($key)
+    protected function setInternal($key, $value, $expire)
     {
-        return $this->storage->get(self::LOCK_PREFIX . $key);
-    }
-
-    protected function provideLock($key, $value, $expire)
-    {
-        if ($this->lock === false) {
-            $this->storage->set($key, $value, $expire);
-            return true;
-        }
-        if ($this->lock($key, $value)) {
-            $this->storage->set($key, $value, $expire);
-            $this->unlock($key);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Set lock.
-     *
-     * > Dog-pile" ("cache miss storm") and "race condition" effects
-     *
-     * @param string $key key of cache
-     * @param mixed $value content of cache
-     * @param int $max max iteration
-     * @return bool
-     */
-    protected function lock($key, $value, $max = 15)
-    {
-        $iteration = 0;
-
-        while (!$this->storage->add(self::LOCK_PREFIX . $key, $value, 5)) {
-            $iteration++;
-            if ($iteration > $max) {
-                if (class_exists('\rock\log\Log')) {
-                    $message = BaseException::convertExceptionToString(new CacheException(CacheException::INVALID_SAVE, ['key' => $key]));
-                    Log::err($message);
-                }
-                return false;
-            }
-            usleep(1000);
-        }
-
-        return true;
-    }
-
-    /**
-     * Delete lock.
-     *
-     * @param string $key
-     * @return bool|string[]
-     */
-    protected function unlock($key)
-    {
-        return $this->storage->delete(self::LOCK_PREFIX . $key);
+        return $this->storage->set($key, $value, $expire);
     }
 
     protected function serialize($value)
@@ -342,5 +310,10 @@ class Memcached implements CacheInterface, EventsInterface
         }
 
         return $value;
+    }
+
+    protected function lockInternal($key)
+    {
+        return $this->storage->add(self::LOCK_PREFIX . $key, 1, $this->lockExpire);
     }
 }

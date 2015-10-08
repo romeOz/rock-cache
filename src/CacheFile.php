@@ -264,6 +264,22 @@ class CacheFile implements CacheInterface, EventsInterface
     /**
      * @inheritdoc
      */
+    public function lock($key, $iteration = 15)
+    {
+        throw new CacheException(CacheException::UNKNOWN_METHOD, ['method' => __METHOD__]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function unlock($key)
+    {
+        throw new CacheException(CacheException::UNKNOWN_METHOD, ['method' => __METHOD__]);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function flush()
     {
         $this->adapter->deleteAll();

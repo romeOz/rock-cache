@@ -69,7 +69,7 @@ class Couchbase extends \rock\cache\Couchbase implements CacheInterface
                 $value['tags'][$tag] = $data[$tag]->value;
                 continue;
             }
-            $this->provideLock($tag, $timestamp, 0, true);
+            $this->setInternal($tag, $timestamp, 0, true);
             $value['tags'][$tag] = $timestamp;
         }
     }

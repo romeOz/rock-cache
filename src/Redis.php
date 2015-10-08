@@ -42,7 +42,7 @@ class Redis implements CacheInterface, EventsInterface
      */
     public function get($key)
     {
-        $result = $this->provideGet($key);
+        $result = $this->getInternal($key);
 
         if ($result === '') {
             $result = null;
@@ -62,7 +62,7 @@ class Redis implements CacheInterface, EventsInterface
         $key = $this->prepareKey($key);
         $this->setTags($key, $tags);
 
-        return $this->provideLock($key, $this->serialize($value), $expire);
+        return $this->setInternal($key, $this->serialize($value), $expire);
     }
 
     /**
@@ -195,6 +195,37 @@ class Redis implements CacheInterface, EventsInterface
     /**
      * @inheritdoc
      */
+    public function lock($key, $iteration = 15)
+    {
+        $i = 0;
+
+        while (!$this->storage->setex(self::LOCK_PREFIX . $key, $this->lockExpire, 1)) {
+            $i++;
+            if ($i > $iteration) {
+                if (class_exists('\rock\log\Log')) {
+                    $message = BaseException::convertExceptionToString(new CacheException(CacheException::INVALID_SAVE, ['key' => $key]));
+                    Log::err($message);
+                }
+                return false;
+            }
+            usleep(rand(10, 1000));
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function unlock($key)
+    {
+        $this->storage->delete(self::LOCK_PREFIX . $key);
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function flush()
     {
         return $this->storage->flushDB();
@@ -214,59 +245,10 @@ class Redis implements CacheInterface, EventsInterface
      * @param int $expire
      * @return bool
      */
-    protected function provideLock($key, $value, $expire)
+    protected function setInternal($key, $value, $expire)
     {
-        if ($this->lock === false) {
-            $expire > 0 ? $this->storage->setex($key, $expire, $value) : $this->storage->set($key, $value);
-            return true;
-        }
-        if ($this->lock($key, $value)) {
-            $expire > 0 ? $this->storage->setex($key, $expire, $value) : $this->storage->set($key, $value);
-            $this->unlock($key);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Set lock.
-     *
-     * > Dog-pile" ("cache miss storm") and "race condition" effects.
-     *
-     * @param string $key
-     * @param mixed $value
-     * @param int $max
-     * @return bool
-     */
-    protected function lock($key, $value, $max = 15)
-    {
-        $iteration = 0;
-
-        while (!$this->storage->setnx(self::LOCK_PREFIX . $key, $value)) {
-            $iteration++;
-            if ($iteration > $max) {
-                if (class_exists('\rock\log\Log')) {
-                    $message = BaseException::convertExceptionToString(new CacheException(CacheException::INVALID_SAVE, ['key' => $key]));
-                    Log::err($message);
-                }
-                return false;
-            }
-            usleep(1000);
-        }
-
+        $expire > 0 ? $this->storage->setex($key, $expire, $value) : $this->storage->set($key, $value);
         return true;
-    }
-
-    /**
-     * Delete lock.
-     *
-     * @param string $key
-     */
-    protected function unlock($key)
-    {
-        $this->storage->delete(self::LOCK_PREFIX . $key);
     }
 
     /**

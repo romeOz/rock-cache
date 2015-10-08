@@ -15,7 +15,7 @@ trait VersioningTrait
         $key = $this->prepareKey($key);
         $this->setTags($key, $tags, $value);
 
-        return $this->provideLock($key, $this->serialize($value), $expire);
+        return $this->setInternal($key, $this->serialize($value), $expire);
     }
 
     /**
@@ -55,13 +55,13 @@ trait VersioningTrait
     {
         $hash = $this->prepareKey($key);
         if ($this->get($key, $result) === false) {
-            if ($create === false || $this->provideLock($hash, $this->serialize(['value' => $offset, 'tags' => []]), $expire) === false) {
+            if ($create === false || $this->setInternal($hash, $this->serialize(['value' => $offset, 'tags' => []]), $expire) === false) {
                 return false;
             }
             return $offset;
         }
 
-        if ($this->provideLock(
+        if ($this->setInternal(
                 $hash,
                 $this->serialize(['value' => $result['value'] + $offset, 'tags' => $result['tags']]),
                 $expire, true) === false
@@ -78,13 +78,13 @@ trait VersioningTrait
     {
         $hash = $this->prepareKey($key);
         if ($this->get($key, $result) === false) {
-            if ($create === false || $this->provideLock($hash, $this->serialize(['value' => $offset * -1, 'tags' => []]), $expire) === false) {
+            if ($create === false || $this->setInternal($hash, $this->serialize(['value' => $offset * -1, 'tags' => []]), $expire) === false) {
                 return false;
             }
             return $offset * -1;
         }
 
-        if ($this->provideLock(
+        if ($this->setInternal(
                 $hash,
                 $this->serialize(['value' => $result['value'] - $offset, 'tags' => $result['tags']]),
                 $expire, true) === false
@@ -114,7 +114,7 @@ trait VersioningTrait
                 $value['tags'][$tag] = $timestampTag;
                 continue;
             }
-            $this->provideLock($tag, $timestamp, 0);
+            $this->setInternal($tag, $timestamp, 0);
             $value['tags'][$tag] = $timestamp;
         }
     }

@@ -7,13 +7,13 @@ use rock\cache\CacheInterface;
 
 abstract class CommonCache extends \PHPUnit_Framework_TestCase
 {
-    abstract public function init($serialize, $lock);
+    abstract public function init($serialize);
 
     public function providerCache()
     {
         return [
-            [$this->init(CacheInterface::SERIALIZE_PHP, true)],
-            [$this->init(CacheInterface::SERIALIZE_JSON, false)],
+            [$this->init(CacheInterface::SERIALIZE_PHP)],
+            [$this->init(CacheInterface::SERIALIZE_JSON)],
         ];
     }
 
@@ -480,8 +480,22 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
      * @dataProvider providerCache
      * @param CacheInterface $cache
      */
+    public function testLockAndUnlock(CacheInterface $cache)
+    {
+        $lock = $cache->lock('key1');
+        $this->assertTrue($lock);
+        if ($lock) {
+            $this->assertTrue($cache->set('key1', ['one', 'two']));
+        }
+        $this->assertTrue($cache->unlock('key1'));
+    }
+
+    /**
+     * @dataProvider providerCache
+     * @param CacheInterface $cache
+     */
     public function testStatus(CacheInterface $cache)
     {
         $this->assertNotEmpty($cache->status());
     }
-} 
+}

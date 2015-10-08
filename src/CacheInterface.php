@@ -207,6 +207,25 @@ interface CacheInterface extends SerializeInterface
     public function getAll();
 
     /**
+     * Set lock.
+     *
+     * > Dog-pile" ("cache miss storm") and "race condition" effects
+     *
+     * @param string $key key of cache
+     * @param int $iteration max iteration
+     * @return bool
+     */
+    public function lock($key, $iteration = 15);
+
+    /**
+     * Delete lock.
+     *
+     * @param string $key key of cache
+     * @return bool
+     */
+    public function unlock($key);
+
+    /**
      * Removes all cache.
      * @return bool
      */
