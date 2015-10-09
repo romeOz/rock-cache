@@ -188,7 +188,7 @@ Returns all cache.
 ####lock($key)
 Sets a lock on the key.
 
-####Unlock($key)
+####unlock($key)
 Unlocking key.
 
 ####flush()
