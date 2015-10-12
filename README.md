@@ -15,7 +15,7 @@ What storages can be used:
  * [APCu](http://pecl.php.net/package/APCu)
  * [Redis](http://redis.io)
  * [Couchbase](http://www.couchbase.com)
- * MongoDB
+ * [MongoDB](https://www.mongodb.org/)
  * Local (caching to file)
  * CacheStub (stub for caching) 
 
