@@ -101,11 +101,11 @@ class CacheFileTest extends CommonCache
 
     /**
      * @dataProvider providerCache
-     * @expectedException \rock\cache\CacheException
      */
     public function testLockAndUnlock(CacheInterface $cache)
     {
-        $cache->lock('key1');
+        $this->assertTrue($cache->lock('key1'));
+        $this->assertTrue($cache->unlock('key1'));
     }
 
     /**
