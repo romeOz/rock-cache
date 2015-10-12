@@ -41,7 +41,6 @@ class MongoCacheTest extends MongoDbTestCase
             'class' => MongoCache::className(),
             'storage' =>  $connection,
             'cacheCollection' => static::$cacheCollection,
-            'gcProbability' => 0,
         ]);
     }
 
