@@ -21,6 +21,7 @@ matrix:
 services:
   - redis-server
   - memcached
+  - mongodb
 
 addons:
   apt:
@@ -36,14 +37,16 @@ install:
   - tests/data/travis/memcache-setup.sh
   - tests/data/travis/redis-setup.sh
   - tests/data/travis/couchbase-setup.sh
+  - tests/data/travis/mongodb-setup.sh
 
-#before_script:
+before_script:
+  - mongo rocktest --eval 'db.addUser("travis", "test");'
 
 script:
   - mkdir -p build/logs
   - |
     if (php --version | grep -i HipHop > /dev/null); then
-      vendor/bin/phpunit --verbose --exclude-group php,redis,apc,couchbase
+      vendor/bin/phpunit --verbose --exclude-group php,redis,apc,couchbase,mongodb
     else
       vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml --exclude-group hhvm
     fi

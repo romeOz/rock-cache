@@ -16,6 +16,7 @@ What storages can be used:
  * [APCu](http://pecl.php.net/package/APCu)
  * [Redis](http://redis.io)
  * [Couchbase](http://www.couchbase.com)
+ * MongoDB
  * Local (caching to file)
  * CacheStub (stub for caching) 
 
@@ -48,7 +49,6 @@ or in your composer.json:
         "romeoz/rock-cache": "*"
     }
 }
-
 ```
 
 Quick Start
@@ -72,6 +72,24 @@ $memcached->set('key_1', $value, $expire, $tags);
 $memcached->get('key_1'); // result: ['foo', 'bar'];
 
 $memcached->flush(); // Invalidate all items in the cache
+```
+
+####MongoDB
+
+```php
+$connection = new \rock\mongodb\Connection;
+$connection
+    ->getCollection('cache')
+    ->createIndex('id', ['unique' => true])
+    ->createIndex('expire', ['expireAfterSeconds' => 0]); // create TTL index
+
+$config = [
+    'storage' => $connection,
+    'cacheCollection' => 'cache'
+];
+$mongoCache = new \rock\cache\MongoCache($config);
+
+...
 ```
 
 ####Local storage
@@ -216,16 +234,15 @@ Requirements
 You can use each storage separately, requirements are individually for storages.
 
  * PHP 5.4+
- * For Local storage:
- Used library [flysystem](https://github.com/thephpleague/flysystem) which is an filesystem abstraction which allows you to easily swap out a local filesystem for a remote one.
-> Note: contains composer.
-
- * [Redis](http://redis.io) server should be installed `apt-get install redis-server`. Also, should be installed [PHP extension](http://pecl.php.net/package/redis) `apt-get install php5-redis`
- * Memcached/Memcache:
- Memcached demon should be installed `apt-get install memcached`. Also, should be installed php extension [Memcache](http://pecl.php.net/package/memcache) `apt-get install php5-memcache` or [Memcached](http://pecl.php.net/package/memcached) `apt-get install php5-memcached`.
+ * For Local as storage required [Rock File](https://github.com/romeOz/rock-file). Should be installed: `composer require romeoz/rock-file:*`
+ * [Redis](http://redis.io) server should be installed `apt-get install redis-server` or `docker run --name redis -d -p 6379:6379 romeoz/docker-redis:2.8` (recommended). 
+ Also should be installed [PHP extension](http://pecl.php.net/package/redis) `apt-get install php5-redis`
+ * Memcached:
+ Memcached demon should be installed `apt-get install memcached`  or `docker run --name memcached -d -p 11211:11211 romeoz/docker-memcached` (recommended). 
+ Also should be installed php extension [Memcache](http://pecl.php.net/package/memcache) `apt-get install php5-memcache` or [Memcached](http://pecl.php.net/package/memcached) `apt-get install php5-memcached`.
  * [APCu](http://pecl.php.net/package/APCu) should be installed `apt-get install php5-apcu`.
  * Couchbase 3.0: [Step-by-step installation](http://www.couchbase.com/communities/php/getting-started) (or [see playbook](https://github.com/romeOz/vagrant-rock-cache/blob/master/provisioning/roles/couchbase/tasks/main.yml)).
- * Session as memory storage **(optional):** suggested to use [Rock Session](https://github.com/romeOz/rock-session). Should be installed: `composer require romeoz/rock-session:*`
+ * For `MongoCache` required [Rock MongoDB](https://github.com/romeOz/rock-mongodb). Should be installed: `composer require romeoz/rock-mongodb:*`
 
 Storages comparison
 -------------------
