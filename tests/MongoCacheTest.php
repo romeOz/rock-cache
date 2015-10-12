@@ -2,7 +2,7 @@
 
 namespace rockunit;
 
-
+use rock\cache\CacheInterface;
 use rock\helpers\Instance;
 use rock\cache\MongoCache;
 
@@ -22,6 +22,18 @@ class MongoCacheTest extends MongoDbTestCase
         parent::tearDown();
     }
 
+    public function setUp()
+    {
+        $this->createCache()->flush();
+    }
+
+    public function providerCache()
+    {
+        return [
+            [$this->createCache()],
+        ];
+    }
+
     /**
      * Creates test cache instance.
      * @return \rock\cache\MongoCache cache instance.
@@ -39,69 +51,136 @@ class MongoCacheTest extends MongoDbTestCase
         $collection->createIndex('expire', ['expireAfterSeconds' => 0]);
         return Instance::ensure([
             'class' => MongoCache::className(),
-            'storage' =>  $connection,
+            'storage' => $connection,
             'cacheCollection' => static::$cacheCollection,
+            'hashKey' => 0,
         ]);
     }
 
     // Tests:
 
-    public function testSet()
+    /**
+     * @dataProvider providerCache
+     */
+    public function testGetStorage(CacheInterface $cache)
     {
-        $cache = $this->createCache();
-        //$cache->flush();
-        $key = 'test_key';
-        $value = ['name' => 'Tom', 'age' => 20];
-        $this->assertTrue($cache->set($key, $value), 'Unable to set value!');
-        $this->assertEquals($value, $cache->get($key), 'Unable to set value correctly!');
-
-        $newValue = 'test_new_value';
-        $this->assertTrue($cache->set($key, $newValue), 'Unable to update value!');
-        $this->assertEquals($newValue, $cache->get($key), 'Unable to update value correctly!');
+        $this->assertTrue($cache->getStorage() instanceof \rock\mongodb\Connection);
     }
 
-    public function testAdd()
+
+    /**
+     * @dataProvider providerCache
+     * @expectedException \rock\cache\CacheException
+     */
+    public function testGetTag(CacheInterface $cache)
     {
-        $cache = $this->createCache();
+        /** @var $this \PHPUnit_Framework_TestCase */
+        $cache->getTag('foo');
+    }
 
-        $key = 'test_key';
-        $value = 'test_value';
-        $this->assertTrue($cache->add($key, $value), 'Unable to add value!');
-        $this->assertEquals($value, $cache->get($key), 'Unable to add value correctly!');
 
-        $newValue = 'test_new_value';
-        $this->assertFalse($cache->add($key, $newValue), 'Unable to re-add value!');
-        $this->assertEquals($value, $cache->get($key), 'Original value is lost!');
+    /**
+     * @dataProvider providerCache
+     * @expectedException \rock\cache\CacheException
+     */
+    public function testGetTags(CacheInterface $cache)
+    {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
+        $cache->getMultiTags(['bar', 'foo']);
+    }
+    /**
+     * @dataProvider providerCache
+     * @param CacheInterface $cache
+     * @expectedException \rock\cache\CacheException
+     */
+    public function testGetHashMd5Tags(CacheInterface $cache)
+    {
+        parent::testGetHashMd5Tags($cache);
     }
 
     /**
-     * @depends testSet
+     * @dataProvider providerCache
+     * @param CacheInterface $cache
+     * @expectedException \rock\cache\CacheException
      */
-    public function testDelete()
+    public function testGetHashSHATags(CacheInterface $cache)
     {
-        $cache = $this->createCache();
-
-        $key = 'test_key';
-        $value = 'test_value';
-        $cache->set($key, $value);
-
-        $this->assertTrue($cache->remove($key), 'Unable to delete key!');
-        $this->assertEquals(false, $cache->get($key), 'Value is not deleted!');
+        parent::testGetHashSHATags($cache);
     }
 
     /**
-     * @depends testSet
+     * @dataProvider providerCache
+     * @expectedException \rock\cache\CacheException
      */
-    public function testFlush()
+    public function testExistsTag(CacheInterface $cache)
     {
-        $cache = $this->createCache();
+        $cache->existsTag('foo');
+    }
 
+    /**
+     * @dataProvider providerCache
+     * @expectedException \rock\cache\CacheException
+     */
+    public function testExistsTagFalse(CacheInterface $cache)
+    {
+        $cache->existsTag('baz');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testRemoveTag(CacheInterface $cache)
+    {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
+        $this->assertTrue($cache->removeTag('bar'), 'should be get: true');
+        $this->assertFalse($cache->get('key1'), 'should be get: false');
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testGetAllKeys(CacheInterface $cache)
+    {
+        /** @var $this \PHPUnit_Framework_TestCase */
+
+        $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
+        $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
+        $expected = $cache->getAllKeys();
+        if ($expected !== false) {
+            $actual = [
+                $cache->prepareKey('key1'),
+                $cache->prepareKey('key2'),
+            ];
+            sort($expected);
+            sort($actual);
+            $this->assertEquals($expected, $actual, 'should be get: ' . json_encode($actual));
+        }
+    }
+
+    /**
+     * @dataProvider providerCache
+     * @expectedException \rock\cache\CacheException
+     */
+    public function testStatus(CacheInterface $cache)
+    {
+        $cache->status();
+    }
+
+    /**
+     * @dataProvider providerCache
+     */
+    public function testFlush(CacheInterface $cache)
+    {
         $cache->set('key1', 'value1');
         $cache->set('key2', 'value2');
 
         $this->assertTrue($cache->flush(), 'Unable to flush cache!');
 
-        $collection = $cache->getStorage()->getCollection($cache->cacheCollection);
+        $collection = $cache->getStorage()->getCollection(self::$cacheCollection);
         $rows = $this->findAll($collection);
         $this->assertCount(0, $rows, 'Unable to flush records!');
     }

@@ -5,7 +5,7 @@ namespace rockunit;
 use rock\base\Alias;
 use rock\mongodb\MongoException;
 
-class MongoDbTestCase extends \PHPUnit_Framework_TestCase
+class MongoDbTestCase extends CommonCache
 {
     public static $params;
     /**
@@ -31,6 +31,10 @@ class MongoDbTestCase extends \PHPUnit_Framework_TestCase
         if (!empty($config)) {
             $this->mongoDbConfig = $config;
         }
+    }
+
+    public function init($serialize)
+    {
     }
 
     protected function tearDown()
