@@ -3,7 +3,6 @@
 namespace rockunit;
 
 use rock\base\Alias;
-use rock\mongodb\Connection;
 use rock\mongodb\MongoException;
 
 class MongoDbTestCase extends \PHPUnit_Framework_TestCase
@@ -18,7 +17,7 @@ class MongoDbTestCase extends \PHPUnit_Framework_TestCase
         'options' => [],
     ];
     /**
-     * @var Connection Mongo connection instance.
+     * @var \rock\mongodb\Connection Mongo connection instance.
      */
     protected $mongodb;
 
@@ -41,7 +40,6 @@ class MongoDbTestCase extends \PHPUnit_Framework_TestCase
         }
     }
 
-
     /**
      * @param  boolean                 $reset whether to clean up the test database
      * @param  boolean                 $open  whether to open test database
@@ -52,7 +50,7 @@ class MongoDbTestCase extends \PHPUnit_Framework_TestCase
         if (!$reset && $this->mongodb) {
             return $this->mongodb;
         }
-        $connection = new Connection;
+        $connection = new \rock\mongodb\Connection;
         $connection->dsn = $this->mongoDbConfig['dsn'];
         $connection->defaultDatabaseName = $this->mongoDbConfig['defaultDatabaseName'];
         if (isset($this->mongoDbConfig['options'])) {

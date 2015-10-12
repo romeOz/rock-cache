@@ -11,8 +11,7 @@ Cache library
 
 What storages can be used:
  
- * [Memcached](http://pecl.php.net/package/memcached)
- * [Memcache](http://pecl.php.net/package/memcache)
+ * [Memcached](http://memcached.org/)
  * [APCu](http://pecl.php.net/package/APCu)
  * [Redis](http://redis.io)
  * [Couchbase](http://www.couchbase.com)
@@ -78,10 +77,9 @@ $memcached->flush(); // Invalidate all items in the cache
 
 ```php
 $connection = new \rock\mongodb\Connection;
-$connection
-    ->getCollection('cache')
-    ->createIndex('id', ['unique' => true])
-    ->createIndex('expire', ['expireAfterSeconds' => 0]); // create TTL index
+$collection = $connection->getCollection('cache')
+$collection->createIndex('id', ['unique' => true]);
+$collection->createIndex('expire', ['expireAfterSeconds' => 0]); // create TTL index
 
 $config = [
     'storage' => $connection,

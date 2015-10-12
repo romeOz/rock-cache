@@ -34,10 +34,9 @@ class MongoCacheTest extends MongoDbTestCase
             );
         }
         $connection = $this->getConnection();
-        $connection
-            ->getCollection(static::$cacheCollection)
-            ->createIndex('id', ['unique' => true])
-            ->createIndex('expire', ['expireAfterSeconds' => 0]);
+        $collection = $connection->getCollection(static::$cacheCollection);
+        $collection->createIndex('id', ['unique' => true]);
+        $collection->createIndex('expire', ['expireAfterSeconds' => 0]);
         return Instance::ensure([
             'class' => MongoCache::className(),
             'storage' =>  $connection,

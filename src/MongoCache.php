@@ -2,9 +2,9 @@
 namespace rock\cache;
 
 use rock\base\BaseException;
-use rock\db\common\ActiveQueryInterface;
 use rock\events\EventsInterface;
 use rock\helpers\Instance;
+use rock\mongodb\Query;
 
 /**
  * Cache implements a cache application component by storing cached data in a MongoDB.
@@ -33,7 +33,7 @@ class MongoCache implements CacheInterface, EventsInterface
     }
 
     /**
-     * @var Connection|string the MongoDB connection object or the application component ID of the MongoDB connection.
+     * @var \rock\mongodb\Connection|string the MongoDB connection object or the application component ID of the MongoDB connection.
      * After the Cache object is created, if you want to change this property, you should only assign it
      * with a MongoDB connection object.
      */
@@ -55,7 +55,7 @@ class MongoCache implements CacheInterface, EventsInterface
     /**
      * Get current storage
      *
-     * @return Connection
+     * @return \rock\mongodb\Connection
      */
     public function getStorage()
     {
