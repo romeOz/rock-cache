@@ -17,7 +17,7 @@ interface CacheInterface extends SerializeInterface
     const TAG_PREFIX = 'tag_';
 
     /**
-     * Returns current cache-storage.
+     * Returns a native instance cache-storage.
      *
      * @throws CacheException
      * @return \Memcached|\Memcache|\Redis|\CouchbaseBucket
@@ -25,7 +25,7 @@ interface CacheInterface extends SerializeInterface
     public function getStorage();
 
     /**
-     * Returns prepare key of cache.
+     * Returns prepare key.
      *
      * @param string $key key of cache
      * @return bool|string
@@ -33,14 +33,14 @@ interface CacheInterface extends SerializeInterface
     public function prepareKey($key);
 
     /**
-     * Adds prefix to key.
+     * Adds a prefix to key.
      *
      * @param string $prefix
      */
     public function addPrefix($prefix);
 
     /**
-     * Returns cache by key.
+     * Returns value by key.
      *
      * @param string $key key of cache
      * @return mixed|bool
@@ -48,7 +48,7 @@ interface CacheInterface extends SerializeInterface
     public function get($key);
 
     /**
-     * Returns multiple cache by keys.
+     * Returns multiple values by keys.
      *
      * @param array $keys keys of cache
      * @return array
@@ -56,7 +56,7 @@ interface CacheInterface extends SerializeInterface
     public function getMulti(array $keys);
 
     /**
-     * Set cache.
+     * Sets a value to cache.
      *
      * @param string $key key of cache
      * @param mixed $value content of cache
@@ -67,7 +67,7 @@ interface CacheInterface extends SerializeInterface
     public function set($key, $value = null, $expire = 0, array $tags = []);
 
     /**
-     * Set multiple cache.
+     * Sets a multiple key-values to cache.
      *
      * ```php
      * $cache = new Memcached;
@@ -81,8 +81,7 @@ interface CacheInterface extends SerializeInterface
     public function setMulti($values, $expire = 0, array $tags = []);
 
     /**
-     * Adding cache (return false, if already exists on the server).
-     *
+     * Adds a value to cache (return false, if already exists on the server).
      * @param string $key key of cache
      * @param mixed $value content of cache
      * @param int $expire time to live (sec)
@@ -92,16 +91,14 @@ interface CacheInterface extends SerializeInterface
     public function add($key, $value = null, $expire = 0, array $tags = []);
 
     /**
-     * Checks existence cache by key.
-     *
+     * Checks existence key.
      * @param string $key key of cache
      * @return bool
      */
     public function exists($key);
 
     /**
-     * Changes expire for cache (TTL).
-     *
+     * Changes expire for key.
      * @param string $key key of cache
      * @param int $expire time to live (sec)
      * @return bool
@@ -109,8 +106,7 @@ interface CacheInterface extends SerializeInterface
     public function touch($key, $expire = 0);
 
     /**
-     * Changes expire for multiple cache.
-     *
+     * Changes expire for multiple keys.
      * @param array $keys keys of cache
      * @param int $expire time to live (sec)
      * @return bool
@@ -118,8 +114,7 @@ interface CacheInterface extends SerializeInterface
     public function touchMulti(array $keys, $expire = 0);
 
     /**
-     * Increment.
-     *
+     * Increment a value to cache.
      * @param string $key key of cache
      * @param int $offset
      * @param int $expire time to live (sec)
@@ -129,8 +124,7 @@ interface CacheInterface extends SerializeInterface
     public function increment($key, $offset = 1, $expire = 0, $create = true);
 
     /**
-     * Decrement.
-     *
+     * Decrement a value to cache.
      * @param string $key key of cache.
      * @param int $offset
      * @param int $expire time to live (sec)
@@ -140,31 +134,27 @@ interface CacheInterface extends SerializeInterface
     public function decrement($key, $offset = 1, $expire = 0, $create = true);
 
     /**
-     * Removes cache.
-     *
+     * Removes value from cache.
      * @param string $key key of cache
      * @return bool
      */
     public function remove($key);
 
     /**
-     * Removes multiple keys.
-     *
+     * Removes multiple values from cache.
      * @param array $keys keys of cache
      */
     public function removeMulti(array $keys);
 
     /**
-     * Returns tag.
-     *
+     * Returns a keys in accordance with tag.
      * @param string $tag name of tag
      * @return mixed
      */
     public function getTag($tag);
 
     /**
-     * Returns tags.
-     *
+     * Returns a keys in accordance with multiple tags.
      * @param array $tags names of tags
      * @return array
      */
@@ -172,42 +162,39 @@ interface CacheInterface extends SerializeInterface
 
     /**
      * Checks existence tag.
-     *
      * @param string $tag name of tag
      * @return bool
      */
     public function existsTag($tag);
 
     /**
-     * Removes tag.
-     *
+     * Removes a tag.
      * @param string $tag name of tag
      * @return bool
      */
     public function removeTag($tag);
 
     /**
-     * Removes multiple tags.
-     *
+     * Removes a multiple tags.
      * @param array $tags names of tags
      */
     public function removeMultiTags(array $tags);
 
     /**
-     * Returns all keys of cache.
+     * Returns all keys.
      * @return array
      */
     public function getAllKeys();
 
     /**
-     * Returns all cache.
+     * Returns all values.
      * @return array
      * @throws CacheException
      */
     public function getAll();
 
     /**
-     * Set lock.
+     * Sets a lock on the key.
      *
      * > Dog-pile" ("cache miss storm") and "race condition" effects
      *
@@ -218,21 +205,20 @@ interface CacheInterface extends SerializeInterface
     public function lock($key, $iteration = 15);
 
     /**
-     * Delete lock.
-     *
+     * Unlocking key.
      * @param string $key key of cache
      * @return bool
      */
     public function unlock($key);
 
     /**
-     * Removes all cache.
+     * Removes all values from cache.
      * @return bool
      */
     public function flush();
 
     /**
-     * Returns status server of cache.
+     * Returns status server.
      * @throws CacheException
      * @return mixed
      */
