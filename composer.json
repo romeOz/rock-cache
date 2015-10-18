@@ -17,12 +17,12 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "romeoz/rock-events" : "*@dev"
+        "romeoz/rock-events" : "0.10.*"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.7.0",
-        "romeoz/rock-file": "*@dev",
-        "romeoz/rock-mongodb": "*@dev"
+        "romeoz/rock-file": "0.10.*",
+        "romeoz/rock-mongodb": "0.14.*"
     },
     "suggest": {
         "romeoz/rock-file": "required for using Local as storage",
