@@ -161,6 +161,6 @@ class Memcache extends Memcached
      */
     protected function lockInternal($key)
     {
-        return $this->storage->add(self::LOCK_PREFIX . $key, 1, MEMCACHE_COMPRESSED, $this->lockExpire);
+        return $this->storage->add($this->prepareKey($key, self::LOCK_PREFIX), 1, MEMCACHE_COMPRESSED, $this->lockExpire);
     }
 }

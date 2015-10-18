@@ -399,7 +399,7 @@ class MongoCache implements CacheInterface, EventsInterface
     {
         $i = 0;
 
-        while (!$this->add(self::LOCK_PREFIX . $key, 1, $this->lockExpire)) {
+        while (!$this->add($this->prepareKey($key, self::LOCK_PREFIX), 1, $this->lockExpire)) {
             $i++;
             if ($i > $iteration) {
                 if (class_exists('\rock\log\Log')) {
@@ -420,7 +420,7 @@ class MongoCache implements CacheInterface, EventsInterface
     public function unlock($key)
     {
         return (bool)$this->storage->getCollection($this->cacheCollection)
-            ->remove(['id' => self::LOCK_PREFIX . $key]);
+            ->remove(['id' => $this->prepareKey($key, self::LOCK_PREFIX)]);
     }
 
     /**

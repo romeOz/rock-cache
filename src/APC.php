@@ -180,7 +180,7 @@ class APC implements CacheInterface, EventsInterface
     public function lock($key, $iteration = 15)
     {
         $i = 0;
-        while (!apc_add(self::LOCK_PREFIX . $key, 1, $this->lockExpire)) {
+        while (!apc_add($this->prepareKey($key, self::LOCK_PREFIX), 1, $this->lockExpire)) {
             $i++;
             if ($i > $iteration) {
                 if (class_exists('\rock\log\Log')) {
@@ -200,7 +200,7 @@ class APC implements CacheInterface, EventsInterface
      */
     public function unlock($key)
     {
-        return apc_delete(self::LOCK_PREFIX . $key);
+        return apc_delete($this->prepareKey($key, self::LOCK_PREFIX));
     }
 
     /**

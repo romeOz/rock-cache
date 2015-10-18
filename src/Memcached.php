@@ -249,7 +249,7 @@ class Memcached implements CacheInterface, EventsInterface
      */
     public function unlock($key)
     {
-        return $this->storage->delete(self::LOCK_PREFIX . $key);
+        return $this->storage->delete($this->prepareKey($key, self::LOCK_PREFIX));
     }
 
     /**
@@ -269,7 +269,7 @@ class Memcached implements CacheInterface, EventsInterface
     }
 
     /**
-     * Set tags
+     * Sets a tags
      *
      * @param string $key key of cache
      * @param array $tags list of tags
@@ -314,6 +314,7 @@ class Memcached implements CacheInterface, EventsInterface
 
     protected function lockInternal($key)
     {
-        return $this->storage->add(self::LOCK_PREFIX . $key, 1, $this->lockExpire);
+        $tt = $this->storage->add($this->prepareKey($key, self::LOCK_PREFIX), 1, $this->lockExpire);
+        return $tt;
     }
 }

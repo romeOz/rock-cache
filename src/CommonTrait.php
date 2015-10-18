@@ -43,16 +43,20 @@ trait CommonTrait
      * Returns prepare key of cache.
      *
      * @param string $key
+     * @param string|null $prefix
      * @return string
      */
-    public function prepareKey($key)
+    public function prepareKey($key, $prefix = null)
     {
-        if ($this->hashKey & self::HASH_MD5) {
-            return $this->prefix . md5($key);
-        } elseif ($this->hashKey & self::HASH_SHA) {
-            return $this->prefix . sha1($key);
+        if (!isset($prefix)) {
+            $prefix = $this->prefix;
         }
-        return $this->prefix . $key;
+        if ($this->hashKey & self::HASH_MD5) {
+            return $prefix . md5($key);
+        } elseif ($this->hashKey & self::HASH_SHA) {
+            return $prefix . sha1($key);
+        }
+        return $prefix . $key;
     }
 
     /**

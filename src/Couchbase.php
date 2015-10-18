@@ -230,7 +230,7 @@ class Couchbase implements CacheInterface, EventsInterface
     {
         $i = 0;
 
-        while (!(bool)$this->existsAndUpsert(self::LOCK_PREFIX . $key, 1, $this->lockExpire)) {
+        while (!(bool)$this->existsAndUpsert($this->prepareKey($key, self::LOCK_PREFIX), 1, $this->lockExpire)) {
             $i++;
             if ($i > $iteration) {
                 if (class_exists('\rock\log\Log')) {
@@ -250,7 +250,7 @@ class Couchbase implements CacheInterface, EventsInterface
      */
     public function unlock($key)
     {
-        return $this->removeInternal(self::LOCK_PREFIX . $key);
+        return $this->removeInternal($this->prepareKey($key, self::LOCK_PREFIX));
     }
 
     /**

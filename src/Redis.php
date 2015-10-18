@@ -199,7 +199,7 @@ class Redis implements CacheInterface, EventsInterface
     {
         $i = 0;
 
-        while (!$this->storage->setex(self::LOCK_PREFIX . $key, $this->lockExpire, 1)) {
+        while (!$this->storage->setex($this->prepareKey($key, self::LOCK_PREFIX), $this->lockExpire, 1)) {
             $i++;
             if ($i > $iteration) {
                 if (class_exists('\rock\log\Log')) {
@@ -219,7 +219,7 @@ class Redis implements CacheInterface, EventsInterface
      */
     public function unlock($key)
     {
-        $this->storage->delete(self::LOCK_PREFIX . $key);
+        $this->storage->delete($this->prepareKey($key, self::LOCK_PREFIX));
         return true;
     }
 
@@ -266,10 +266,5 @@ class Redis implements CacheInterface, EventsInterface
         foreach ($this->prepareTags($tags) as $tag) {
             $this->storage->sAdd($tag, $key);
         }
-    }
-
-    protected function getLock($key)
-    {
-        return $this->storage->get(self::LOCK_PREFIX . $key);
     }
 }
