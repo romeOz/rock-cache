@@ -7,8 +7,6 @@ Cache library
 [![Coverage Status](https://coveralls.io/repos/romeOz/rock-cache/badge.svg)](https://coveralls.io/r/romeOz/rock-cache)
 [![License](https://poser.pugx.org/romeOz/rock-cache/license.svg)](https://packagist.org/packages/romeOz/rock-cache)
 
-[Rock cache on Packagist](https://packagist.org/packages/romeOz/rock-cache)
-
 What storages can be used:
  
  * [Memcached](http://memcached.org/)
@@ -31,13 +29,30 @@ Features
  * Automatic unserialization
  * Standalone module/component for [Rock Framework](https://github.com/romeOz/rock)
 
+Table of Contents
+-------------------
+
+ * [Installation](#installation)
+ * [Quick Start](#quick-start)
+    - [Memcached](#memcached)
+    - [MongoDB](#mongodb)
+    - [Local storage](#local-storage)
+    - [Locking key](#locking-key)
+ * [Documentation](#documentation)
+ * [Demo](#demo)
+ * [Requirements](#requirements)
+ * [Storages comparison](#storages-comparison)
+ * [Differences between the approaches a tagging](#differences-between-the-approaches-a-tagging)
+    - [Grouping tags](#grouping-tags)
+    - [Versioning tags](#versioning-tags)
+
 Installation
 -------------------
 
 From the Command Line:
 
 ```
-composer require romeoz/rock-cache:*
+composer require romeoz/rock-cache
 ```
 
 or in your composer.json:
@@ -140,64 +155,64 @@ Documentation
 -------------------
 
 ####get($key)
-Returns cache by key.
+Returns value by key.
 
 ####getMulti(array $keys)
-Returns multiple cache by keys.
+Returns multiple values by keys.
 
 ####set($key, mixed $value, $expire = 0, array $tags = null)
-Sets cache.
+Sets a value to cache.
 
 ####setMulti($key, mixed $value, $expire = 0, array $tags = null)
-Sets multiple cache.
+Sets a multiple key-values to cache.
 
 ####add($key, mixed $value, $expire = 0, array $tags = null)
-Add cache.
+Adds a value to cache.
 >Return false, if already exists on the server.
 
 ####exists($key)
-Checks existence cache by key.
+Checks existence key.
 
 ####touch($key, $expire = 0)
-Changes expire for cache (TTL).
+Changes expire (TTL) for key.
 
 ####touchMulti(array $keys, $expire = 0)
-Changes expire for multiple cache.
+Changes expire (TTL) for multiple keys .
 
-####increment($key, $offset = 1, $expire = 0)
-Increment of cache.
+####increment($key, $offset = 1, $expire = 0, $create = true)
+Increment a value to cache.
 
-####decrement($key, $offset = 1, $expire = 0)
-Decrement of cache.
+####decrement($key, $offset = 1, $expire = 0, $create = true)
+Decrement a value to cache.
 
 ####remove($key)
-Removes cache.
+Removes value from cache.
 
 ####removeMulti(array $keys)
-Removes multiple keys.
+Removes multiple values from cache.
 
 ####getTag($tag)
-Returns the keys of cache in accordance with the tag.
+Returns a keys in accordance with tag.
 
 ####getMultiTags(array $tags)
-Returns the keys of cache in accordance with the multiple tags.
+Returns a keys in accordance with multiple tags.
 
 ####existsTag($tag)
 Checks existence tag.
 
 ####removeTag($tag)
-Removes tag.
+Removes a tag.
 
 ####removeMultiTag(array $tags)
-Removes multiple tags.
+Removes a multiple tags.
 
 ####getAllKeys()
-Returns all keys of cache.
+Returns all keys.
 
 >Supported: `Memcached`, `Redis`, `APC`.
 
 ####getAll()
-Returns all cache.
+Returns all values.
 
 >Supported: `Memcached`, `APC`.
 
@@ -208,16 +223,15 @@ Sets a lock on the key.
 Unlocking key.
 
 ####flush()
-Removes all cache.
+Removes all values from cache.
 
 ####status()
-Returns status server of cache.
+Returns status server.
 
 >Supported: `Memcached`, `Memcache`, `Redis`, `APC`, `Couchbase`.
 
 ####getStorage()
-Returns current cache-storage.
-
+Returns a native instance cache-storage.
 
 [Demo](https://github.com/romeOz/docker-rock-cache)
 -------------------
@@ -232,15 +246,14 @@ Requirements
 You can use each storage separately, requirements are individually for storages.
 
  * PHP 5.4+
- * For Local as storage required [Rock File](https://github.com/romeOz/rock-file). Should be installed: `composer require romeoz/rock-file:*`
- * [Redis](http://redis.io) server should be installed `apt-get install redis-server` or `docker run --name redis -d -p 6379:6379 romeoz/docker-redis:2.8` (recommended). 
+ * [Redis](http://redis.io). Should be installed `apt-get install redis-server` or `docker run --name redis -d -p 6379:6379 romeoz/docker-redis:2.8` (recommended). 
  Also should be installed [PHP extension](http://pecl.php.net/package/redis) `apt-get install php5-redis`
- * Memcached:
- Memcached demon should be installed `apt-get install memcached`  or `docker run --name memcached -d -p 11211:11211 romeoz/docker-memcached` (recommended). 
- Also should be installed php extension [Memcache](http://pecl.php.net/package/memcache) `apt-get install php5-memcache` or [Memcached](http://pecl.php.net/package/memcached) `apt-get install php5-memcached`.
- * [APCu](http://pecl.php.net/package/APCu) should be installed `apt-get install php5-apcu`.
- * Couchbase 3.0: [Step-by-step installation](http://www.couchbase.com/communities/php/getting-started) (or [see playbook](https://github.com/romeOz/vagrant-rock-cache/blob/master/provisioning/roles/couchbase/tasks/main.yml)).
- * For `MongoCache` required [Rock MongoDB](https://github.com/romeOz/rock-mongodb). Should be installed: `composer require romeoz/rock-mongodb:*`
+ * [Memcached](http://memcached.org/). Should be installed `apt-get install memcached`  or `docker run --name memcached -d -p 11211:11211 romeoz/docker-memcached` (recommended). 
+ Also should be installed php-extension [Memcache](http://pecl.php.net/package/memcache) `apt-get install php5-memcache` or [Memcached](http://pecl.php.net/package/memcached) `apt-get install php5-memcached`.
+ * [APCu](http://pecl.php.net/package/APCu). Should be installed `apt-get install php5-apcu`.
+ * Couchbase 3.0. [Step-by-step installation](http://www.couchbase.com/communities/php/getting-started) (or [see playbook](https://github.com/romeOz/vagrant-rock-cache/blob/master/provisioning/roles/couchbase/tasks/main.yml)).
+ * For using [MongoDB](https://www.mongodb.org/) as storage required [Rock MongoDB](https://github.com/romeOz/rock-mongodb): `composer require romeoz/rock-mongodb`
+ * For using Local as storage required [Rock File](https://github.com/romeOz/rock-file): `composer require romeoz/rock-file`
 
 Storages comparison
 -------------------
@@ -249,14 +262,14 @@ Storages comparison
 Use **Couchbase** if you need fault-tolerant and very easy scalable cluster and if you can afford it ([recommended hardware requirements](http://docs.couchbase.com/couchbase-manual-2.2/#resource-requirements)).
 Also, data in Redis and Couchbase storages will be restored even after server reboot.
 
-Differences between the tagging approaches
+Differences between the approaches a tagging
 -------------------
 
-###Approach grouping tags
+###Grouping tags
 
 Fastest method, but there is a possibility of overflow cache.
 
-Input data:
+Set a value:
 
 ```php
 $cache = new \rock\cache\Memcached;
@@ -265,7 +278,7 @@ $cache->set('key_1', 'text_1', 0, ['tag_1', 'tag_2']);
 $cache->set('key_2', 'text_2', 0, ['tag_1']);
 ```
 
-View storage:
+View in memory:
 
 ```
 key_1: text_1
@@ -282,7 +295,7 @@ Removing tag:
 $cache->removeTag('tag_2');
 ```
 
-View storage:
+View in memory:
 
 ```
 key_2: text_2
@@ -290,13 +303,13 @@ key_2: text_2
 tag_1: [key_1, key_2]
 ```
 
-###Approach versioning
+###Versioning tags
 
 Is the best practice, but slower than the approach with the grouping tags, because when getting the cache containing tags, sent multiple requests to compare versions. There is no cache overflows.
 
 **References**: [nablas by D.Koterov (RUS)](http://dklab.ru/chicken/nablas/47.html) or ["Reset group caches and tagging" by A.Smirnov (RUS)](http://smira.ru/posts/20081029web-caching-memcached-5.html).
 
-Input data:
+Set a value:
 
 ```php
 $cache = new \rock\cache\versioning\Memcached;
@@ -305,7 +318,7 @@ $cache->set('key_1', 'text_1', 0, ['tag_1', 'tag_2']);
 $cache->set('key_2', 'text_2', 0, ['tag_1']);
 ```
 
-View storage:
+View in memory:
 
 ```
 key_1: [
@@ -335,7 +348,7 @@ Removing tag:
 $cache->removeTag('tag_2');
 ```
 
-View storage:
+View in memory:
 
 ```
 key_1: [
@@ -356,13 +369,15 @@ tag_1: 0.20782200 1403858079
 tag_2: 0.29252400 1403858537
 ```
 
+Returns value:
+
 ```php
 
 $cache->get('key_1');
 // result: false
 ```
 
-View storage:
+View in memory:
 
 ```
 key_2: [

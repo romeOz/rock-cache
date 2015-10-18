@@ -25,8 +25,8 @@
         "romeoz/rock-mongodb": "*@dev"
     },
     "suggest": {
-        "romeoz/rock-file": "required for CacheFile (local storage)",
-        "romeoz/rock-mongodb": "required for MongoCache (MongoDB as storage)"
+        "romeoz/rock-file": "required for using Local as storage",
+        "romeoz/rock-mongodb": "required for using MongoDB as storage"
     },
     "autoload": {
         "psr-4": {
