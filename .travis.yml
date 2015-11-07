@@ -29,9 +29,9 @@ addons:
       - autoconf
 
 install:
-  - composer self-update && composer --version
-  - composer install --prefer-dist
-  - composer require satooshi/php-coveralls:*@dev
+  - travis_retry composer self-update && composer --version
+  - travis_retry composer install --prefer-dist
+  - travis_retry composer require satooshi/php-coveralls:*@dev
   - chmod -R +x tests/data/travis/
   - tests/data/travis/apc-setup.sh
   - tests/data/travis/memcache-setup.sh
