@@ -8,9 +8,6 @@ class Memcache extends \rock\cache\Memcache implements CacheInterface
 {
     use VersioningTrait;
 
-    /** @var  \Memcache */
-    public $storage;
-
     /**
      * @inheritdoc
      */

@@ -24,28 +24,32 @@ use rock\log\Log;
 class Memcached implements CacheInterface, EventsInterface
 {
     use CacheTrait {
-        CacheTrait::__construct as parentConstruct;
         CacheTrait::setMulti as parentSetMulti;
     }
 
+    public $servers = [
+        ['host' => 'localhost', 'port' => 11211]
+    ];
     /** @var  \Memcached */
     public $storage;
-    public $servers = [['localhost', 11211]];
 
-    public function __construct($config = [])
+    public function init()
     {
-        $this->parentConstruct($config);
-        $this->storage = new \Memcached();
-        $this->storage->addServers($this->servers);
-        $this->storage->setOption(\Memcached::OPT_COMPRESSION, true);
+        $this->parentInit();
+        if (!$this->storage instanceof \Memcached) {
+            $this->storage = new \Memcached();
+            $this->normalizeServers($this->servers, $this->storage);
+            $this->storage->setOption(\Memcached::OPT_COMPRESSION, true);
+
+        }
+
         if ($this->serializer !== self::SERIALIZE_JSON) {
             $this->storage->setOption(\Memcached::OPT_SERIALIZER, \Memcached::SERIALIZER_PHP);
         }
     }
 
     /**
-     * Get current storage
-     *
+     * Returns current storage.
      * @return \Memcached
      */
     public function getStorage()
@@ -314,7 +318,21 @@ class Memcached implements CacheInterface, EventsInterface
 
     protected function lockInternal($key)
     {
-        $tt = $this->storage->add($this->prepareKey($key, self::LOCK_PREFIX), 1, $this->lockExpire);
-        return $tt;
+        return $this->storage->add($this->prepareKey($key, self::LOCK_PREFIX), 1, $this->lockExpire);
+    }
+
+    /**
+     * @param array $servers
+     * @param \Memcached $storage
+     */
+    protected function normalizeServers(array $servers, $storage)
+    {
+        foreach ($servers as &$server) {
+            $host = isset($server['host']) ? $server['host'] : 'localhost';
+            $port = isset($server['port']) ? $server['port'] : 11211;
+            $weight = isset($server['weight']) ? $server['weight'] : 0;
+            $server = [$host, $port, $weight];
+        }
+        $storage->addServers($servers);
     }
 }

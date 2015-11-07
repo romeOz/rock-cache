@@ -9,22 +9,12 @@ class Memcache extends Memcached
     /** @var  \Memcache */
     public $storage;
 
-    public function __construct($config = [])
+    public function init()
     {
-        parent::__construct($config);
-        $this->storage = new \Memcache();
-        foreach ($this->servers as $server) {
-            if (!isset($server[1])) {
-                $server[1] = 11211;
-            }
-            if (!isset($server[2])) {
-                $server[2] = true;
-            }
-            if (!isset($server[3])) {
-                $server[3] = 1;
-            }
-            list($host, $port, $persistent, $weight) = $server;
-            $this->storage->addserver($host, $port, $persistent, $weight);
+        $this->parentInit();
+        if (!$this->storage instanceof \Memcache) {
+            $this->storage = new \Memcache();
+            $this->normalizeServers($this->servers, $this->storage);
         }
     }
 
@@ -162,5 +152,22 @@ class Memcache extends Memcached
     protected function lockInternal($key)
     {
         return $this->storage->add($this->prepareKey($key, self::LOCK_PREFIX), 1, MEMCACHE_COMPRESSED, $this->lockExpire);
+    }
+
+    /**
+     * @param array $servers
+     * @param \Memcache $storage
+     */
+    protected function normalizeServers(array $servers, $storage)
+    {
+        foreach ($servers as $server) {
+            $host = isset($server['host']) ? $server['host'] : 'localhost';
+            $port = isset($server['port']) ? $server['port'] : 11211;
+            $weight = isset($server['weight']) ? $server['weight'] : 1;
+            $persistent = isset($server['persistent']) ? $server['persistent'] : true;
+            $timeout = isset($server['timeout']) ? $server['timeout'] : 1;
+            $retry = isset($server['retry']) ? $server['retry'] : 15;
+            $storage->addserver($host, $port, $persistent, $weight, $timeout, $retry);
+        }
     }
 }

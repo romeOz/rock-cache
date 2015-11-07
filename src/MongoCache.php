@@ -28,9 +28,7 @@ use rock\mongodb\Query;
  */
 class MongoCache implements CacheInterface, EventsInterface
 {
-    use CacheTrait {
-        CacheTrait::__construct as parentConstruct;
-    }
+    use CacheTrait;
 
     /**
      * @var \rock\mongodb\Connection|string the MongoDB connection object or the application component ID of the MongoDB connection.
@@ -45,15 +43,14 @@ class MongoCache implements CacheInterface, EventsInterface
      */
     public $cacheCollection = 'cache';
 
-
-    public function __construct($config = [])
+    public function init()
     {
-        $this->parentConstruct($config);
+        $this->parentInit();
         $this->storage = Instance::ensure($this->storage);
     }
 
     /**
-     * Get current storage
+     * {@inheritdoc}
      *
      * @return \rock\mongodb\Connection
      */

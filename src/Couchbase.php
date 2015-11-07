@@ -8,15 +8,11 @@ use rock\log\Log;
 
 class Couchbase implements CacheInterface, EventsInterface
 {
-    use CacheTrait {
-        CacheTrait::__construct as parentConstruct;
-        CacheTrait::setMulti as parentSetMulti;
-    }
+    use CacheTrait;
 
-    /**
-     * @var string
-     */
-    public $host = '127.0.0.1:8091'; // or http://10.4.4.1,10.4.4.2,10.4.4.3
+    public $servers = [
+        ['host' => '127.0.0.1', 'port' => 8091]
+    ];
     /** @var  string */
     public $username = '';
     /** @var  string */
@@ -27,10 +23,12 @@ class Couchbase implements CacheInterface, EventsInterface
     /** @var  \CouchbaseBucket */
     public $storage;
 
-    public function __construct(array $config = [])
+    public function init()
     {
-        $this->parentConstruct($config);
-        $this->storage = (new \CouchbaseCluster($this->host, $this->username, $this->password))->openBucket($this->bucket);
+        $this->parentInit();
+        if (!$this->storage instanceof \CouchbaseBucket) {
+            $this->storage = (new \CouchbaseCluster($this->normalizeServers($this->servers), $this->username, $this->password))->openBucket($this->bucket);
+        }
         switch ($this->serializer) {
             case self::SERIALIZE_JSON:
                 $encode = 'couchbase_default_encoder';
@@ -58,7 +56,8 @@ class Couchbase implements CacheInterface, EventsInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     * @return \CouchbaseBucket
      */
     public function getStorage()
     {
@@ -365,5 +364,15 @@ class Couchbase implements CacheInterface, EventsInterface
     protected function unserialize($value)
     {
         return $value;
+    }
+
+    protected function normalizeServers(array $servers)
+    {
+        foreach ($servers as &$server) {
+            $host = isset($server['host']) ? $server['host'] : '127.0.0.1';
+            $port = isset($server['port']) ? $server['port'] : 8091;
+            $server = "$host:$port";
+        }
+        return implode(',', $servers);
     }
 }

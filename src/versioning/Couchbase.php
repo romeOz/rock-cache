@@ -8,9 +8,6 @@ class Couchbase extends \rock\cache\Couchbase implements CacheInterface
 {
     use VersioningTrait;
 
-    /** @var  \CouchbaseBucket */
-    public $storage;
-
     /**
      * @inheritdoc
      */

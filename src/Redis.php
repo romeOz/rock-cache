@@ -9,22 +9,20 @@ use rock\log\Log;
 
 class Redis implements CacheInterface, EventsInterface
 {
-    use CacheTrait {
-        CacheTrait::__construct as parentConstruct;
-        CacheTrait::setMulti as parentSetMulti;
-    }
+    use CacheTrait;
 
-    public $host = 'localhost';
-    public $port = 6379;
+    public $server = ['host' => 'localhost', 'port' => 6379];
 
     /** @var  \Redis */
     public $storage;
 
-    public function __construct($config = [])
+    public function init()
     {
-        $this->parentConstruct($config);
-        $this->storage = new \Redis();
-        $this->storage->connect($this->host, $this->port);
+        $this->parentInit();
+        if (!$this->storage instanceof \Redis) {
+            $this->storage = new \Redis();
+            $this->normalizeServer($this->server, $this->storage);
+        }
     }
 
     /**
@@ -266,5 +264,13 @@ class Redis implements CacheInterface, EventsInterface
         foreach ($this->prepareTags($tags) as $tag) {
             $this->storage->sAdd($tag, $key);
         }
+    }
+
+    protected function normalizeServer(array $server, \Redis $storage)
+    {
+        $host = isset($server['host']) ? $server['host'] : 'localhost';
+        $port = isset($server['port']) ? $server['port'] : 6379;
+        $timeout = isset($server['timeout']) ? $server['timeout'] : 0.0;
+        $storage->connect($host, $port, $timeout);
     }
 }

@@ -59,7 +59,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
      */
     public function testAddPrefix(CacheInterface $cache)
     {
-        $cache->addPrefix('test');
+        $cache->setPrefix('test');
         $this->assertTrue($cache->set('key5', ['foo']));
         $this->assertSame(['foo'], $cache->get('key5'));
 
@@ -74,7 +74,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
      */
     public function testKeySHA(CacheInterface $cache)
     {
-        $cache->addPrefix('test');
+        $cache->setPrefix('test');
         $cache->hashKey = CacheInterface::HASH_SHA;
         $this->assertTrue($cache->set('key5', ['foo']));
         $this->assertSame(['foo'], $cache->get('key5'));

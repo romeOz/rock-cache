@@ -8,10 +8,6 @@ class Redis extends \rock\cache\Redis implements CacheInterface
 {
     use VersioningTrait;
 
-    /** @var  \Redis */
-    public $storage;
-
-
     /**
      * @inheritdoc
      */

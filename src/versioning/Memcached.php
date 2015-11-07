@@ -7,9 +7,6 @@ class Memcached extends \rock\cache\Memcached implements CacheInterface
 {
     use VersioningTrait;
 
-    /** @var  \Memcached */
-    public $storage;
-
     /**
      * @inheritdoc
      */

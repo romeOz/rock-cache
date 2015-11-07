@@ -13,7 +13,7 @@ trait CacheTrait
      * Time to live on lock (sec)
      * @var int
      */
-    public $lockExpire = 30;
+    protected $lockExpire = 30;
 
     /**
      * @inheritdoc
@@ -44,5 +44,16 @@ trait CacheTrait
         $key = $this->prepareKey($key);
 
         return $this->storage->get($key);
+    }
+
+    /**
+     * Sets a lock expire.
+     * @param int $expire expire in seconds.
+     * @return $this
+     */
+    public function setLockExpire($expire)
+    {
+        $this->lockExpire = $expire;
+        return $this;
     }
 }
