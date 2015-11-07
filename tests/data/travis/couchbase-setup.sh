@@ -5,6 +5,12 @@ if (php --version | grep -i HipHop > /dev/null); then
     exit 0
 fi
 
+# Download and uncompress Couchbase Server
+#http://packages.couchbase.com/releases/4.0.0/couchbase-server-community_4.0.0-ubuntu12.04_amd64.deb
+#sudo dpkg -i couchbase-server-community_4.0.0-ubuntu12.04_amd64.deb
+wget http://packages.couchbase.com/releases/3.0.1/couchbase-server-community_3.0.1-ubuntu12.04_amd64.deb
+dpkg -i couchbase-server-community_3.0.1-ubuntu12.04_amd64.deb
+
 pecl channel-update pecl.php.net
 
 # install this version
@@ -17,4 +23,4 @@ pecl install -f couchbase-${VERSION}
 echo "extension = couchbase.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 # Create test bucket
-docker exec -it couchbase_3 bash -c '/opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=default --bucket-type=memcached --bucket-ramsize=64 --enable-flush=1 -u demo -p demo'
+/opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=default --bucket-type=memcached --bucket-ramsize=64 --enable-flush=1 -u demo -p demo
