@@ -27,7 +27,7 @@ sudo dpkg -i couchbase-server-community_3.0.1-ubuntu12.04_amd64.deb
 pecl channel-update pecl.php.net
 
 # install this version
-VERSION=2.1.0
+VERSION=2.0.7
 
 #cd /tmp/
 pecl install -f couchbase-${VERSION}
