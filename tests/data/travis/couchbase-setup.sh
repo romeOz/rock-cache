@@ -24,6 +24,8 @@ sudo dpkg -i couchbase-server-community_3.0.1-ubuntu12.04_amd64.deb
 ## this is helpful to compile extension
 #sudo apt-get install autoconf
 
+pecl channel-update pecl.php.net
+
 # install this version
 VERSION=2.1.0
 
