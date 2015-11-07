@@ -27,6 +27,9 @@ class MongoDbTestCase extends CommonCache
         if (!extension_loaded('mongo')) {
             $this->markTestSkipped('mongo extension required.');
         }
+        if (!class_exists('\rock\mongodb\Connection')) {
+            $this->markTestSkipped("Doesn't installed Rock MongoDB.");
+        }
         $config = self::getParam('mongodb');
         if (!empty($config)) {
             $this->mongoDbConfig = $config;

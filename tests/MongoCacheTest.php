@@ -45,6 +45,9 @@ class MongoCacheTest extends MongoDbTestCase
                 'The \MongoClient is not available.'
             );
         }
+        if (!class_exists('\rock\mongodb\Connection')) {
+            $this->markTestSkipped("Doesn't installed Rock MongoDB.");
+        }
         $connection = $this->getConnection();
         $collection = $connection->getCollection(static::$cacheCollection);
         $collection->createIndex('id', ['unique' => true]);
