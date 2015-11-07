@@ -9,7 +9,7 @@ php:
   - hhvm-nightly
 
 # faster builds on new travis setup not using sudo
-sudo: required
+#sudo: required
 
 matrix:
   fast_finish: true
@@ -19,7 +19,6 @@ matrix:
     - php: hhvm-nightly
 
 services:
-  - docker
   - redis-server
   - memcached
   - mongodb
@@ -34,11 +33,6 @@ addons:
       - libcouchbase2-libevent
       - php-pear
       - php5-dev
-
-before_install:
-  - docker pull couchbase/server:community-3.0.1
-  - docker run --name couchbase_3 -d -p 8091:8091 couchbase/server:community-3.0.1
-  - docker ps -a
 
 install:
   - travis_retry composer self-update && composer --version
