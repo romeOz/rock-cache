@@ -28,10 +28,8 @@ addons:
     sources:
       - couchbase-precise
     packages:
-      - autoconf
       - libcouchbase-dev
       - libcouchbase2-libevent
-      - libtool
       - php-pear
       - php5-dev
 
