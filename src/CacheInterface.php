@@ -37,7 +37,7 @@ interface CacheInterface extends SerializeInterface
      *
      * @param string $prefix
      */
-    public function addPrefix($prefix);
+    public function setPrefix($prefix);
 
     /**
      * Returns value by key.

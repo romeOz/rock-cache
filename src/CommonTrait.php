@@ -16,14 +16,17 @@ trait CommonTrait
      * Prefix of key.
      * @var string
      */
-    public $prefix;
-
+    protected $prefix;
     /**
-     * Hashing key.
+     * Enable hashing key.
      * @var int
      */
-    public $hashKey = self::HASH_MD5;
-    public $hashTag = 0;
+    protected $hashKey = self::HASH_MD5;
+    /**
+     * Enable hashing tag.
+     * @var int
+     */
+    protected $hashTag = 0;
     /**
      * Serializer.
      * @var int
@@ -31,12 +34,47 @@ trait CommonTrait
     public $serializer = self::SERIALIZE_PHP;
 
     /**
-     * Add prefix to key.
+     * Adds a prefix to key.
      * @param string $prefix
+     * @return $this
      */
-    public function addPrefix($prefix)
+    public function setPrefix($prefix)
     {
         $this->prefix = "{$prefix}_";
+        return $this;
+    }
+
+    /**
+     * Sets a hashing key
+     * @param int $mode
+     * @return $this
+     */
+    public function setHashKey($mode)
+    {
+        $this->hashKey = $mode;
+        return $this;
+    }
+
+    /**
+     * Sets a hashing tag.
+     * @param $mode
+     * @return $this
+     */
+    public function setHashTag($mode)
+    {
+        $this->hashTag = $mode;
+        return $this;
+    }
+
+    /**
+     * Sets a serializer.
+     * @param int $serializer
+     * @return $this
+     */
+    public function setSerializer($serializer)
+    {
+        $this->serializer = $serializer;
+        return $this;
     }
 
     /**
