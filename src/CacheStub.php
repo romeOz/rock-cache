@@ -5,8 +5,6 @@ namespace rock\cache;
 
 class CacheStub extends Cache
 {
-    use CacheTrait;
-
     /**
      * @inheritdoc
      */
