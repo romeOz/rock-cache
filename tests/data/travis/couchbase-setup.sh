@@ -24,7 +24,7 @@ sudo apt-get install libcouchbase-dev
 sudo apt-get install autoconf
 
 # install this version
-VERSION=2.0.7
+VERSION=2.1.0
 
 #cd /tmp/
 
