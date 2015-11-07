@@ -3,13 +3,10 @@
 namespace rock\cache;
 
 use rock\base\BaseException;
-use rock\events\EventsInterface;
 use rock\log\Log;
 
-class Couchbase implements CacheInterface, EventsInterface
+class Couchbase extends Cache
 {
-    use CacheTrait;
-
     public $servers = [
         ['host' => '127.0.0.1', 'port' => 8091]
     ];

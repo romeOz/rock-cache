@@ -6,10 +6,8 @@ use rock\base\BaseException;
 use rock\events\EventsInterface;
 use rock\log\Log;
 
-class APC implements CacheInterface, EventsInterface
+class APC extends Cache
 {
-    use CacheTrait;
-
     /**
      * @inheritdoc
      */

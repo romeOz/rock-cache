@@ -3,9 +3,7 @@
 namespace rock\cache;
 
 
-use rock\events\EventsInterface;
-
-class CacheStub implements CacheInterface, EventsInterface
+class CacheStub extends Cache
 {
     use CacheTrait;
 

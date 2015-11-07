@@ -23,33 +23,49 @@ interface CacheInterface extends SerializeInterface
      * @return \Memcached|\Memcache|\Redis|\CouchbaseBucket
      */
     public function getStorage();
-
     /**
      * Returns prepare key.
-     *
      * @param string $key key of cache
      * @return bool|string
      */
     public function prepareKey($key);
-
     /**
      * Adds a prefix to key.
-     *
      * @param string $prefix
      */
     public function setPrefix($prefix);
-
+    /**
+     * Sets a hashing key
+     * @param int $mode
+     * @return $this
+     */
+    public function setHashKey($mode);
+    /**
+     * Sets a hashing tag.
+     * @param $mode
+     * @return $this
+     */
+    public function setHashTag($mode);
+    /**
+     * Sets a serializer.
+     * @param int $serializer
+     * @return $this
+     */
+    public function setSerializer($serializer);
+    /**
+     * Sets a lock expire.
+     * @param int $expire expire in seconds.
+     * @return $this
+     */
+    public function setLockExpire($expire);
     /**
      * Returns value by key.
-     *
      * @param string $key key of cache
      * @return mixed|bool
      */
     public function get($key);
-
     /**
      * Returns multiple values by keys.
-     *
      * @param array $keys keys of cache
      * @return array
      */
@@ -57,7 +73,6 @@ interface CacheInterface extends SerializeInterface
 
     /**
      * Sets a value to cache.
-     *
      * @param string $key key of cache
      * @param mixed $value content of cache
      * @param int $expire time to live (sec)

@@ -2,7 +2,6 @@
 namespace rock\cache;
 
 use rock\base\BaseException;
-use rock\events\EventsInterface;
 use rock\helpers\Json;
 use rock\log\Log;
 
@@ -21,12 +20,8 @@ use rock\log\Log;
  * ```
  *
  */
-class Memcached implements CacheInterface, EventsInterface
+class Memcached extends Cache
 {
-    use CacheTrait {
-        CacheTrait::setMulti as parentSetMulti;
-    }
-
     public $servers = [
         ['host' => 'localhost', 'port' => 11211]
     ];
@@ -40,7 +35,6 @@ class Memcached implements CacheInterface, EventsInterface
             $this->storage = new \Memcached();
             $this->normalizeServers($this->servers, $this->storage);
             $this->storage->setOption(\Memcached::OPT_COMPRESSION, true);
-
         }
 
         if ($this->serializer !== self::SERIALIZE_JSON) {
@@ -49,7 +43,7 @@ class Memcached implements CacheInterface, EventsInterface
     }
 
     /**
-     * Returns current storage.
+     * {@inheritdoc}
      * @return \Memcached
      */
     public function getStorage()

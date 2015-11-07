@@ -3,15 +3,17 @@
 namespace rock\cache;
 
 
+use rock\events\EventsInterface;
 use rock\events\EventsTrait;
 use rock\helpers\Serialize;
 
-trait CommonTrait
+abstract class Cache implements CacheInterface, EventsInterface
 {
     use EventsTrait {
         EventsTrait::init as parentInit;
     }
 
+    public $storage;
     /**
      * Prefix of key.
      * @var string
@@ -31,7 +33,12 @@ trait CommonTrait
      * Serializer.
      * @var int
      */
-    public $serializer = self::SERIALIZE_PHP;
+    protected $serializer = self::SERIALIZE_PHP;
+    /**
+     * Time to live on lock (sec)
+     * @var int
+     */
+    protected $lockExpire = 30;
 
     /**
      * Adds a prefix to key.
@@ -45,9 +52,7 @@ trait CommonTrait
     }
 
     /**
-     * Sets a hashing key
-     * @param int $mode
-     * @return $this
+     * @inheritdoc
      */
     public function setHashKey($mode)
     {
@@ -56,9 +61,7 @@ trait CommonTrait
     }
 
     /**
-     * Sets a hashing tag.
-     * @param $mode
-     * @return $this
+     * @inheritdoc
      */
     public function setHashTag($mode)
     {
@@ -67,9 +70,7 @@ trait CommonTrait
     }
 
     /**
-     * Sets a serializer.
-     * @param int $serializer
-     * @return $this
+     * @inheritdoc
      */
     public function setSerializer($serializer)
     {
@@ -78,11 +79,16 @@ trait CommonTrait
     }
 
     /**
-     * Returns prepare key of cache.
-     *
-     * @param string $key
-     * @param string|null $prefix
-     * @return string
+     * @inheritdoc
+     */
+    public function setLockExpire($expire)
+    {
+        $this->lockExpire = $expire;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function prepareKey($key, $prefix = null)
     {
@@ -102,8 +108,6 @@ trait CommonTrait
      */
     public function setMulti($values, $expire = 0, array $tags = [])
     {
-        /** @var $this CacheTrait|CacheInterface */
-
         foreach ($values as $key => $value) {
             $this->set($key, $value, $expire, $tags);
         }
@@ -114,8 +118,6 @@ trait CommonTrait
      */
     public function getMulti(array $keys)
     {
-        /** @var $this CacheTrait|CacheInterface */
-
         $result = [];
         foreach ($keys as $key) {
             if (($value = $this->get($key)) !== false) {
@@ -131,8 +133,6 @@ trait CommonTrait
      */
     public function touchMulti(array $keys, $expire = 0)
     {
-        /** @var $this CacheTrait|CacheInterface */
-
         $result = true;
         foreach ($keys as $key) {
             if (!$this->touch($key, $expire)) {
@@ -146,10 +146,18 @@ trait CommonTrait
     /**
      * @inheritdoc
      */
+    public function removeMulti(array $keys)
+    {
+        foreach ($keys as $key) {
+            $this->remove($key);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getMultiTags(array $tags)
     {
-        /** @var $this CacheTrait|CacheInterface */
-
         $result = [];
         foreach ($tags as $tag) {
             if ($value = $this->getTag($tag)) {
@@ -165,8 +173,6 @@ trait CommonTrait
      */
     public function removeMultiTags(array $tags)
     {
-        /** @var $this CacheTrait|CacheInterface */
-
         foreach ($tags as $tag) {
             $this->removeTag($tag);
         }
@@ -227,18 +233,30 @@ trait CommonTrait
 
     /**
      * Serialize value.
-     *
      * @param array $value
      * @return array|string
      */
-    protected function serialize(array $value)
+    protected function serialize($value)
     {
+        if (!is_array($value)) {
+            return $value;
+        }
         return Serialize::serialize($value, $this->serializer);
+    }
+
+    protected function getInternal($key)
+    {
+        if (empty($key)) {
+            return false;
+        }
+
+        $key = $this->prepareKey($key);
+
+        return $this->storage->get($key);
     }
 
     /**
      * Unserialize value.
-     *
      * @param $value
      * @return mixed
      */
@@ -248,8 +266,7 @@ trait CommonTrait
     }
 
     /**
-     * Returns microtime.
-     *
+     * Returns a microtime.
      * @param int|null $microtime
      * @return float
      */

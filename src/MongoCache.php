@@ -26,10 +26,8 @@ use rock\mongodb\Query;
  * ```
  *
  */
-class MongoCache implements CacheInterface, EventsInterface
+class MongoCache extends Cache implements CacheInterface, EventsInterface
 {
-    use CacheTrait;
-
     /**
      * @var \rock\mongodb\Connection|string the MongoDB connection object or the application component ID of the MongoDB connection.
      * After the Cache object is created, if you want to change this property, you should only assign it

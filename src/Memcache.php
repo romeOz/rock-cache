@@ -23,7 +23,9 @@ class Memcache extends Memcached
      */
     public function setMulti($values, $expire = 0, array $tags = [])
     {
-        $this->parentSetMulti($values, $expire, $tags);
+        foreach ($values as $key => $value) {
+            $this->set($key, $value, $expire, $tags);
+        }
     }
 
     /**

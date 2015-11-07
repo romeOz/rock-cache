@@ -4,13 +4,10 @@ namespace rock\cache;
 
 
 use rock\base\BaseException;
-use rock\events\EventsInterface;
 use rock\log\Log;
 
-class Redis implements CacheInterface, EventsInterface
+class Redis extends Cache
 {
-    use CacheTrait;
-
     public $server = ['host' => 'localhost', 'port' => 6379];
 
     /** @var  \Redis */
@@ -134,6 +131,7 @@ class Redis implements CacheInterface, EventsInterface
     {
         return (bool)$this->storage->delete($this->prepareKey($key));
     }
+
 
     /**
      * @inheritdoc

@@ -14,7 +14,6 @@ What storages can be used:
  * [Redis](http://redis.io)
  * [Couchbase](http://www.couchbase.com)
  * [MongoDB](https://www.mongodb.org/)
- * Local (caching to file)
  * CacheStub (stub for caching) 
 
 All storage objects have one interface, so you can switch them without changing the working code.
@@ -36,7 +35,6 @@ Table of Contents
  * [Quick Start](#quick-start)
     - [Memcached](#memcached)
     - [MongoDB](#mongodb)
-    - [Local storage](#local-storage)
     - [Locking key](#locking-key)
  * [Documentation](#documentation)
  * [Demo](#demo)
@@ -103,31 +101,6 @@ $config = [
 $mongoCache = new \rock\cache\MongoCache($config);
 
 ...
-```
-
-####Local storage
-
-```php
-use League\Flysystem\Adapter\Local;
-use rock\cache\filemanager\FileManager;
-use rock\cache\CacheFile;
-use rock\cache\CacheInterface;
-
-$adapterConfig = [
-    'adapter' => new Local(__DIR__.'/path/to/cache'),
-];
-$adapter = new FileManager($adapterConfig);
-
-$config = [
-    'adapter' => $adapter,
-    'hashKey' => CacheInterface::HASH_MD5,
-    'serializer' => CacheInterface::SERIALIZE_JSON
-];
-$cacheFile = new CacheFile($config);
-
-$cacheFile->set('key_1', 'foo');
-
-$memcached->get('key_1'); // result: foo;
 ```
 
 ####Locking key
@@ -226,7 +199,7 @@ Unlocking key.
 Removes all values from cache.
 
 ####status()
-Returns status server.
+Returns a status server.
 
 >Supported: `Memcached`, `Memcache`, `Redis`, `APC`, `Couchbase`.
 
@@ -245,15 +218,16 @@ Requirements
 
 You can use each storage separately, requirements are individually for storages.
 
- * PHP 5.4+
+ * **PHP 5.4+**
  * [Redis](http://redis.io). Should be installed `apt-get install redis-server` or `docker run --name redis -d -p 6379:6379 romeoz/docker-redis:2.8` (recommended). 
  Also should be installed [PHP extension](http://pecl.php.net/package/redis) `apt-get install php5-redis`
  * [Memcached](http://memcached.org/). Should be installed `apt-get install memcached`  or `docker run --name memcached -d -p 11211:11211 romeoz/docker-memcached` (recommended). 
  Also should be installed php-extension [Memcache](http://pecl.php.net/package/memcache) `apt-get install php5-memcache` or [Memcached](http://pecl.php.net/package/memcached) `apt-get install php5-memcached`.
  * [APCu](http://pecl.php.net/package/APCu). Should be installed `apt-get install php5-apcu`.
  * Couchbase 3.0. [Step-by-step installation](http://www.couchbase.com/communities/php/getting-started) (or [see playbook](https://github.com/romeOz/vagrant-rock-cache/blob/master/provisioning/roles/couchbase/tasks/main.yml)).
- * For using [MongoDB](https://www.mongodb.org/) as storage required [Rock MongoDB](https://github.com/romeOz/rock-mongodb): `composer require romeoz/rock-mongodb`
- * For using Local as storage required [Rock File](https://github.com/romeOz/rock-file): `composer require romeoz/rock-file`
+ * For using [MongoDB](https://www.mongodb.org/) as storage required [Rock MongoDB](https://github.com/romeOz/rock-mongodb): `composer require romeoz/rock-mongodb` 
+
+>All unbolded dependencies is optional
 
 Storages comparison
 -------------------
