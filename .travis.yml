@@ -32,6 +32,8 @@ addons:
       - libcouchbase-dev
       - libcouchbase2-libevent
       - libtool
+      - php-pear
+      - php5-dev
 
 install:
   - travis_retry composer self-update && composer --version
