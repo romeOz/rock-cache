@@ -27,6 +27,8 @@ addons:
   apt:
     packages:
       - autoconf
+      - libcouchbase-dev
+      - libcouchbase2-libevent
 
 install:
   - travis_retry composer self-update && composer --version
