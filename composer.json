@@ -20,7 +20,8 @@
         "romeoz/rock-events" : "0.11.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.7.0"
+        "phpunit/phpunit": "^4.7.0",
+        "romeoz/rock-mongodb": "0.15.*"
     },
     "suggest": {
         "romeoz/rock-mongodb": "required for using MongoDB as storage"
