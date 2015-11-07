@@ -30,7 +30,7 @@ pecl channel-update pecl.php.net
 VERSION=2.1.0
 
 cd /tmp/
-pecl install -f couchbase-${VERSION}
+sudo pecl install -f couchbase-${VERSION}
 ## compile manually, because `pecl install` keep asking questions
 #wget http://pecl.php.net/get/couchbase-${VERSION}.tgz
 #tar zxvf couchbase-${VERSION}.tgz
