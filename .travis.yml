@@ -25,6 +25,8 @@ services:
 
 addons:
   apt:
+    sources:
+      - couchbase-precise
     packages:
       - autoconf
       - libcouchbase-dev
