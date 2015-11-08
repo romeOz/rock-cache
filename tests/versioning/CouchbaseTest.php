@@ -11,6 +11,16 @@ use rockunit\CommonCache;
  */
 class CouchbaseTest extends CommonCache
 {
+    public function getStorage(array $config = [])
+    {
+        $config['servers'] = [[
+            'host' => $_SERVER["COUCHBASE_PORT_8091_TCP_ADDR"],
+            'port' => 8091
+        ]];
+
+        return new Couchbase($config);
+    }
+
     public function setUp()
     {
         if (!class_exists('\CouchbaseBucket')) {
@@ -24,7 +34,7 @@ class CouchbaseTest extends CommonCache
             );
         }
 
-        (new Couchbase())->flush();
+        $this->getStorage()->flush();
     }
 
     public function init($serialize)
@@ -40,7 +50,7 @@ class CouchbaseTest extends CommonCache
             );
         }
 
-        return new Couchbase(['serializer' => $serialize]);
+        return $this->getStorage(['serializer' => $serialize]);
     }
 
     /**

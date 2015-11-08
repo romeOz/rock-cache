@@ -38,6 +38,8 @@ install:
   - travis_retry docker exec -it couchbase bash -c '/opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=default --bucket-type=memcached --bucket-ramsize=64 --enable-flush=1 -u demo -p demo'
   - tests/data/travis/mongodb-setup.sh
   - docker exec -it app bash -c 'composer install --prefer-dist && composer require satooshi/php-coveralls:*@dev && mkdir -p build/logs'
+
+script:
   - docker exec -it app bash -c 'vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml --exclude-group hhvm && vendor/bin/coveralls -v'
 #install:
 #  - docker exec -it couchbase bash -c '/opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=default --bucket-type=memcached --bucket-ramsize=64 --enable-flush=1 -u demo -p demo'
