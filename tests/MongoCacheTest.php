@@ -9,38 +9,26 @@ use rock\cache\MongoCache;
 /**
  * @group mongodb
  */
-class MongoCacheTest extends MongoDbTestCase
+class MongoCacheTest extends CommonCache
 {
+    use MongoDbTestCase {
+        MongoDbTestCase::tearDown as parentTearDown;
+    }
+
     /**
      * @var string test cache collection name.
      */
-    protected static $cacheCollection = '_test_cache';
-
-    protected function tearDown()
-    {
-        $this->dropCollection(static::$cacheCollection);
-        parent::tearDown();
-    }
-
-    public function setUp()
-    {
-        parent::setUp();
-        $this->createCache()->flush();
-    }
-
-    public function providerCache()
-    {
-        return [
-            [$this->createCache()],
-        ];
-    }
+    protected $cacheCollection = '_test_cache';
 
     /**
      * Creates test cache instance.
      * @return \rock\cache\MongoCache cache instance.
      */
-    protected function createCache()
+    protected function getStorage()
     {
+        if (!extension_loaded('mongo')) {
+            $this->markTestSkipped('mongo extension required.');
+        }
         if (!class_exists('\MongoClient')) {
             $this->markTestSkipped(
                 'The \MongoClient is not available.'
@@ -49,17 +37,37 @@ class MongoCacheTest extends MongoDbTestCase
         if (!class_exists('\rock\mongodb\Connection')) {
             $this->markTestSkipped("Doesn't installed Rock MongoDB.");
         }
+
         $connection = $this->getConnection();
-        $collection = $connection->getCollection(static::$cacheCollection);
+        $collection = $connection->getCollection($this->cacheCollection);
         $collection->createIndex('id', ['unique' => true]);
         $collection->createIndex('expire', ['expireAfterSeconds' => 0]);
         return Instance::ensure([
             'class' => MongoCache::className(),
             'storage' => $connection,
-            'cacheCollection' => static::$cacheCollection,
+            'cacheCollection' => $this->cacheCollection,
             'hashKey' => 0,
         ]);
     }
+
+    protected function tearDown()
+    {
+        $this->dropCollection($this->cacheCollection);
+        $this->parentTearDown();
+    }
+
+    public function setUp()
+    {
+        $this->getStorage()->flush();
+    }
+
+    public function providerCache()
+    {
+        return [
+            [$this->getStorage()],
+        ];
+    }
+
 
     // Tests:
 
@@ -68,6 +76,7 @@ class MongoCacheTest extends MongoDbTestCase
      */
     public function testGetStorage(CacheInterface $cache)
     {
+        //var_dump('dfdf');
         $this->assertTrue($cache->getStorage() instanceof \rock\mongodb\Connection);
     }
 
@@ -184,7 +193,7 @@ class MongoCacheTest extends MongoDbTestCase
 
         $this->assertTrue($cache->flush(), 'Unable to flush cache!');
 
-        $collection = $cache->getStorage()->getCollection(self::$cacheCollection);
+        $collection = $cache->getStorage()->getCollection($this->cacheCollection);
         $rows = $this->findAll($collection);
         $this->assertCount(0, $rows, 'Unable to flush records!');
     }

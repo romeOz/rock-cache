@@ -5,14 +5,14 @@ namespace rockunit;
 use rock\base\Alias;
 use rock\mongodb\MongoException;
 
-class MongoDbTestCase extends CommonCache
+trait MongoDbTestCase
 {
     public static $params;
     /**
      * @var array Mongo connection configuration.
      */
     protected $mongoDbConfig = [
-        'dsn' => 'mongodb://localhost:27017',
+        'dsn' => "mongodb://localhost:27017",
         'defaultDatabaseName' => 'rocktest',
         'options' => [],
     ];
@@ -21,30 +21,15 @@ class MongoDbTestCase extends CommonCache
      */
     protected $mongodb;
 
-    protected function setUp()
-    {
-        parent::setUp();
-        if (!extension_loaded('mongo')) {
-            $this->markTestSkipped('mongo extension required.');
-        }
-        if (!class_exists('\rock\mongodb\Connection')) {
-            $this->markTestSkipped("Doesn't installed Rock MongoDB.");
-        }
-        $config = self::getParam('mongodb');
-        if (!empty($config)) {
-            $this->mongoDbConfig = $config;
-        }
-    }
-
-    public function init($serialize)
-    {
-    }
-
     protected function tearDown()
     {
         if ($this->mongodb) {
             $this->mongodb->close();
         }
+    }
+
+    public function init($serialize)
+    {
     }
 
     /**
@@ -57,8 +42,15 @@ class MongoDbTestCase extends CommonCache
         if (!$reset && $this->mongodb) {
             return $this->mongodb;
         }
+
+        $config = self::getParam('mongodb');
+
+        if (!empty($config)) {
+            $this->mongoDbConfig = $config;
+        }
         $connection = new \rock\mongodb\Connection;
-        $connection->dsn = $this->mongoDbConfig['dsn'];
+        $connection->dsn = "mongodb://travis:test@{$_SERVER["MONGODB_PORT_27017_TCP_ADDR"]}:27017";
+
         $connection->defaultDatabaseName = $this->mongoDbConfig['defaultDatabaseName'];
         if (isset($this->mongoDbConfig['options'])) {
             $connection->options = $this->mongoDbConfig['options'];
