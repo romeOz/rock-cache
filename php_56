@@ -14,7 +14,7 @@ RUN	\
     && wget -O- http://packages.couchbase.com/ubuntu/couchbase.key | sudo apt-key add - \
 	&& apt-get update \
 	&& apt-get install -y $buildDeps \
-	&& apt-get install -y php5-xdebug php5-redis php5-memcache php5-memcached php5-apcu php5-mongo \
+	&& apt-get install -y git php5-xdebug php5-redis php5-memcache php5-memcached php5-apcu php5-mongo \
 	&& wget http://pecl.php.net/get/couchbase-${VERSION_PECL_COUCHBASE}.tgz \
 	&& tar zxvf couchbase-${VERSION_PECL_COUCHBASE}.tgz \
 	&& cd "couchbase-${VERSION_PECL_COUCHBASE}" \
