@@ -11,6 +11,16 @@ use rock\cache\Redis;
  */
 class RedisTest extends CommonCache
 {
+    public function getStorage(array $config = [])
+    {
+        $config['server'] = [
+            'host' => $_SERVER["REDIS_PORT_6379_TCP_ADDR"],
+            'port' => 6379
+        ];
+
+        return new Redis($config);
+    }
+
     public function setUp()
     {
         if (!class_exists('\Redis')) {
@@ -19,7 +29,7 @@ class RedisTest extends CommonCache
             );
         }
 
-        (new Redis())->flush();
+        $this->getStorage()->flush();
     }
 
     public function init($serialize)
@@ -29,7 +39,7 @@ class RedisTest extends CommonCache
                 'The \Redis is not available.'
             );
         }
-        return new Redis(['serializer' => $serialize]);
+        return $this->getStorage(['serializer' => $serialize]);
     }
 
     /**

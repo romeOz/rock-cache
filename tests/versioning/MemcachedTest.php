@@ -12,6 +12,17 @@ use rockunit\CommonCache;
  */
 class MemcachedTest extends CommonCache
 {
+
+    public function getStorage(array $config = [])
+    {
+        $config['servers'] = [[
+            'host' => $_SERVER["MEMCACHED_PORT_11211_TCP_ADDR"],
+            'port' => 11211
+        ]];
+
+        return new Memcached($config);
+    }
+
     public function setUp()
     {
         if (!class_exists('\Memcached')) {
@@ -20,7 +31,7 @@ class MemcachedTest extends CommonCache
             );
         }
 
-        (new Memcached())->flush();
+        $this->getStorage()->flush();
     }
 
     public function init($serialize)
@@ -30,7 +41,7 @@ class MemcachedTest extends CommonCache
                 'The \Memcached is not available.'
             );
         }
-        return new Memcached(['serializer' => $serialize]);
+        return $this->getStorage(['serializer' => $serialize]);
     }
 
     /**

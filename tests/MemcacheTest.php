@@ -10,6 +10,16 @@ use rock\cache\Memcache;
  */
 class MemcacheTest extends CommonCache
 {
+    public function getStorage(array $config = [])
+    {
+        $config['servers'] = [[
+            'host' => $_SERVER["MEMCACHED_PORT_11211_TCP_ADDR"],
+            'port' => 11211
+        ]];
+
+        return new Memcache($config);
+    }
+
     public function setUp()
     {
         if (!class_exists('\Memcache')) {
@@ -19,7 +29,7 @@ class MemcacheTest extends CommonCache
 
         }
 
-        (new Memcache())->flush();
+        $this->getStorage()->flush();
     }
 
     public function init($serialize)
@@ -29,7 +39,7 @@ class MemcacheTest extends CommonCache
                 'The \Memcache is not available.'
             );
         }
-        return new Memcache(['serializer' => $serialize]);
+        return $this->getStorage(['serializer' => $serialize]);
     }
 
     /**

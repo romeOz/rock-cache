@@ -1,61 +1,65 @@
 language: php
 
-php:
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
-  - hhvm
-  - hhvm-nightly
+#php:
+#  - 5.4
+#  - 5.5
+#  - 5.6
+#  - 7.0
+#  - hhvm
+#  - hhvm-nightly
 
 # faster builds on new travis setup not using sudo
-#sudo: required
+sudo: required
 
-matrix:
-  fast_finish: true
-  allow_failures:
-    - php: 7.0
-    - php: hhvm
-    - php: hhvm-nightly
+#matrix:
+#  fast_finish: true
+#  allow_failures:
+#    - php: 7.0
+#    - php: hhvm
+#    - php: hhvm-nightly
 
 services:
-  - redis-server
-  - memcached
-  - mongodb
+  - docker
 
-addons:
-  apt:
-    sources:
-      - couchbase-precise
-    packages:
-      - autoconf
-      - libcouchbase-dev
-      - libcouchbase2-libevent
-      - php-pear
-      - php5-dev
+#addons:
+#  apt:
+#    sources:
+#      - couchbase-precise
+#    packages:
+#      - autoconf
+#      - libcouchbase-dev
+#      - libcouchbase2-libevent
+#      - php-pear
+#      - php5-dev
 
-install:
-  - travis_retry composer self-update && composer --version
-  - travis_retry composer install --prefer-dist
-  - travis_retry composer require satooshi/php-coveralls:*@dev
-  - chmod -R +x tests/data/travis/
-  - tests/data/travis/apc-setup.sh
-  - tests/data/travis/memcache-setup.sh
-  - tests/data/travis/redis-setup.sh
-  - tests/data/travis/couchbase-setup.sh
-  - tests/data/travis/mongodb-setup.sh
+before_install:
+  - docker build -t rock-cache .
+  - docker run --name couchbase -d couchbase/server:community-3.0.1
+  - docker run --name redis -d romeoz/docker-redis:2.8
+  - docker run --name memcahed -d romeoz/docker-memcahed
+  - docker run --name mongodb -d romeoz/docker-mongodb:2.6
+  - docker run --name app -d --link couchbase:couchbase --link redis:redis --link memcahed:memcahed --link mongodb:mongodb -v $(pwd):/var/www rock-cache
+  - docker ps -a
+  - docker exec -it couchbase bash -c '/opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=default --bucket-type=memcached --bucket-ramsize=64 --enable-flush=1 -u demo -p demo'
+  - docker exec -it app bash -c 'composer install --prefer-dist && composer require satooshi/php-coveralls:*@dev && mkdir -p build/logs'
+  - docker exec -it app bash -c 'vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml --exclude-group hhvm'
 
-before_script:
-  - mongo rocktest --eval 'db.addUser("travis", "test");'
+#install:
+#  - docker exec -it couchbase bash -c '/opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=default --bucket-type=memcached --bucket-ramsize=64 --enable-flush=1 -u demo -p demo'
+#  - docker exec -it app bash -c 'composer install --prefer-dist && composer require satooshi/php-coveralls:*@dev && mkdir -p build/logs'
+#  - docker exec -it app bash -c 'vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml --exclude-group hhvm'
 
-script:
-  - mkdir -p build/logs
-  - |
-    if (php --version | grep -i HipHop > /dev/null); then
-      vendor/bin/phpunit --verbose --exclude-group php,redis,apc,couchbase,mongodb
-    else
-      vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml --exclude-group hhvm
-    fi
+#before_script:
+#  - mongo rocktest --eval 'db.addUser("travis", "test");'
 
-after_script:
-  - vendor/bin/coveralls -v
+#script:
+#  - mkdir -p build/logs
+#  - |
+#    if (php --version | grep -i HipHop > /dev/null); then
+#      vendor/bin/phpunit --verbose --exclude-group php,redis,apc,couchbase,mongodb
+#    else
+#      vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml --exclude-group hhvm
+#    fi
+#
+#after_script:
+#  - vendor/bin/coveralls -v
