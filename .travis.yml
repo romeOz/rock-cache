@@ -13,16 +13,6 @@ env:
 services:
   - docker
 
-#addons:
-#  apt:
-#    sources:
-#      - couchbase-precise
-#    packages:
-#      - autoconf
-#      - libcouchbase-dev
-#      - libcouchbase2-libevent
-#      - php-pear
-#      - php5-dev
 
 before_install:
   - docker build -f $DOCKERFILE -t rock-cache .
@@ -41,13 +31,7 @@ install:
 
 script:
   - docker exec -it app bash -c 'vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml --exclude-group hhvm && vendor/bin/coveralls -v'
-#install:
-#  - docker exec -it couchbase bash -c '/opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=default --bucket-type=memcached --bucket-ramsize=64 --enable-flush=1 -u demo -p demo'
-#  - docker exec -it app bash -c 'composer install --prefer-dist && composer require satooshi/php-coveralls:*@dev && mkdir -p build/logs'
-#  - docker exec -it app bash -c 'vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml --exclude-group hhvm'
 
-#before_script:
-#  - mongo rocktest --eval 'db.addUser("travis", "test");'
 
 #script:
 #  - mkdir -p build/logs

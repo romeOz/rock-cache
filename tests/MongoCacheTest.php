@@ -24,6 +24,7 @@ class MongoCacheTest extends MongoDbTestCase
 
     public function setUp()
     {
+        parent::setUp();
         $this->createCache()->flush();
     }
 
