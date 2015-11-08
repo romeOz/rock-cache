@@ -22,6 +22,8 @@ RUN	\
 	&& echo "extension = couchbase.so" >> /etc/php5/fpm/conf.d/couchbase.ini \
 	&& echo "extension = couchbase.so" >> /etc/php5/cli/conf.d/couchbase.ini \
 	&& echo "apc.enable_cli=1" >> /etc/php5/mods-available/apcu.ini \
+	# Install composer
+	&& curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
 	# Cleaning
 	&& apt-get purge -y --auto-remove php5-dev wget \
 	&& apt-get autoremove -y && apt-get clean \
