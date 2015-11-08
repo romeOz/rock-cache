@@ -25,14 +25,15 @@ services:
 before_install:
   - docker build -t rock-cache .
   - docker run --name couchbase -d couchbase/server:community-3.0.1
-  - docker run --name redis -d romeoz/docker-redis:2.8
-  - docker run --name memcahed -d romeoz/docker-memcached
-  - docker run --name mongodb -d romeoz/docker-mongodb:2.6
-  - docker run --name app -d --link couchbase:couchbase --link redis:redis --link memcahed:memcahed --link mongodb:mongodb -v $(pwd):/var/www rock-cache
-  - docker ps -a
   - docker exec -it couchbase bash -c '/opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=default --bucket-type=memcached --bucket-ramsize=64 --enable-flush=1 -u demo -p demo'
+  - docker run --name redis -d romeoz/docker-redis:2.8
+  - docker run --name memcached -d romeoz/docker-memcached
+  - docker run --name mongodb -d romeoz/docker-mongodb:2.6
+  - docker exec -it mongodb mongo rocktest --eval 'db.createUser({user: "travis", pwd: "test", roles:[{role:"root",db:"admin"}]})'
+  - docker run --name app -d --link couchbase:couchbase --link redis:redis --link memcached:memcached --link mongodb:mongodb -v $(pwd):/var/www rock-cache
+  - docker ps -a
   - docker exec -it app bash -c 'composer install --prefer-dist && composer require satooshi/php-coveralls:*@dev && mkdir -p build/logs'
-  - docker exec -it app bash -c 'vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml --exclude-group hhvm'
+  - docker exec -it app bash -c 'vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml --exclude-group hhvm && vendor/bin/coveralls -v'
 
 #install:
 #  - docker exec -it couchbase bash -c '/opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=default --bucket-type=memcached --bucket-ramsize=64 --enable-flush=1 -u demo -p demo'
