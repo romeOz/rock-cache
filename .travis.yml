@@ -19,7 +19,7 @@ before_install:
   - docker run --name couchbase -d couchbase/server:community-3.0.1
   - docker run --name redis -d romeoz/docker-redis:2.8
   - docker run --name memcached -d romeoz/docker-memcached
-  - docker run --name mongodb -d romeoz/docker-mongodb:2.6
+  - docker run --name mongodb -d romeoz/docker-mongodb:2.6 --smallfiles --noprealloc
   - docker run --name app -d --link couchbase:couchbase --link redis:redis --link memcached:memcached --link mongodb:mongodb -v $(pwd):/var/www rock-cache
   - docker ps -a
 
