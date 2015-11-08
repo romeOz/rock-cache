@@ -76,7 +76,6 @@ class MongoCacheTest extends CommonCache
      */
     public function testGetStorage(CacheInterface $cache)
     {
-        //var_dump('dfdf');
         $this->assertTrue($cache->getStorage() instanceof \rock\mongodb\Connection);
     }
 
