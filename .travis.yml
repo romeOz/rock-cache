@@ -1,6 +1,7 @@
 sudo: required
 
 env:
+  - DOCKERFILE=php_54
   - DOCKERFILE=php_55
   - DOCKERFILE=php_56
 #matrix:
@@ -13,9 +14,7 @@ env:
 services:
   - docker
 
-
 before_install:
-  - echo $TRAVIS_JOB_ID
   - docker build -f $DOCKERFILE -t rock-cache .
   - docker run --name couchbase -d couchbase/server:community-3.0.1
   - docker run --name redis -d romeoz/docker-redis:2.8
@@ -28,21 +27,7 @@ install:
   - chmod -R +x tests/data/travis/
   - travis_retry docker exec -it couchbase bash -c '/opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=default --bucket-type=memcached --bucket-ramsize=64 --enable-flush=1 -u demo -p demo'
   - tests/data/travis/mongodb-setup.sh
-  - docker exec -it app bash -c 'composer install --prefer-dist && composer require satooshi/php-coveralls:*@dev && mkdir -p build/logs'
-  - docker exec -it app env
+  - travis_retry docker exec -it app bash -c 'composer install --prefer-dist && composer require satooshi/php-coveralls:*@dev && mkdir -p build/logs'
 
 script:
   - docker exec -it app bash -c 'vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml --exclude-group hhvm && vendor/bin/coveralls -v'
-
-
-#script:
-#  - mkdir -p build/logs
-#  - |
-#    if (php --version | grep -i HipHop > /dev/null); then
-#      vendor/bin/phpunit --verbose --exclude-group php,redis,apc,couchbase,mongodb
-#    else
-#      vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml --exclude-group hhvm
-#    fi
-#
-#after_script:
-#  - vendor/bin/coveralls -v
