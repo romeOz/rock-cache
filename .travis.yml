@@ -4,12 +4,6 @@ env:
   - DOCKERFILE=php_54
   - DOCKERFILE=php_55
   - DOCKERFILE=php_56
-#matrix:
-#  fast_finish: true
-#  allow_failures:
-#    - php: 7.0
-#    - php: hhvm
-#    - php: hhvm-nightly
 
 services:
   - docker
