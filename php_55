@@ -18,6 +18,7 @@ RUN	\
 	&& echo -e "\nInstall couchbase extension\n" \
 	&& pecl install -f couchbase-${VERSION_PECL_COUCHBASE} \
 	&& echo "extension = couchbase.so" >> /etc/php5/fpm/conf.d/couchbase.ini \
+	&& echo "extension = couchbase.so" >> /etc/php5/cli/conf.d/couchbase.ini \
 	# Install composer
 	&& curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
 	# Cleaning
