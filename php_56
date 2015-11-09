@@ -13,6 +13,7 @@ RUN	\
 	&& apt-get update \
 	&& apt-get install -y git libcouchbase2-libevent libcouchbase-dev php5-xdebug php5-redis php5-memcache php5-memcached php5-apcu php5-mongo \
     && echo "apc.enable_cli=1" >> /etc/php5/mods-available/apcu.ini \
+    && pecl channel-update pecl.php.net \
 	# Install couchbase
 	&& echo -e "\nInstall couchbase extension\n" \
 	&& pecl install -f couchbase-${VERSION_PECL_COUCHBASE} \
