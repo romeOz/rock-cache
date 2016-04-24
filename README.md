@@ -227,7 +227,7 @@ You can use each storage separately, requirements are individually for storages.
  * [Memcached](http://memcached.org/). Should be installed `apt-get install memcached`  or `docker run --name memcached -d -p 11211:11211 romeoz/docker-memcached` (recommended). 
  Also should be installed php-extension [Memcache](http://pecl.php.net/package/memcache) `apt-get install php5-memcache` or [Memcached](http://pecl.php.net/package/memcached) `apt-get install php5-memcached`.
  * [APCu](http://pecl.php.net/package/APCu). Should be installed `apt-get install php5-apcu`.
- * Couchbase 3.0+. [Step-by-step installation](http://developer.couchbase.com/documentation/server/4.1/sdks/php-2.0/download-links.html) (or [see playbook](https://github.com/romeOz/vagrant-rock-cache/blob/master/provisioning/roles/couchbase/tasks/main.yml)).
+ * Couchbase 3.0+. [Step-by-step installation](http://developer.couchbase.com/documentation/server/4.1/sdks/php-2.0/download-links.html) or `docker run --name couchbase -d couchbase/server:community-4.0.0`.
  * MongoDB 2.6-3.0. For using [MongoDB](https://www.mongodb.org/) as storage required [Rock MongoDB](https://github.com/romeOz/rock-mongodb): `composer require romeoz/rock-mongodb` 
 
 >All unbolded dependencies is optional
