@@ -13,7 +13,7 @@ class CouchbaseTest extends CommonCache
     public function getStorage(array $config = [])
     {
         $config['servers'] = [[
-            'host' => $_SERVER["COUCHBASE_PORT_8091_TCP_ADDR"],
+            'host' => 'app_net',
             'port' => 8091
         ]];
 

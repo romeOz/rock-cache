@@ -10,14 +10,15 @@ services:
 
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install docker-engine
+  - sudo apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install docker-engine=1.10.3
   - docker -v
   - docker build -f $DOCKERFILE -t rock-cache .
-  - docker run --name couchbase -d couchbase/server:community-3.0.1
-  - docker run --name redis -d romeoz/docker-redis:2.8
-  - docker run --name memcached -d romeoz/docker-memcached
-  - docker run --name mongodb -d romeoz/docker-mongodb:2.6 --smallfiles --noprealloc
-  - docker run --name app -d -e TRAVIS=$TRAVIS -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID --link couchbase:couchbase --link redis:redis --link memcached:memcached --link mongodb:mongodb -v $(pwd):/var/www rock-cache
+  - docker network create app_net
+  - docker run --name couchbase -d --net app_net couchbase/server:community-3.0.1
+  - docker run --name redis -d --net app_net romeoz/docker-redis:2.8
+  - docker run --name memcached -d --net app_net romeoz/docker-memcached
+  - docker run --name mongodb -d --net app_net romeoz/docker-mongodb:2.6 --smallfiles --noprealloc
+  - docker run --name app -d -e TRAVIS=$TRAVIS -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID --net app_net -v $(pwd):/var/www rock-cache
   - docker ps -a
 
 install:
