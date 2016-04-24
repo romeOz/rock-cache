@@ -9,6 +9,7 @@ services:
   - docker
 
 before_install:
+  - docker -v
   - docker build -f $DOCKERFILE -t rock-cache .
   - docker run --name couchbase -d couchbase/server:community-3.0.1
   - docker run --name redis -d romeoz/docker-redis:2.8
