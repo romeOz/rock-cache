@@ -14,7 +14,7 @@ class MemcacheTest extends CommonCache
     public function getStorage(array $config = [])
     {
         $config['servers'] = [[
-            'host' => 'app_net',
+            'host' => 'memcached',
             'port' => 11211
         ]];
 

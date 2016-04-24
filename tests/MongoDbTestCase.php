@@ -49,7 +49,7 @@ trait MongoDbTestCase
             $this->mongoDbConfig = $config;
         }
         $connection = new \rock\mongodb\Connection;
-        $connection->dsn = "mongodb://travis:test@{$_SERVER["MONGODB_PORT_27017_TCP_ADDR"]}:27017";
+        $connection->dsn = "mongodb://travis:test@mongodb:27017";
 
         $connection->defaultDatabaseName = $this->mongoDbConfig['defaultDatabaseName'];
         if (isset($this->mongoDbConfig['options'])) {

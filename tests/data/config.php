@@ -2,7 +2,7 @@
 return [
 
     'mongodb' => [
-        'dsn' => "mongodb://travis:test@app_net:27017",
+        'dsn' => "mongodb://travis:test@mongodb:27017",
         'defaultDatabaseName' => 'rocktest',
         'options' => [],
     ],

@@ -14,7 +14,7 @@ class RedisTest extends CommonCache
     public function getStorage(array $config = [])
     {
         $config['server'] = [
-            'host' => 'app_net',
+            'host' => 'redis',
             'port' => 6379
         ];
 
