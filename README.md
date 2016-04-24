@@ -219,7 +219,9 @@ Requirements
 You can use each storage separately, requirements are individually for storages.
 
  * **PHP 5.4-5.6**
->For PHP 7 many of pecl-extensions in development/unstable. 
+ 
+>For PHP 7 many of pecl-extensions in development/unstable.
+ 
  * [Redis 2.8+](http://redis.io). Should be installed `apt-get install redis-server` or `docker run --name redis -d -p 6379:6379 romeoz/docker-redis:2.8` (recommended). 
  Also should be installed [PHP extension](http://pecl.php.net/package/redis) `apt-get install php5-redis`
  * [Memcached](http://memcached.org/). Should be installed `apt-get install memcached`  or `docker run --name memcached -d -p 11211:11211 romeoz/docker-memcached` (recommended). 
