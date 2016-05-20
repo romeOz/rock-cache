@@ -1,25 +1,27 @@
 FROM romeoz/docker-phpfpm:5.5
 MAINTAINER romeOz <serggalka@gmail.com>
 
+ENV PHP_CONF_DIR=/etc/php/5.5
+
 WORKDIR /tmp/
 
 RUN	\
-	VERSION_PECL_COUCHBASE="2.1.0" && BUILD_DEPS='php5-dev wget' \
+	VERSION_PECL_COUCHBASE="2.1.0" && BUILD_DEPS='php5.5-dev wget' \
     && apt-get update \
     && apt-get install -y ${BUILD_DEPS} \
-    && apt-get update \
     && echo "deb http://packages.couchbase.com/ubuntu trusty trusty/main" | tee -a /etc/apt/sources.list.d/couchbase.list \
-    && wget -O- http://packages.couchbase.com/ubuntu/couchbase.key | sudo apt-key add - \
+    && wget -O- http://packages.couchbase.com/ubuntu/couchbase.key | apt-key add - \
 	&& apt-get update \
-	&& apt-get install -y git libcouchbase2-libevent libcouchbase-dev php5-xdebug php5-redis php5-memcache php5-memcached php5-apcu php5-mongo \
-    && echo "apc.enable_cli=1" >> /etc/php5/mods-available/apcu.ini \
+	&& apt-get install -y git libcouchbase2-libevent libcouchbase-dev php-xdebug php-redis php-memcache php-memcached php-apcu php-mongo \
+    && echo "apc.enable_cli=1" >> ${PHP_CONF_DIR}/mods-available/apcu.ini \
     && pecl channel-update pecl.php.net \
 	# Install couchbase
-	&& echo -e "\nInstall couchbase extension\n" \
+	&& echo "\nInstall couchbase extension\n" \
 	&& pecl install -f couchbase-${VERSION_PECL_COUCHBASE} \
-	&& echo "extension = couchbase.so" >> /etc/php5/fpm/conf.d/couchbase.ini \
-	&& echo "extension = couchbase.so" >> /etc/php5/cli/conf.d/couchbase.ini \
+	&& echo "extension = couchbase.so" >> ${PHP_CONF_DIR}/fpm/conf.d/couchbase.ini \
+	&& echo "extension = couchbase.so" >> ${PHP_CONF_DIR}/cli/conf.d/couchbase.ini \
 	# Install composer
+	&& echo "\nInstall composer\n" \
 	&& curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
 	# Cleaning
 	&& apt-get purge -y --auto-remove ${BUILD_DEPS} \
@@ -30,4 +32,4 @@ WORKDIR /var/www
 
 EXPOSE 9000
 
-CMD ["/usr/sbin/php5-fpm"]
+CMD ["/usr/sbin/php-fpm5.5"]

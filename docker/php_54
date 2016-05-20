@@ -9,7 +9,7 @@ RUN	\
     && apt-get install -y ${BUILD_DEPS} \
     && apt-get update \
     && echo "deb http://packages.couchbase.com/ubuntu trusty trusty/main" | tee -a /etc/apt/sources.list.d/couchbase.list \
-    && wget -O- http://packages.couchbase.com/ubuntu/couchbase.key | sudo apt-key add - \
+    && wget -O- http://packages.couchbase.com/ubuntu/couchbase.key | apt-key add - \
 	&& apt-get update \
 	&& apt-get install -y git libcouchbase2-libevent libcouchbase-dev libsasl2-dev libmemcached-dev php5-memcache \
 	&& pecl channel-update pecl.php.net \
