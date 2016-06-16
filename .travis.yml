@@ -1,9 +1,9 @@
 sudo: required
 
 env:
-  - DOCKERFILE=php_54
-  - DOCKERFILE=php_55
-  - DOCKERFILE=php_56
+  - DOCKERFILE=5.4-full
+  - DOCKERFILE=5.5-full
+  - DOCKERFILE=5.6-full
 
 services:
   - docker
@@ -12,13 +12,12 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install docker-engine=1.11.1-0~trusty
   - docker -v
-  - docker build -f ./docker/$DOCKERFILE -t rock_cache .
   - docker network create rock_cache_net
   - docker run --name couchbase -d --net rock_cache_net couchbase/server:community-3.0.1
   - docker run --name redis -d --net rock_cache_net romeoz/docker-redis:2.8
   - docker run --name memcached -d --net rock_cache_net romeoz/docker-memcached
   - docker run --name mongodb -d --net rock_cache_net romeoz/docker-mongodb:2.6 --smallfiles --noprealloc
-  - docker run --name rock_cache -d -e TRAVIS=$TRAVIS -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID --net rock_cache_net -v $(pwd):/var/www rock_cache
+  - docker run --name rock_cache -d -e TRAVIS=$TRAVIS -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID --net rock_cache_net -v $(pwd):/var/www romeoz/docker-phpfpm:$TAG
   - docker ps -a
 
 install:

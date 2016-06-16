@@ -1,8 +1,0 @@
-FROM romeoz/docker-phpfpm:5.5-debug
-MAINTAINER romeOz <serggalka@gmail.com>
-
-WORKDIR /var/www
-
-EXPOSE 9000
-
-CMD ["/usr/sbin/php-fpm5.5"]
