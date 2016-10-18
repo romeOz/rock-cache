@@ -10,7 +10,7 @@ services:
 
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install docker-engine=1.11.2-0~trusty
+  - sudo apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install docker-engine=1.12.2-0~trusty
   - docker -v
   - docker network create rock_cache_net
   - docker run --name couchbase -d --net rock_cache_net couchbase/server:community-3.0.1
