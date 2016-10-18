@@ -16,7 +16,7 @@ before_install:
   - sudo apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install docker-engine=1.12.2-0~trusty
   - docker -v
   - docker network create rock_cache_net
-  - docker run --name couchbase -d --net rock_cache_net couchbase/server:community-3.0.1
+  - docker run --name couchbase -d --net rock_cache_net couchbase/server:community-4.1.0
   - docker run --name redis -d --net rock_cache_net romeoz/docker-redis:2.8
   - docker run --name memcached -d --net rock_cache_net romeoz/docker-memcached
   - docker run --name mongodb -d --net rock_cache_net romeoz/docker-mongodb:2.6 --smallfiles --noprealloc
