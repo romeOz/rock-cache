@@ -26,7 +26,6 @@ class MemcachedTest extends CommonCache
             $this->markTestSkipped(
                 'The \Memcached is not available.'
             );
-
         }
 
         $this->getStorage()->flush();
