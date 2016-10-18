@@ -368,7 +368,7 @@ class Couchbase extends Cache
         foreach ($servers as &$server) {
             $host = isset($server['host']) ? $server['host'] : '127.0.0.1';
             $port = isset($server['port']) ? $server['port'] : 8091;
-            $server = "$host:$port";
+            $server = "couchbase://$host:$port";
         }
         return implode(',', $servers);
     }
