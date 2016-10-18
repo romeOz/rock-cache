@@ -326,6 +326,7 @@ class Memcached extends Cache
             $port = isset($server['port']) ? $server['port'] : 11211;
             $weight = isset($server['weight']) ? $server['weight'] : 0;
             $server = [$host, $port, $weight];
+            unset($server);
         }
         $storage->addServers($servers);
     }
