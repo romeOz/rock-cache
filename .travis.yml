@@ -1,9 +1,12 @@
 sudo: required
 
+language: php
+
 env:
   - TAG=5.4-full
   - TAG=5.5-full
   - TAG=5.6-full
+  - TAG=7.0-full
 
 services:
   - docker
