@@ -17,7 +17,7 @@ before_install:
   - docker -v
   - docker network create rock_cache_net
   - docker run --name couchbase -d --net rock_cache_net couchbase/server:community-4.1.0
-  - docker run --name redis -d --net rock_cache_net romeoz/docker-redis:2.8
+  - docker run --name redis -d --net rock_cache_net romeoz/docker-redis:3.0
   - docker run --name memcached -d --net rock_cache_net romeoz/docker-memcached
   - docker run --name mongodb -d --net rock_cache_net romeoz/docker-mongodb:2.6 --smallfiles --noprealloc
   - docker run --name rock_cache -d -e TRAVIS=$TRAVIS -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID --net rock_cache_net -v $(pwd):/var/www romeoz/docker-phpfpm:$TAG
