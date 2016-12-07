@@ -45,12 +45,4 @@ class Redis extends \rock\cache\Redis implements CacheInterface
 
         return true;
     }
-
-    /**
-     * @inheritdoc
-     */
-    protected function setTags($key, array $tags = [], &$value = null)
-    {
-        $this->setTags($key, $tags, $value);
-    }
 }
