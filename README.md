@@ -218,19 +218,21 @@ Requirements
 
 You can use each storage separately, requirements are individually for storages.
 
- * **PHP 5.4-5.6**
- 
->For PHP 7 many of pecl-extensions in development/unstable.
- 
- * [Redis 2.8+](http://redis.io). Should be installed `apt-get install redis-server` or `docker run --name redis -d -p 6379:6379 romeoz/docker-redis:2.8` (recommended). 
- Also should be installed [PHP extension](http://pecl.php.net/package/redis) `apt-get install php5-redis`
+ * **PHP 5.4+ and 7.0+**
+ * [Redis 2.8/3.0](http://redis.io). Should be installed `apt-get install redis-server` or `docker run --name redis -d -p 6379:6379 romeoz/docker-redis:3.0` (recommended). 
+ Also should be installed [PHP extension](http://pecl.php.net/package/redis) `apt-get install php-redis`
+>For Redis 3.2 pecl-extensions [phpredis](https://github.com/phpredis/phpredis) in development/unstable. 
  * [Memcached](http://memcached.org/). Should be installed `apt-get install memcached`  or `docker run --name memcached -d -p 11211:11211 romeoz/docker-memcached` (recommended). 
- Also should be installed php-extension [Memcache](http://pecl.php.net/package/memcache) `apt-get install php5-memcache` or [Memcached](http://pecl.php.net/package/memcached) `apt-get install php5-memcached`.
- * [APCu](http://pecl.php.net/package/APCu). Should be installed `apt-get install php5-apcu`.
- * Couchbase 3.0+. [Step-by-step installation](http://developer.couchbase.com/documentation/server/4.1/sdks/php-2.0/download-links.html) or `docker run --name couchbase -d couchbase/server:community-4.0.0`.
+ Also should be installed php-extension [Memcache](http://pecl.php.net/package/memcache) `apt-get install php-memcache` or [Memcached](http://pecl.php.net/package/memcached) `apt-get install php-memcached`.
+ * [APCu](http://pecl.php.net/package/APCu). Should be installed `apt-get install php-apcu`.
+>For PHP 5.6 and lower allowed pecl-extensions APCu 4.0 and lower. [Example installation](https://github.com/romeOz/docker-phpfpm/blob/master/5.6/full/Dockerfile#L20-L23).
+ * Couchbase 3.0+. [Step-by-step installation](http://developer.couchbase.com/documentation/server/4.1/sdks/php-2.0/download-links.html) or `docker run --name couchbase -d couchbase/server:community-4.1.0`.
  * MongoDB 2.6-3.0. For using [MongoDB](https://www.mongodb.org/) as storage required [Rock MongoDB](https://github.com/romeOz/rock-mongodb): `composer require romeoz/rock-mongodb` 
 
 >All unbolded dependencies is optional
+
+There is a ready docker-container: `docker run --name phpfpm_full -d romeoz/docker-phpfpm:5.6-full`. 
+But, it may be redundant for you because of the many of installed pecl-extensions
 
 Storages comparison
 -------------------
