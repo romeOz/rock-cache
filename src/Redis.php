@@ -253,7 +253,7 @@ class Redis extends Cache
      * @param string $key
      * @param array $tags
      */
-    protected function setTags($key, array $tags = null, &$value = null)
+    protected function setTags($key, array $tags = [])
     {
         if (empty($tags)) {
             return;
