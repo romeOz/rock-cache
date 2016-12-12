@@ -26,6 +26,11 @@ before_install:
 
 install:
   - chmod -R +x tests/data/travis/
+  - |
+    if [[ $TAG != '5.6-full' ]]; then
+        # disable xdebug for performance reasons when code coverage is not needed. note: xdebug on hhvm is disabled by default
+        docker exec -it rock_cache bash -c 'phpenv config-rm xdebug.ini' && echo "xdebug is not installed"
+    fi
   - travis_retry docker exec -it couchbase bash -c '/opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=default --bucket-type=memcached --bucket-ramsize=64 --enable-flush=1 -u demo -p demo'
   - tests/data/travis/mongodb-setup.sh
   - travis_retry docker exec -it rock_cache bash -c 'apt-get update && apt-get install -y git'
