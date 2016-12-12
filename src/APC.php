@@ -229,7 +229,7 @@ class APC extends Cache
         return true;
     }
 
-    protected function setTags($key, array $tags = null)
+    protected function setTags($key, array $tags = [])
     {
         if (empty($tags)) {
             return;
