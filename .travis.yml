@@ -12,24 +12,34 @@ env:
 services:
   - docker
 
-before_install:
+install:
   - sudo apt-get update -qq
   - sudo apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install docker-engine=1.12.3-0~trusty
   - docker -v
-  - docker network create rock_cache_net
-  - docker run --name couchbase -d --net rock_cache_net couchbase/server:community-4.1.0
-  - docker run --name redis -d --net rock_cache_net romeoz/docker-redis:3.0
-  - docker run --name memcached -d --net rock_cache_net romeoz/docker-memcached
-  - docker run --name mongodb -d --net rock_cache_net romeoz/docker-mongodb:2.6 --smallfiles --noprealloc
-  - docker run --name rock_cache -d -e TRAVIS=$TRAVIS -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID --net rock_cache_net -v $(pwd):/var/www romeoz/docker-phpfpm:$TAG
+  - travis_retry docker network create rock_cache_net
+  - travis_retry docker run --name couchbase -d --net rock_cache_net couchbase/server:community-4.1.0
+  - travis_retry docker run --name redis -d --net rock_cache_net romeoz/docker-redis:3.0
+  - travis_retry docker run --name memcached -d --net rock_cache_net romeoz/docker-memcached
+  - travis_retry docker run --name mongodb -d --net rock_cache_net romeoz/docker-mongodb:2.6 --smallfiles --noprealloc
+  - travis_retry docker run --name rock_cache -d -e TRAVIS=$TRAVIS -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID --net rock_cache_net -v $(pwd):/var/www romeoz/docker-phpfpm:$TAG
   - docker ps -a
 
-install:
+before_script:
   - chmod -R +x tests/data/travis/
   - travis_retry docker exec -it couchbase bash -c '/opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=default --bucket-type=memcached --bucket-ramsize=64 --enable-flush=1 -u demo -p demo'
   - tests/data/travis/mongodb-setup.sh
-  - travis_retry docker exec -it rock_cache bash -c 'apt-get update && apt-get install -y git'
-  - travis_retry docker exec -it rock_cache bash -c 'composer install --prefer-dist && composer require satooshi/php-coveralls:^1.0 && mkdir -p build/logs'
+  - |
+    if [[ $TAG = '5.5-full' ]]; then
+        PHPUNIT_FLAGS="--coverage-clover=build/logs/clover.xml"
+        travis_retry docker exec -it rock_cache bash -c 'apt-get update && apt-get install -y git'
+        travis_retry docker exec -it rock_cache bash -c 'composer install --prefer-dist && composer require satooshi/php-coveralls:^1.0 && mkdir -p build/logs'
+    fi
 
 script:
-  - travis_retry docker exec -it rock_cache bash -c 'vendor/bin/phpunit --verbose --coverage-clover=build/logs/clover.xml --exclude-group hhvm && vendor/bin/coveralls -v'
+  - travis_retry docker exec -it rock_cache bash -c 'vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group hhvm'
+
+after_script:
+  - |
+    if [[ $TAG = '5.5-full' ]]; then
+      travis_retry docker exec -it rock_cache bash -c 'vendor/bin/coveralls -v'
+    fi
