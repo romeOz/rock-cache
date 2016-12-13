@@ -12,7 +12,7 @@ env:
 services:
   - docker
 
-install:
+before_install:
   - sudo apt-get update -qq
   - sudo apt-get -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install docker-engine=1.12.3-0~trusty
   - docker -v
@@ -23,8 +23,12 @@ install:
   - travis_retry docker run --name mongodb -d --net rock_cache_net romeoz/docker-mongodb:2.6 --smallfiles --noprealloc
   - travis_retry docker run --name rock_cache -d -e TRAVIS=$TRAVIS -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID --net rock_cache_net -v $(pwd):/var/www romeoz/docker-phpfpm:$TAG
   - docker ps -a
+
+install:
   - chmod -R +x tests/data/travis/
-  - travis_retry docker exec -it rock_cache bash -c 'composer --version'
+  - travis_retry docker exec -it couchbase bash -c '/opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=default --bucket-type=memcached --bucket-ramsize=64 --enable-flush=1 -u demo -p demo'
+  - tests/data/travis/mongodb-setup.sh
+  - docker exec -it rock_cache bash -c 'composer --version'
   - travis_retry docker exec -it rock_cache bash -c 'composer install --prefer-dist'
   - |
     if [[ $TAG = '5.5-full' ]]; then
@@ -32,15 +36,11 @@ install:
         travis_retry docker exec -it rock_cache bash -c 'composer require satooshi/php-coveralls:^1.0 && mkdir -p build/logs'
     fi
 
-before_script:
-  - travis_retry docker exec -it couchbase bash -c '/opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=default --bucket-type=memcached --bucket-ramsize=64 --enable-flush=1 -u demo -p demo'
-  - tests/data/travis/mongodb-setup.sh
+script:
   - |
     if [[ $TAG = '5.5-full' ]]; then
         PHPUNIT_FLAGS="--coverage-clover=build/logs/clover.xml"
     fi
-
-script:
   - travis_retry docker exec -it rock_cache bash -c 'vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group hhvm'
 
 after_script:
