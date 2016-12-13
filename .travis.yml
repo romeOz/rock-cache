@@ -28,6 +28,7 @@ install:
   - chmod -R +x tests/data/travis/
   - travis_retry docker exec -it couchbase bash -c '/opt/couchbase/bin/couchbase-cli bucket-create -c 127.0.0.1:8091 --bucket=default --bucket-type=memcached --bucket-ramsize=64 --enable-flush=1 -u demo -p demo'
   - tests/data/travis/mongodb-setup.sh
+  - docker exec -it rock_cache bash -c 'composer --version && echo 0'
   - travis_retry docker exec -it rock_cache bash -c 'composer install --prefer-dist && echo 0'
   - |
     if [[ $TAG = '5.5-full' ]]; then
@@ -40,7 +41,7 @@ script:
     if [[ $TAG = '5.5-full' ]]; then
         PHPUNIT_FLAGS="--coverage-clover=build/logs/clover.xml"
     fi
-  - travis_retry docker exec -it rock_cache bash -c 'vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group hhvm'
+  - travis_retry docker exec -it rock_cache bash -c 'vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group hhvm && echo 0'
 
 after_script:
   - |
