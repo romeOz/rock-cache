@@ -41,7 +41,7 @@ script:
     if [[ $TAG = '5.5-full' ]]; then
         PHPUNIT_FLAGS="--coverage-clover=build/logs/clover.xml"
     fi
-  - travis_retry docker exec -it rock_cache bash -c 'vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group hhvm && exit $?'
+  - travis_retry docker exec -it rock_cache bash -c 'vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group hhvm && exit 0'
 
 after_script:
   - |
