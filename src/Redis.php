@@ -8,7 +8,7 @@ use rock\log\Log;
 
 class Redis extends Cache
 {
-    public $server = ['host' => 'localhost', 'port' => 6379];
+    public $server = ['host' => 'localhost', 'port' => 6379, 'database' => 0];
 
     /** @var  \Redis */
     public $storage;
@@ -270,5 +270,7 @@ class Redis extends Cache
         $port = isset($server['port']) ? $server['port'] : 6379;
         $timeout = isset($server['timeout']) ? $server['timeout'] : 0.0;
         $storage->connect($host, $port, $timeout);
+        $database = isset($server['database']) ? $server['database'] : 0;
+        $storage->select($database);
     }
 }
