@@ -37,7 +37,7 @@ class Redis extends \rock\cache\Redis implements CacheInterface
             if ((!$tagTimestamp = $this->storage->get($tag)) ||
                 $this->microtime($tagTimestamp) > $this->microtime($timestamp)
             ) {
-                $this->storage->delete($key);
+                $this->storage->del($key);
 
                 return false;
             }

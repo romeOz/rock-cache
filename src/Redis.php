@@ -129,7 +129,7 @@ class Redis extends Cache
      */
     public function remove($key)
     {
-        return (bool)$this->storage->delete($this->prepareKey($key));
+        return (bool)$this->storage->del($this->prepareKey($key));
     }
 
 
@@ -139,7 +139,7 @@ class Redis extends Cache
     public function removeMulti(array $keys)
     {
         $keys = $this->prepareKeys($keys);
-        $this->storage->delete($keys);
+        $this->storage->del($keys);
     }
 
     /**
@@ -168,7 +168,7 @@ class Redis extends Cache
             return false;
         }
         $value[] = $tag;
-        $this->storage->delete($value);
+        $this->storage->del($value);
         return true;
     }
 
@@ -215,7 +215,7 @@ class Redis extends Cache
      */
     public function unlock($key)
     {
-        $this->storage->delete($this->prepareKey($key, self::LOCK_PREFIX));
+        $this->storage->del($this->prepareKey($key, self::LOCK_PREFIX));
         return true;
     }
 
