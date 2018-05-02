@@ -17,6 +17,7 @@ class RedisTest extends CommonCache
             'host' => 'redis',
             'port' => 6379
         ];
+        $config['password'] = 'testpass';
 
         return new Redis($config);
     }

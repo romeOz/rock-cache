@@ -10,6 +10,9 @@ class Redis extends Cache
 {
     public $server = ['host' => 'localhost', 'port' => 6379, 'database' => 0];
 
+    /** @var  string */
+    public $password = '';
+
     /** @var  \Redis */
     public $storage;
 
@@ -89,7 +92,7 @@ class Redis extends Cache
      */
     public function exists($key)
     {
-        return $this->storage->exists($this->prepareKey($key));
+        return (bool)$this->storage->exists($this->prepareKey($key));
     }
 
     /**
@@ -155,7 +158,7 @@ class Redis extends Cache
      */
     public function existsTag($tag)
     {
-        return $this->storage->exists($this->prepareTag($tag));
+        return (bool)$this->storage->exists($this->prepareTag($tag));
     }
 
     /**
@@ -271,6 +274,7 @@ class Redis extends Cache
         $timeout = isset($server['timeout']) ? $server['timeout'] : 0.0;
         $storage->connect($host, $port, $timeout);
         $database = isset($server['database']) ? $server['database'] : 0;
+        $storage->auth($this->password);
         $storage->select($database);
     }
 }
