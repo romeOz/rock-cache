@@ -2,6 +2,9 @@
 
 namespace rock\cache;
 
+use Couchbase\Bucket;
+use Couchbase\Cluster;
+use Couchbase\Exception;
 use rock\base\BaseException;
 use rock\log\Log;
 
@@ -17,14 +20,16 @@ class Couchbase extends Cache
     /** @var string */
     public $bucket = 'default';
 
-    /** @var  \CouchbaseBucket */
+    /** @var  Bucket */
     public $storage;
 
     public function init()
     {
         $this->parentInit();
-        if (!$this->storage instanceof \CouchbaseBucket) {
-            $this->storage = (new \CouchbaseCluster($this->normalizeServers($this->servers), $this->username, $this->password))->openBucket($this->bucket);
+        if (!$this->storage instanceof Bucket) {
+            $cluster = new Cluster($this->normalizeServers($this->servers));
+            $cluster->manager($this->username, $this->password);
+            $this->storage = $cluster->openBucket($this->bucket);
         }
         switch ($this->serializer) {
             case self::SERIALIZE_JSON:
@@ -33,18 +38,18 @@ class Couchbase extends Cache
                     $options = [
                         'jsonassoc' => true
                     ];
-                    return couchbase_basic_decoder_v1($bytes, $flags, $datatype, $options);
+                    return \Couchbase\basicDecoderV1($bytes, $flags, $datatype, $options);
                 };
                 break;
             default:
                 $encode = function ($value) {
                     $options = [
-                        'sertype' => COUCHBASE_SERTYPE_PHP,
-                        'cmprtype' => COUCHBASE_CMPRTYPE_NONE,
+                        'sertype' => \Couchbase\ENCODER_FORMAT_PHP,
+                        'cmprtype' => \Couchbase\ENCODER_COMPRESSION_NONE,
                         'cmprthresh' => 2000,
                         'cmprfactor' => 1.3
                     ];
-                    return couchbase_basic_encoder_v1($value, $options);
+                    return \Couchbase\basicEncoderV1($value, $options);
                 };
                 $decode = 'couchbase_default_decoder';
         }
@@ -54,7 +59,7 @@ class Couchbase extends Cache
 
     /**
      * {@inheritdoc}
-     * @return \CouchbaseBucket
+     * @return Bucket
      */
     public function getStorage()
     {
@@ -312,7 +317,7 @@ class Couchbase extends Cache
     {
         try {
             return $this->storage->get($key)->value;
-        } catch (\CouchbaseException $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -322,7 +327,7 @@ class Couchbase extends Cache
         try {
             $this->storage->get($key);
             return true;
-        } catch (\CouchbaseException $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -332,7 +337,7 @@ class Couchbase extends Cache
         try {
             $this->storage->touch($key, $expire);
             return true;
-        } catch (\CouchbaseException $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -342,7 +347,7 @@ class Couchbase extends Cache
         try {
             $this->storage->remove($key);
             return true;
-        } catch (\CouchbaseException $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
