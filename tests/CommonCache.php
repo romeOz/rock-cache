@@ -3,10 +3,9 @@
 namespace rockunit;
 
 
-use PHPUnit\Framework\TestCase;
 use rock\cache\CacheInterface;
 
-abstract class CommonCache extends TestCase
+abstract class CommonCache extends \PHPUnit_Framework_TestCase
 {
     abstract public function init($serialize);
 

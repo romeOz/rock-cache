@@ -3,10 +3,9 @@
 namespace rockunit;
 
 
-use PHPUnit\Framework\TestCase;
 use rock\cache\CacheStub;
 
-class CacheStubTest extends TestCase
+class CacheStubTest extends \PHPUnit_Framework_TestCase
 {
     /** @var  CacheStub */
     protected $storage;
