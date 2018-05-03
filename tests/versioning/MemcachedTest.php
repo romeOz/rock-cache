@@ -119,6 +119,7 @@ class MemcachedTest extends CommonCache
         $this->assertNotEquals($cache->getTag('bar'), $timestamp, 'timestamps does not equals');
         $this->assertTrue($cache->remove('key2'));
         $this->assertFalse($cache->get('key2'), 'should be get: false');
+        sleep(3);
         $expected = $cache->getAllKeys();
         if ($expected !== false) {
             $actual = [CacheInterface::TAG_PREFIX . 'foo', CacheInterface::TAG_PREFIX . 'bar'];
@@ -126,17 +127,6 @@ class MemcachedTest extends CommonCache
             sort($actual);
             $this->assertEquals($expected, $actual, 'should be get: ' . json_encode($actual));
         }
-    }
-
-    /**
-     * @dataProvider providerCache
-     * @param CacheInterface $cache
-     */
-    public function testStatus(CacheInterface $cache)
-    {
-        $this->markTestSkipped(
-            'Memcached::status() skipped. Changed behavior TravisCI.'
-        );
     }
 
     /**

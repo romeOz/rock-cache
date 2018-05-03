@@ -451,6 +451,7 @@ abstract class CommonCache extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue($cache->set('key1', ['one', 'two'], 0, ['foo', 'bar']));
         $this->assertTrue($cache->set('key2', 'three', 0, ['foo']));
+        sleep(3);
         $expected = $cache->getAllKeys();
         if ($expected !== false) {
             $actual = [
