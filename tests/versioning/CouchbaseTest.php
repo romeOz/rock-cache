@@ -23,28 +23,16 @@ class CouchbaseTest extends CommonCache
 
     public function setUp()
     {
-        if (version_compare(PHP_VERSION, '5.6.0', '<')) {
-            $this->markTestSkipped(
-                'PHP must been 5.6 or higher'
-            );
-        }
-
-        if (!class_exists('\CouchbaseBucket')) {
-            $this->markTestSkipped(
-                'The Couchbase is not available.'
-            );
-
-        } elseif(defined('HHVM_VERSION')) {
-            $this->markTestSkipped(
-                'Couchbase does not seem to support HHVM right now.'
-            );
-        }
-
         $this->getStorage()->flush();
     }
 
     public function init($serialize)
     {
+        if (version_compare(PHP_VERSION, '5.6.0', '<')) {
+            $this->markTestSkipped(
+                'PHP must been 5.6 or higher'
+            );
+        }
         if (!class_exists('\CouchbaseBucket')) {
             $this->markTestSkipped(
                 'The Couchbase is not available.'
