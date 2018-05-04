@@ -3,11 +3,11 @@ sudo: required
 language: php
 
 env:
-  - TAG=5.4-full
-  - TAG=5.5-full
-  - TAG=5.6-full
-  - TAG=7.0-full
-  - TAG=7.1-full
+  - TAG=5.4
+  - TAG=5.5
+  - TAG=5.6
+  - TAG=7.0
+  - TAG=7.1
 
 services:
   - docker
@@ -21,7 +21,7 @@ before_install:
   - travis_retry docker run --name redis -d --net php_cli_net -e 'REDIS_PASSWORD=testpass' romeoz/docker-redis:4.0
   - travis_retry docker run --name memcached -d --net php_cli_net romeoz/docker-memcached
   - travis_retry docker run --name mongodb -d --net php_cli_net romeoz/docker-mongodb:2.6 --smallfiles --noprealloc
-  - travis_retry docker run --name rock_cache -d -e TRAVIS=$TRAVIS -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID --net php_cli_net -v $(pwd):/var/www romeoz/docker-phpfpm:$TAG
+  - travis_retry docker run --name rock_cache -d -e TRAVIS=$TRAVIS -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID --net php_cli_net -v $(pwd):/var/www romeoz/docker-phpfpm:$TAG'-full'
   - docker ps -a
 
 install:
@@ -31,20 +31,20 @@ install:
   - docker exec -it rock_cache bash -c 'composer --version && exit $?'
   - travis_retry docker exec -it rock_cache bash -c 'composer install --prefer-dist && exit $?'
   - |
-    if [[ $TAG = '5.6-full' ]]; then
+    if [[ $TAG = 5.6 ]]; then
         travis_retry docker exec -it rock_cache bash -c 'apt-get update && apt-get install -y git'
         travis_retry docker exec -it rock_cache bash -c 'composer require satooshi/php-coveralls:^1.0 && mkdir -p build/logs'
     fi
 
 script:
   - |
-    if [[ $TAG = '5.6-full' ]]; then
+    if [[ $TAG = 5.6 ]]; then
         PHPUNIT_FLAGS="--coverage-clover=build/logs/clover.xml"
     fi
   - travis_retry docker exec -it rock_cache bash -c 'phpunit --bootstrap tests/bootstrap.php --configuration ./phpunit.xml.dist --verbose $PHPUNIT_FLAGS --exclude-group hhvm || exit 0'
 
 after_script:
   - |
-    if [[ $TAG = '5.6-full' ]]; then
+    if [[ $TAG = 5.6 ]]; then
       travis_retry docker exec -it rock_cache bash -c 'vendor/bin/coveralls -v && exit $?'
     fi
