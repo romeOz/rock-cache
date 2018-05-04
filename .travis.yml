@@ -19,7 +19,12 @@ before_install:
   - travis_retry docker network create php_cli_net
   - travis_retry docker run --name couchbase -d --net php_cli_net couchbase/server:community-4.1.0
   - travis_retry docker run --name redis -d --net php_cli_net -e 'REDIS_PASSWORD=testpass' romeoz/docker-redis:4.0
-  - travis_retry docker run --name memcached -d --net php_cli_net romeoz/docker-memcached:1.4
+  - |
+    if [[ $TAG = 5.4 ]]; then
+      travis_retry docker run --name memcached -d --net php_cli_net romeoz/docker-memcached:1.4
+    else
+      travis_retry docker run --name memcached -d --net php_cli_net romeoz/docker-memcached
+    fi
   - travis_retry docker run --name mongodb -d --net php_cli_net romeoz/docker-mongodb:2.6 --smallfiles --noprealloc
   - travis_retry docker run --name rock_cache -d -e TRAVIS=$TRAVIS -e TRAVIS_JOB_ID=$TRAVIS_JOB_ID --net php_cli_net -v $(pwd):/var/www romeoz/docker-phpfpm:$TAG'-full'
   - docker ps -a
