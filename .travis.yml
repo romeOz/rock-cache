@@ -33,7 +33,7 @@ install:
   - |
     if [[ $TAG = 5.6 ]]; then
         travis_retry docker exec -it rock_cache bash -c 'apt-get update && apt-get install -y git'
-        travis_retry docker exec -it rock_cache bash -c 'composer require satooshi/php-coveralls:^1.0 && mkdir -p build/logs'
+        travis_retry docker exec -it rock_cache bash -c 'composer require satooshi/php-coveralls:^2.0 && mkdir -p build/logs'
     fi
 
 script:
