@@ -22,11 +22,14 @@
         </testsuite>
     </testsuites>
     <filter>
-        <blacklist>
-            <file>./src/CacheException.php</file>
-            <directory>./src/stub/</directory>
-            <directory>./tests/</directory>
-        </blacklist>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src/</directory>
+            <exclude>
+                <file>./src/CacheException.php</file>
+                <directory>./src/stub/</directory>
+                <directory>./tests/</directory>
+            </exclude>
+        </whitelist>
     </filter>
     <logging>
         <log type="coverage-clover" target="build/logs/clover.xml"/>
