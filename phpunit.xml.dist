@@ -27,7 +27,6 @@
             <exclude>
                 <file>./src/CacheException.php</file>
                 <directory>./src/stub/</directory>
-                <directory>./tests/</directory>
             </exclude>
         </whitelist>
     </filter>
