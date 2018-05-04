@@ -21,7 +21,7 @@ before_install:
   - travis_retry docker run --name redis -d --net php_cli_net -e 'REDIS_PASSWORD=testpass' romeoz/docker-redis:4.0
   - |
     if [[ $TAG = 5.4 ]]; then
-      travis_retry docker run --name memcached -d --net php_cli_net romeoz/docker-memcached:1.4
+      travis_retry docker run --name memcached -d --net php_cli_net romeoz/docker-memcached:1.4.22
     else
       travis_retry docker run --name memcached -d --net php_cli_net romeoz/docker-memcached
     fi
